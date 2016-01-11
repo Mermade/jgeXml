@@ -40,6 +40,7 @@ function staxParse(s,callback) {
 	//comments, processing instructions, CDATA segments
 	
 	var c;
+	var keepToken = false;
 	reset();
 	
 	for (var i=0;i<s.length;i++) {
@@ -52,6 +53,7 @@ function staxParse(s,callback) {
 		if (boundary.indexOf(c)>=0) {
 			
 			token = token.trim();
+			keepToken = false;
 			if (((state & 1) == 1) && (token != '')) {				
 				callback(state,token); // nonstandard space handling
 			}
@@ -77,6 +79,8 @@ function staxParse(s,callback) {
 				if (c == '/') {
 					state = sEndElement;
 					boundary = '>';
+					callback(sContent,'');
+					keepToken = true;
 				}
 				else if (c == ' ') {
 					state = sAttribute;
@@ -121,7 +125,7 @@ function staxParse(s,callback) {
 				boundary = '<';
 			}
 			
-			token = '';
+			if (!keepToken) token = '';
 		}		
 		else {
 			token += c;
