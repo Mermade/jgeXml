@@ -25,19 +25,28 @@ stax.parse(xml,function(state,token){
 		s += token;
 	}
 	else if (state == stax.sContent) {
-		if (s.charAt(s.length-1) == '{') {
-			s = s.substr(0,s.length-1);
+		if (token != '') { // maybe move this in to only omit hasContent = true ??
+			if (s.charAt(s.length-1) == '{') {
+				s = s.substr(0,s.length-1);
+			}
+			s += '"' + token + '"';
+			hasContent = true;
 		}
-		s += '"' + token + '"';
-		hasContent = true;
 	}
 	else if (state == stax.sEndElement) {
+		// drop hanging comma
 		if (s.charAt(s.length-1) == ',') {
 			s = s.substr(0,s.length-1);
 		}
+		// if we're in an array, close it
 		if (s.charAt(stack[stack.length-1]) == '[') {
 			s += ']';
 		}
+		//// if we're in an object, close it
+		//if (s.charAt(stack[stack.length-2]) == '{') {
+		//	s += '}';
+		//}
+		// close an empty element
 		if (!hasContent) {
 			s += '}';
 		}
@@ -59,6 +68,9 @@ stax.parse(xml,function(state,token){
 			s += ',';
 		}
 		if (token != lastElement) {
+			if (s.charAt(stack[stack.length-1]) == '[') {
+				s = s.insert(s.length-1,']');				
+			}			
 			s += '"' + token + '": ';
 			stack[stack.length-1] = s.length;
 			stack.push(s.length);
@@ -95,4 +107,5 @@ try {
 }
 catch (err) {
 	console.log('That is not valid JSON');
+	console.log(err);
 }
