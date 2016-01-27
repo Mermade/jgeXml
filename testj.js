@@ -5,6 +5,10 @@ var filename = process.argv[2];
 
 var xml = fs.readFileSync(filename,'utf8');
 
+String.prototype.replaceAt = function(index, character) {
+    return this.substr(0, index) + character + this.substr(index+character.length);
+};
+
 String.prototype.insert = function (index, string) {
   if (index > 0)
     return this.substring(0, index) + string + this.substring(index, this.length);
@@ -28,6 +32,9 @@ stax.parse(xml,function(state,token){
 		if (token != '') { // maybe move this in to only omit hasContent = true ??
 			if (s.charAt(s.length-1) == '{') {
 				s = s.substr(0,s.length-1);
+			}
+			if (s.charAt(s.length-1) == '"') {
+				s += ',';
 			}
 			s += '"' + token + '"';
 			hasContent = true;
@@ -81,6 +88,7 @@ stax.parse(xml,function(state,token){
 			// only need to insert array opening bracket once
 			if (s.charAt(stack[stack.length-1]) != '[') {
 				s = s.insert(stack[stack.length-1],'[');
+				//s = s.replaceAt(stack[stack.length-1],'[');
 			}
 			stack.push(s.length);
 			s += '{';

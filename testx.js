@@ -19,7 +19,9 @@ stax.parse(xml,function(state,token){
 		hanging = '';
 	}
 	else if (state == stax.sEndElement) {
+		s += hanging; //new
 		s += '</'+token+'>';
+		hanging = '';
 	}
 	else if (state == stax.sAttribute) {
 		s += ' ' + token + '=';
