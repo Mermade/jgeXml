@@ -11,10 +11,9 @@ const sDeclaration = 1;
 const sPreElement = 2;
 const sElement = 3;
 const sAttribute = 5;
-const sAttrNML = 6;
+const sAttrNML = 6; // No Mans Land
 const sValue = 7;
 const sEndElement = 9;
-const sNML = 10;
 const sContent = 11;
 const sElementBoundary = 12;
 const sAttributeSpacer = 14;
@@ -23,21 +22,19 @@ const sComment = 16;
 var state = sInitial;
 var boundary;
 var token;
-var attributeCount;
-var depth;
+var lastElement;
 
 function reset() {
 	state = sInitial;
 	token = '';
 	boundary = '<';
-	attributeCount = 0;
-	depth = 0;
-	attributeCount = [0];
+	lastElement = '';
 }
 
 function staxParse(s,callback) {
 	
-	//comments, processing instructions, CDATA segments
+	//comments - done trivially, needs hardening
+	//TODO empty elements with attributes processing instructions, CDATA segments
 	
 	var c;
 	var keepToken = false;
@@ -57,9 +54,6 @@ function staxParse(s,callback) {
 			if (((state & 1) == 1) && (token != '')) {				
 				callback(state,token); // nonstandard space handling
 			}
-			if ((state == sAttribute) || (state == sElement)) {
-				attributeCount[depth]++;
-			}
 
 			if (state == sInitial) {
 				state = sDeclaration;
@@ -71,15 +65,17 @@ function staxParse(s,callback) {
 			}
 			else if (state == sPreElement) {
 				state = sElement;
-				boundary = ' />';
+				boundary = ' !/>';
 			}
 			else if (state == sElement) {
-				depth++;
-				attributeCount.push(0);
+				lastElement = token;
+				if (c == '!') {
+					state = sComment;
+					boundary = '>'; //!
+				}
 				if (c == '/') {
 					state = sEndElement;
 					boundary = '>';
-					callback(sContent,'');
 					keepToken = true;
 				}
 				else if (c == ' ') {
@@ -100,6 +96,11 @@ function staxParse(s,callback) {
 					state = sContent;
 					boundary = '<';
 				}
+				else if (c == '/') {
+					state = sEndElement;
+					keepToken = true;
+					token = lastElement;
+				}
 			}
 			else if (state == sAttrNML) {
 				state = sValue;
@@ -110,9 +111,9 @@ function staxParse(s,callback) {
 				boundary = '=/>';
 			}
 			else if (state == sEndElement) {
-				attributeCount.pop();
-				depth--;
-				state = sPreElement;
+				//state = sPreElement;
+				//boundary = '<';
+				state = sContent;
 				boundary = '<';
 			}
 			else if (state == sContent) {
@@ -121,6 +122,10 @@ function staxParse(s,callback) {
 			}
 			else if (state == sElementBoundary) {
 				attributeCount = 0;
+				state = sPreElement;
+				boundary = '<';
+			}
+			else if (state == sComment) {
 				state = sPreElement;
 				boundary = '<';
 			}
@@ -146,7 +151,6 @@ module.exports = {
 	sAttrNML : sAttrNML,
 	sValue : sValue,
 	sEndElement : sEndElement,
-	sNML : sNML,
 	sContent : sContent,
 	sElementBoundary : sElementBoundary,
 	sAttributeSpacer : sAttributeSpacer
