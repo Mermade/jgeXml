@@ -24,6 +24,11 @@ var boundary;
 var token;
 var lastElement;
 
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
+
 function reset() {
 	state = sInitial;
 	token = '';
@@ -34,7 +39,10 @@ function reset() {
 function staxParse(s,callback) {
 	
 	//comments - done trivially, needs hardening
-	//TODO empty elements with attributes processing instructions, CDATA segments
+	//TODO empty elements with attributes processing instructions
+	//TODO CDATA segments
+	//TODO hex entities
+	//TODO processing instructions
 	
 	var c;
 	var keepToken = false;
@@ -43,7 +51,7 @@ function staxParse(s,callback) {
 	for (var i=0;i<s.length;i++) {
 		c = s.charAt(i);
 		
-		if ((c == '\t') || (c == '\r') || (c == '\n')) {
+		if ((c == '\t') || (c == '\r') || (c == '\n')) { //other unicode spaces are not treated as whitespace
 			c = ' ';
 		}
 		
@@ -51,7 +59,15 @@ function staxParse(s,callback) {
 			
 			token = token.trim();
 			keepToken = false;
-			if (((state & 1) == 1) && (token != '')) {				
+			if (((state & 1) == 1) && (token != '')) {
+				token = token.replaceAll('&amp;','&');
+				token = token.replaceAll('&quot;','"');
+				token = token.replaceAll('&apos;',"'");
+				token = token.replaceAll('&gt;','>');
+				token = token.replaceAll('&lt;','<');
+				if (token.indexOf('&#') >= 0) {
+					// todo
+				}
 				callback(state,token); // nonstandard space handling
 			}
 
@@ -71,9 +87,9 @@ function staxParse(s,callback) {
 				lastElement = token;
 				if (c == '!') {
 					state = sComment;
-					boundary = '>'; //!
+					boundary = '>';
 				}
-				if (c == '/') {
+				else if (c == '/') {
 					state = sEndElement;
 					boundary = '>';
 					keepToken = true;
@@ -118,7 +134,7 @@ function staxParse(s,callback) {
 			}
 			else if (state == sContent) {
 				state = sElement;
-				boundary = ' />';
+				boundary = ' !/>';
 			}
 			else if (state == sElementBoundary) {
 				attributeCount = 0;

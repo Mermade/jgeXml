@@ -18,6 +18,7 @@ String.prototype.insert = function (index, string) {
 
 var s = '{';
 var hasContent = false;
+var hasAttribute = false;
 var lastElement = '';
 var stack = [];
 var finished = 0;
@@ -36,8 +37,13 @@ stax.parse(xml,function(state,token){
 			if (s.charAt(s.length-1) == '"') {
 				s += ',';
 			}
-			s += '"' + token + '"';
-			hasContent = true;
+			if (hasAttribute) {
+				s += ' "_" : ';
+			}
+			else {
+				hasContent = true;
+			}
+			s += '"' + token.replaceAll('"','\\"') + '"';
 		}
 	}
 	else if (state == stax.sEndElement) {
@@ -58,6 +64,7 @@ stax.parse(xml,function(state,token){
 			s += '}';
 		}
 		hasContent = false;
+		hasAttribute = false;
 		lastElement = token;
 		finished = stack.pop();
 	}
@@ -66,18 +73,20 @@ stax.parse(xml,function(state,token){
 			s += ',';
 		}
 		s += '"_' + token + '" : ';
+		hasAttribute = true;
 	}
 	else if (state == stax.sValue) {
-		s += '"' + token + '"';
+		s += '"' + token.replaceAll('"','\\"') + '"';
 	}
 	else if (state == stax.sElement) {
+		hasAttribute = false;
 		if (s.charAt(s.length-1) !== '{') {
 			s += ',';
 		}
 		if (token != lastElement) {
 			if (s.charAt(stack[stack.length-1]) == '[') {
-				s = s.insert(s.length-1,']');				
-			}			
+				s = s.insert(s.length-1,']');
+			}
 			s += '"' + token + '": ';
 			stack[stack.length-1] = s.length;
 			stack.push(s.length);

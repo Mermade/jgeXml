@@ -1,6 +1,15 @@
 var fs = require('fs');
 var stax = require('./stax.js');
 
+function encode(s) {
+	var es = s.replaceAll('&','&amp;');
+	es = es.replaceAll('<','&lt;');
+	es = es.replaceAll('>','&gt;');
+	es = es.replaceAll('"','&quot;');
+	es = es.replaceAll("'",'&apos;');
+	return es;
+}
+
 var filename = process.argv[2];
 
 var xml = fs.readFileSync(filename,'utf8');
@@ -15,7 +24,7 @@ stax.parse(xml,function(state,token){
 	}
 	else if (state == stax.sContent) {
 		s += hanging;
-		s += token;
+		s += encode(token);
 		hanging = '';
 	}
 	else if (state == stax.sEndElement) {
@@ -27,7 +36,7 @@ stax.parse(xml,function(state,token){
 		s += ' ' + token + '=';
 	}
 	else if (state == stax.sValue) {
-		s += '"' + token + '"';
+		s += '"' + encode(token) + '"';
 	}
 	else if (state == stax.sElement) {
 		s += hanging;
