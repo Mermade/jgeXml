@@ -18,6 +18,7 @@ const sContent = 11;
 const sElementBoundary = 12;
 const sAttributeSpacer = 14;
 const sComment = 15;
+const sProcessingInstruction = 17;
 
 var state = sInitial;
 var boundary;
@@ -39,10 +40,8 @@ function reset() {
 function staxParse(s,callback) {
 	
 	//comments - done trivially, needs hardening
-	//TODO empty elements with attributes processing instructions
+	//processing instructions - done trivially, needs hardening
 	//TODO CDATA segments
-	//TODO hex entities
-	//TODO processing instructions
 	
 	var c;
 	var keepToken = false;
@@ -57,7 +56,7 @@ function staxParse(s,callback) {
 		
 		if (boundary.indexOf(c)>=0) {
 			
-			token = token.trim();
+			token = token.trim(); // nonstandard space handling
 			keepToken = false;
 			if (((state & 1) == 1) && (token != '')) {
 				token = token.replaceAll('&amp;','&');
@@ -66,9 +65,16 @@ function staxParse(s,callback) {
 				token = token.replaceAll('&gt;','>');
 				token = token.replaceAll('&lt;','<');
 				if (token.indexOf('&#') >= 0) {
-					// todo
+					token = token.replace(/&(?:#([0-9]+)|#x([0-9a-fA-F]+));/g, function(match, group1, group2) {
+						if (group2) {
+							return String.fromCharCode(parseInt(group2,16));
+						}
+						else {
+							return String.fromCharCode(group1);
+						}
+					});
 				}
-				callback(state,token); // nonstandard space handling
+				callback(state,token);
 			}
 
 			if (state == sInitial) {
@@ -81,11 +87,15 @@ function staxParse(s,callback) {
 			}
 			else if (state == sPreElement) {
 				state = sElement;
-				boundary = ' !/>';
+				boundary = ' ?!/>';
 			}
 			else if (state == sElement) {
 				lastElement = token;
-				if (c == '!') {
+				if (c == '?') {
+					state = sProcessingInstruction;
+					boundary = '>';
+				}
+				else if (c == '!') {
 					state = sComment;
 					boundary = '>';
 				}
@@ -134,7 +144,7 @@ function staxParse(s,callback) {
 			}
 			else if (state == sContent) {
 				state = sElement;
-				boundary = ' !/>';
+				boundary = ' !?/>';
 			}
 			else if (state == sElementBoundary) {
 				attributeCount = 0;
@@ -142,6 +152,10 @@ function staxParse(s,callback) {
 				boundary = '<';
 			}
 			else if (state == sComment) {
+				state = sPreElement;
+				boundary = '<';
+			}
+			else if (state == sProcessingInstruction) {
 				state = sPreElement;
 				boundary = '<';
 			}
@@ -170,5 +184,6 @@ module.exports = {
 	sContent : sContent,
 	sElementBoundary : sElementBoundary,
 	sAttributeSpacer : sAttributeSpacer,
-	sComment : sComment
+	sComment : sComment,
+	sProcessingInstruction: sProcessingInstruction
 }
