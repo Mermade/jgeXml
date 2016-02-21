@@ -160,7 +160,7 @@ module.exports = {
 		return staxParse(s,callback);
 	},
 	sInitial : sInitial,
-	Declaration : sDeclaration,
+	sDeclaration : sDeclaration,
 	sPreElement : sPreElement,
 	sElement : sElement,
 	sAttribute : sAttribute,
@@ -169,5 +169,6 @@ module.exports = {
 	sEndElement : sEndElement,
 	sContent : sContent,
 	sElementBoundary : sElementBoundary,
-	sAttributeSpacer : sAttributeSpacer
+	sAttributeSpacer : sAttributeSpacer,
+	sComment : sComment
 }

@@ -20,7 +20,7 @@ var hanging = '';
 stax.parse(xml,function(state,token){
 		
 	if (state == stax.sDeclaration) {
-		s += token;
+		s += '<' + token + '>';
 	}
 	else if (state == stax.sContent) {
 		s += hanging;
