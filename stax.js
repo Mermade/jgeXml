@@ -15,10 +15,9 @@ const sAttrNML = 6; // No Mans Land
 const sValue = 7;
 const sEndElement = 9;
 const sContent = 11;
-const sElementBoundary = 12;
-const sAttributeSpacer = 14;
-const sComment = 15;
-const sProcessingInstruction = 17;
+const sAttributeSpacer = 12;
+const sComment = 13;
+const sProcessingInstruction = 15;
 
 var state = sInitial;
 var boundary;
@@ -146,11 +145,6 @@ function staxParse(s,callback) {
 				state = sElement;
 				boundary = ' !?/>';
 			}
-			else if (state == sElementBoundary) {
-				attributeCount = 0;
-				state = sPreElement;
-				boundary = '<';
-			}
 			else if (state == sComment) {
 				state = sPreElement;
 				boundary = '<';
@@ -173,17 +167,12 @@ module.exports = {
 	parse : function(s,callback) {
 		return staxParse(s,callback);
 	},
-	sInitial : sInitial,
 	sDeclaration : sDeclaration,
-	sPreElement : sPreElement,
 	sElement : sElement,
 	sAttribute : sAttribute,
-	sAttrNML : sAttrNML,
 	sValue : sValue,
 	sEndElement : sEndElement,
 	sContent : sContent,
-	sElementBoundary : sElementBoundary,
-	sAttributeSpacer : sAttributeSpacer,
 	sComment : sComment,
 	sProcessingInstruction: sProcessingInstruction
 }
