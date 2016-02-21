@@ -26,10 +26,7 @@ stack.push(1);
 
 stax.parse(xml,function(state,token){
 
-	if (state == stax.sDeclaration) {
-		s += token;
-	}
-	else if (state == stax.sContent) {
+	if (state == stax.sContent) {
 		if (token != '') { // maybe move this in to only omit hasContent = true ??
 			if (s.charAt(s.length-1) == '{') {
 				s = s.substr(0,s.length-1);
@@ -100,6 +97,11 @@ stax.parse(xml,function(state,token){
 				//s = s.replaceAt(stack[stack.length-1],'[');
 			}
 			stack.push(s.length);
+			//if (s.charAt(s.length-1) == '{') {
+			//	//anonymous object?
+			//	//s = s.substr(0,s.length-1); // drop previous opening brace
+			//	s += '"anon": ';
+			//}
 			s += '{';
 		}
 	}
@@ -123,6 +125,6 @@ try {
 	console.log(JSON.stringify(obj,null,2));
 }
 catch (err) {
-	console.log('That is not valid JSON');
-	console.log(err);
+	console.error('That is not valid JSON');
+	console.error(err);
 }

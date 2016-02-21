@@ -17,7 +17,7 @@ const sEndElement = 9;
 const sContent = 11;
 const sElementBoundary = 12;
 const sAttributeSpacer = 14;
-const sComment = 16;
+const sComment = 15;
 
 var state = sInitial;
 var boundary;

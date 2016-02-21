@@ -22,6 +22,9 @@ stax.parse(xml,function(state,token){
 	if (state == stax.sDeclaration) {
 		s += '<' + token + '>';
 	}
+	else if (state == stax.sComment) {
+		s += '<!' + token + '>';
+	}
 	else if (state == stax.sContent) {
 		s += hanging;
 		s += encode(token);
