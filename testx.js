@@ -2,57 +2,51 @@
 
 var fs = require('fs');
 var stax = require('./stax.js');
-
-function encode(s) {
-	var es = s.replaceAll('&','&amp;');
-	es = es.replaceAll('<','&lt;');
-	es = es.replaceAll('>','&gt;');
-	es = es.replaceAll('"','&quot;');
-	es = es.replaceAll("'",'&apos;');
-	return es;
-}
+var xmlWrite = require('./xmlWrite.js');
 
 function x2x(xml) {
-	var s = '';
-	var hanging = '';
+	var attributeName = '';
 
 	stax.parse(xml,function(state,token){
 
 		if (state == stax.sDeclaration) {
-			s += '<' + token + '>';
+			xmlWrite.startDocument('UTF-8');
 		}
 		else if (state == stax.sComment) {
-			s += '<!' + token + '>';
+			xmlWrite.comment(token);
+		}
+		else if (state == stax.sProcessingInstruction) {
+			xmlWrite.processingInstruction(token);
 		}
 		else if (state == stax.sContent) {
-			s += hanging;
-			s += encode(token);
-			hanging = '';
+			xmlWrite.content(token);
 		}
 		else if (state == stax.sEndElement) {
-			s += hanging; //new
-			s += '</'+token+'>';
-			hanging = '';
+			xmlWrite.endElement(token);
 		}
 		else if (state == stax.sAttribute) {
-			s += ' ' + token + '=';
+			attributeName = token;
 		}
 		else if (state == stax.sValue) {
-			s += '"' + encode(token) + '"';
+			xmlWrite.attribute(attributeName,token);
 		}
 		else if (state == stax.sElement) {
-			s += hanging;
-			s += '<' + token;
-			hanging = '>';
+			xmlWrite.startElement(token);
 		}
 	});
-	return s;
+	return xmlWrite.endDocument();
 }
 
 var filename = process.argv[2];
 
 var xml = fs.readFileSync(filename,'utf8');
 
-var s1 = x2x(xml);
-var s2 = x2x(s1);
-console.log(s1 == s2);
+var s1 = x2x(xml); // normalise declaration, spacing and empty elements etc
+var s2 = x2x(s1); // compare
+var same = (s1 == s2);
+console.log(same);
+if (!same) {
+	console.log(s1);
+	console.log();
+}
+console.log(s2);
