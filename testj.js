@@ -1,3 +1,5 @@
+'use strict';
+
 var fs = require('fs');
 var x2j = require('./xml2json');
 

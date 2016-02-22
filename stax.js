@@ -18,53 +18,60 @@ const sContent = 11;
 const sAttributeSpacer = 12;
 const sComment = 13;
 const sProcessingInstruction = 15;
-
-var state = sInitial;
-var boundary;
-var token;
-var lastElement;
+const sEndDocument = 17;
 
 String.prototype.replaceAll = function(search, replacement) {
     var target = this;
     return target.split(search).join(replacement);
 };
 
-function reset() {
-	state = sInitial;
-	token = '';
-	boundary = '<';
-	lastElement = '';
+function reset(context) {
+	context.state = sInitial;
+	context.newState = sInitial;
+	context.token = '';
+	context.boundary = '<';
+	context.lastElement = '';
+	context.keepToken = false;
+	context.position = 0;
 }
 
-function staxParse(s,callback) {
-	
+// to create a push parser, pass in a callback function and omit the context parameter
+// to create a pull parser, pass in null for the callback function and initially provide an empty object as the context
+function staxParse(s,callback,context) {
+
 	//comments - done trivially, needs hardening
 	//processing instructions - done trivially, needs hardening
 	//TODO CDATA segments
-	
+
+	if (context && context.newState) {
+		if (!context.keepToken) context.token = '';
+		context.state = context.newState;
+	}
+	else {
+		context = {};
+		reset(context);
+	}
+
 	var c;
-	var keepToken = false;
-	reset();
-	
-	for (var i=0;i<s.length;i++) {
+	for (var i=context.position;i<s.length;i++) {
 		c = s.charAt(i);
-		
+
 		if ((c == '\t') || (c == '\r') || (c == '\n')) { //other unicode spaces are not treated as whitespace
 			c = ' ';
 		}
-		
-		if (boundary.indexOf(c)>=0) {
-			
-			token = token.trim(); // nonstandard space handling
-			keepToken = false;
-			if (((state & 1) == 1) && (token != '')) {
-				token = token.replaceAll('&amp;','&');
-				token = token.replaceAll('&quot;','"');
-				token = token.replaceAll('&apos;',"'");
-				token = token.replaceAll('&gt;','>');
-				token = token.replaceAll('&lt;','<');
-				if (token.indexOf('&#') >= 0) {
-					token = token.replace(/&(?:#([0-9]+)|#x([0-9a-fA-F]+));/g, function(match, group1, group2) {
+
+		if (context.boundary.indexOf(c)>=0) {
+
+			context.token = context.token.trim(); // nonstandard space handling
+			context.keepToken = false;
+			if (((context.state & 1) == 1) && (context.token != '')) {
+				context.token = context.token.replaceAll('&amp;','&');
+				context.token = context.token.replaceAll('&quot;','"');
+				context.token = context.token.replaceAll('&apos;',"'");
+				context.token = context.token.replaceAll('&gt;','>');
+				context.token = context.token.replaceAll('&lt;','<');
+				if (context.token.indexOf('&#') >= 0) {
+					context.token = context.token.replace(/&(?:#([0-9]+)|#x([0-9a-fA-F]+));/g, function(match, group1, group2) {
 						if (group2) {
 							return String.fromCharCode(parseInt(group2,16));
 						}
@@ -73,99 +80,118 @@ function staxParse(s,callback) {
 						}
 					});
 				}
-				callback(state,token);
+
+				if (callback) {
+					callback(context.state,context.token);
+				}
 			}
 
-			if (state == sInitial) {
-				state = sDeclaration;
-				boundary = '>';
+			if (context.state == sInitial) {
+				context.newState = sDeclaration;
+				context.boundary = '>';
 			}
-			else if (state == sDeclaration) {
-				state = sPreElement;
-				boundary = '<';
+			else if (context.state == sDeclaration) {
+				context.newState = sPreElement;
+				context.boundary = '<';
 			}
-			else if (state == sPreElement) {
-				state = sElement;
-				boundary = ' ?!/>';
+			else if (context.state == sPreElement) {
+				context.newState = sElement;
+				context.boundary = ' ?!/>';
 			}
-			else if (state == sElement) {
-				lastElement = token;
+			else if (context.state == sElement) {
+				context.lastElement = context.token;
 				if (c == '?') {
-					state = sProcessingInstruction;
-					boundary = '>';
+					context.newState = sProcessingInstruction;
+					context.boundary = '>';
 				}
 				else if (c == '!') {
-					state = sComment;
-					boundary = '>';
+					context.newState = sComment;
+					context.boundary = '>';
 				}
 				else if (c == '/') {
-					state = sEndElement;
-					boundary = '>';
-					keepToken = true;
+					context.newState = sEndElement;
+					context.boundary = '>';
+					context.keepToken = true;
 				}
 				else if (c == ' ') {
-					state = sAttribute;
-					boundary = '/=>';
+					context.newState = sAttribute;
+					context.boundary = '/=>';
 				}
 				else if (c == '>') {
-					state = sContent;
-					boundary = '<';
+					context.newState = sContent;
+					context.boundary = '<';
 				}
 			}
-			else if (state == sAttribute) {
+			else if (context.state == sAttribute) {
 				if (c == '=' ) {
-					state = sAttrNML;
-					boundary = '\'"';
+					context.newState = sAttrNML;
+					context.boundary = '\'"';
 				}
 				else if (c == '>') {
-					state = sContent;
-					boundary = '<';
+					context.newState = sContent;
+					context.boundary = '<';
 				}
 				else if (c == '/') {
-					state = sEndElement;
-					keepToken = true;
-					token = lastElement;
+					context.newState = sEndElement;
+					context.keepToken = true;
+					context.token = context.lastElement;
 				}
 			}
-			else if (state == sAttrNML) {
-				state = sValue;
-				boundary = c;
+			else if (context.state == sAttrNML) {
+				context.newState = sValue;
+				context.boundary = c;
 			}
-			else if (state == sValue) {
-				state = sAttribute;
-				boundary = '=/>';
+			else if (context.state == sValue) {
+				context.newState = sAttribute;
+				context.boundary = '=/>';
 			}
-			else if (state == sEndElement) {
-				//state = sPreElement;
-				//boundary = '<';
-				state = sContent;
-				boundary = '<';
+			else if (context.state == sEndElement) {
+				//context.newState = sPreElement;
+				//context.boundary = '<';
+				context.newState = sContent;
+				context.boundary = '<';
 			}
-			else if (state == sContent) {
-				state = sElement;
-				boundary = ' !?/>';
+			else if (context.state == sContent) {
+				context.newState = sElement;
+				context.boundary = ' !?/>';
 			}
-			else if (state == sComment) {
-				state = sPreElement;
-				boundary = '<';
+			else if (context.state == sComment) {
+				context.newState = sPreElement;
+				context.boundary = '<';
 			}
-			else if (state == sProcessingInstruction) {
-				state = sPreElement;
-				boundary = '<';
+			else if (context.state == sProcessingInstruction) {
+				context.newState = sPreElement;
+				context.boundary = '<';
 			}
-			
-			if (!keepToken) token = '';
-		}		
-		else {
-			token += c;
+
+			if (callback) {
+				context.state = context.newState;
+			}
+			else {
+				context.position = i+1;
+				return context;
+			}
+
+			if (!context.keepToken) context.token = '';
 		}
-		
+		else {
+			context.token += c;
+		}
+
 	}
+	context.state = sEndDocument;
+	if (callback) {
+		callback(context.state,context.token);
+	}
+	else {
+		return context;
+	}
+
 }
 
 module.exports = {
-	parse : function(s,callback) {
-		return staxParse(s,callback);
+	parse : function(s,callback,context) {
+		return staxParse(s,callback,context);
 	},
 	sDeclaration : sDeclaration,
 	sElement : sElement,
@@ -174,5 +200,6 @@ module.exports = {
 	sEndElement : sEndElement,
 	sContent : sContent,
 	sComment : sComment,
-	sProcessingInstruction: sProcessingInstruction
+	sProcessingInstruction: sProcessingInstruction,
+	sEndDocument : sEndDocument
 }

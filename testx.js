@@ -1,3 +1,5 @@
+'use strict';
+
 var fs = require('fs');
 var stax = require('./stax.js');
 
@@ -42,9 +44,6 @@ function x2x(xml) {
 			s += hanging;
 			s += '<' + token;
 			hanging = '>';
-		}
-		if (token == '') {
-			console.log(state);
 		}
 	});
 	return s;

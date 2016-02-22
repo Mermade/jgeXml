@@ -104,9 +104,6 @@ function parseString(xml,attributePrefix) {
 				s += '{';
 			}
 		}
-		if (token == '') {
-			console.log(state);
-		}
 	});
 
 	if (s.charAt(s.length-1) == ',') {
