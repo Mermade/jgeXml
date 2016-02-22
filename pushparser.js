@@ -18,5 +18,5 @@ stax.parse(xml,function(state,token){
 	else if (state == stax.sEndElement) {
 		prefixLen -= 2;
 	}
-	console.log(state+' '+prefixLen+' '+token);
+	console.log(stax.getStateName(state)+' '+prefixLen+' '+token);
 });

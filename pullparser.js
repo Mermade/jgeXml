@@ -21,6 +21,6 @@ while (!context.state || context.state != stax.sEndDocument) {
 		else if (context.state == stax.sEndElement) {
 			prefixLen -= 2;
 		}
-		console.log(context.state+' '+context.position+' '+prefixLen+' '+context.token);
+		console.log(stax.getStateName(context.state)+' '+context.position+' '+prefixLen+' '+context.token);
 	}
 }

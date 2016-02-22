@@ -25,6 +25,39 @@ String.prototype.replaceAll = function(search, replacement) {
     return target.split(search).join(replacement);
 };
 
+function stateName(state) {
+	if (state == sInitial) {
+		return 'INITIAL';
+	}
+	else if (state == sDeclaration) {
+		return 'DECLARATION';
+	}
+	else if (state == sElement) {
+		return 'ELEMENT';
+	}
+	else if (state == sAttribute) {
+		return 'ATTRIBUTE';
+	}
+	else if (state == sValue) {
+		return 'VALUE';
+	}
+	else if (state == sEndElement) {
+		return 'END_ELEMENT';
+	}
+	else if (state == sContent) {
+		return 'CONTENT';
+	}
+	else if (state == sComment) {
+		return 'COMMENT';
+	}
+	else if (state == sProcessingInstruction) {
+		return 'PROCESSING_INSTRUCTION';
+	}
+	else if (state == sEndDocument) {
+		return 'END_DOCUMENT';
+	}
+}
+
 function reset(context) {
 	context.state = sInitial;
 	context.newState = sInitial;
@@ -192,6 +225,9 @@ function staxParse(s,callback,context) {
 module.exports = {
 	parse : function(s,callback,context) {
 		return staxParse(s,callback,context);
+	},
+	getStateName : function(state) {
+		return stateName(state);
 	},
 	sDeclaration : sDeclaration,
 	sElement : sElement,
