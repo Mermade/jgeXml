@@ -113,6 +113,14 @@ function staxParse(s,callback,context) {
 						}
 					});
 				}
+				
+				if (context.state == sComment) {
+					context.token = context.token.replaceAll('-- ','');
+					context.token = context.token.replaceAll(' --','').trim();
+				}
+				if (context.state == sProcessingInstruction) {
+					context.token = context.token.replaceAll('?','').trim();
+				}
 
 				if (callback) {
 					callback(context.state,context.token);
