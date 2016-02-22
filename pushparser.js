@@ -1,7 +1,7 @@
 'use strict';
 
 var fs = require('fs');
-var stax = require('./stax.js');
+var jgeXml = require('./jgeXml.js');
 
 var filename = process.argv[2];
 
@@ -11,12 +11,12 @@ console.log();
 
 var prefixLen = 0;
 
-stax.parse(xml,function(state,token){
-	if (state == stax.sElement) {
+jgeXml.parse(xml,function(state,token){
+	if (state == jgeXml.sElement) {
 		prefixLen += 2;
 	}
-	else if (state == stax.sEndElement) {
+	else if (state == jgeXml.sEndElement) {
 		prefixLen -= 2;
 	}
-	console.log(stax.getStateName(state)+' '+prefixLen+' '+token);
+	console.log(jgeXml.getStateName(state)+' '+prefixLen+' '+token);
 });

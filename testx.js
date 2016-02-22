@@ -1,36 +1,36 @@
 'use strict';
 
 var fs = require('fs');
-var stax = require('./stax.js');
+var jgeXml = require('./jgeXml.js');
 var xmlWrite = require('./xmlWrite.js');
 
 function x2x(xml) {
 	var attributeName = '';
 
-	stax.parse(xml,function(state,token){
+	jgeXml.parse(xml,function(state,token){
 
-		if (state == stax.sDeclaration) {
+		if (state == jgeXml.sDeclaration) {
 			xmlWrite.startDocument('UTF-8');
 		}
-		else if (state == stax.sComment) {
+		else if (state == jgeXml.sComment) {
 			xmlWrite.comment(token);
 		}
-		else if (state == stax.sProcessingInstruction) {
+		else if (state == jgeXml.sProcessingInstruction) {
 			xmlWrite.processingInstruction(token);
 		}
-		else if (state == stax.sContent) {
+		else if (state == jgeXml.sContent) {
 			xmlWrite.content(token);
 		}
-		else if (state == stax.sEndElement) {
+		else if (state == jgeXml.sEndElement) {
 			xmlWrite.endElement(token);
 		}
-		else if (state == stax.sAttribute) {
+		else if (state == jgeXml.sAttribute) {
 			attributeName = token;
 		}
-		else if (state == stax.sValue) {
+		else if (state == jgeXml.sValue) {
 			xmlWrite.attribute(attributeName,token);
 		}
-		else if (state == stax.sElement) {
+		else if (state == jgeXml.sElement) {
 			xmlWrite.startElement(token);
 		}
 	});

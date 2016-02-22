@@ -1,6 +1,6 @@
 'use strict';
 
-var stax = require('./stax.js');
+var jgeXml = require('./jgeXml.js');
 
 String.prototype.replaceAt = function(index, character) {
     return this.substr(0, index) + character + this.substr(index+character.length);
@@ -23,9 +23,9 @@ function parseString(xml,attributePrefix) {
 	var finished = 0;
 	stack.push(1);
 
-	stax.parse(xml,function(state,token){
+	jgeXml.parse(xml,function(state,token){
 
-		if (state == stax.sContent) {
+		if (state == jgeXml.sContent) {
 			if (token != '') { // maybe move this in to only omit hasContent = true ??
 				if (s.charAt(s.length-1) == '{') {
 					s = s.substr(0,s.length-1);
@@ -42,7 +42,7 @@ function parseString(xml,attributePrefix) {
 				s += '"' + token.replaceAll('"','\\"') + '"';
 			}
 		}
-		else if (state == stax.sEndElement) {
+		else if (state == jgeXml.sEndElement) {
 			// drop hanging comma
 			if (s.charAt(s.length-1) == ',') {
 				s = s.substr(0,s.length-1);
@@ -64,17 +64,17 @@ function parseString(xml,attributePrefix) {
 			lastElement = token;
 			finished = stack.pop();
 		}
-		else if (state == stax.sAttribute) {
+		else if (state == jgeXml.sAttribute) {
 			if (s.charAt(s.length-1) !== '{') {
 				s += ',';
 			}
 			s += '"' + attributePrefix + token + '" : ';
 			hasAttribute = true;
 		}
-		else if (state == stax.sValue) {
+		else if (state == jgeXml.sValue) {
 			s += '"' + token.replaceAll('"','\\"') + '"';
 		}
-		else if (state == stax.sElement) {
+		else if (state == jgeXml.sElement) {
 			hasAttribute = false;
 			if (s.charAt(s.length-1) !== '{') {
 				s += ',';
