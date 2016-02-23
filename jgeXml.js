@@ -89,15 +89,20 @@ function staxParse(s,callback,context) {
 	for (var i=context.position;i<s.length;i++) {
 		c = s.charAt(i);
 
-		if ((c == '\t') || (c == '\r') || (c == '\n')) { //other unicode spaces are not treated as whitespace
-			c = ' ';
+		if (context.state != sContent) {
+			if ((c == '\t') || (c == '\r') || (c == '\n')) { //other unicode spaces are not treated as whitespace
+				c = ' ';
+			}
 		}
 
 		if (context.boundary.indexOf(c)>=0) {
 
-			context.token = context.token.trim(); // nonstandard space handling
+			if ((context.state != sValue) && (context.state != sComment)) { // && (context.state != sContent)
+				context.token = context.token.trim();
+			}
+
 			context.keepToken = false;
-			if (((context.state & 1) == 1) && (context.token != '')) {
+			if (((context.state & 1) == 1) && ((context.token.trim() != '') || context.state == sValue)) {
 				context.token = context.token.replaceAll('&amp;','&');
 				context.token = context.token.replaceAll('&quot;','"');
 				context.token = context.token.replaceAll('&apos;',"'");
