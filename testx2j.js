@@ -16,4 +16,5 @@ try {
 catch (err) {
 	console.error('That is not valid JSON');
 	console.error(err);
+	console.log(x2j.getString());
 }

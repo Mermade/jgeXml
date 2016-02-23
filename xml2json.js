@@ -13,9 +13,14 @@ String.prototype.insert = function (index, string) {
 		return string + this;
 };
 
+var s;
+
+function getString() {
+	return s;
+}
+
 function parseString(xml,attributePrefix) {
 
-	var s = '{';
 	var hasContent = false;
 	var hasAttribute = false;
 	var lastElement = '';
@@ -23,6 +28,7 @@ function parseString(xml,attributePrefix) {
 	var finished = 0;
 	stack.push(1);
 
+	s = '{';
 	jgeXml.parse(xml,function(state,token){
 
 		if (state == jgeXml.sContent) {
@@ -119,5 +125,6 @@ function parseString(xml,attributePrefix) {
 module.exports = {
 	xml2json : function(xml,attributePrefix) {
 		return parseString(xml,attributePrefix);
-	}
+	},
+	getString : getString
 }
