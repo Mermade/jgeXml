@@ -12,6 +12,8 @@ try {
 	var obj = x2j.xml2json(xml,'@');
 	console.log();
 	console.log(JSON.stringify(obj,null,2));
+	console.log();
+	console.log(true);
 }
 catch (err) {
 	console.error('That is not valid JSON');

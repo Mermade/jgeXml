@@ -50,4 +50,5 @@ if (!same) {
 	process.exitCode = 1;
 }
 console.log(s2);
+console.log();
 console.log(same);
