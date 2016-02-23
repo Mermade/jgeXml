@@ -47,6 +47,7 @@ var same = (s1 == s2);
 if (!same) {
 	console.log(s1);
 	console.log();
+	process.exitCode = 1;
 }
 console.log(s2);
 console.log(same);
