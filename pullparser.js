@@ -10,17 +10,18 @@ console.log(xml);
 console.log();
 
 var context = {};
-var prefixLen = 0;
+var depth = 0;
 
 while (!context.state || context.state != jgeXml.sEndDocument) {
 	context = jgeXml.parse(xml,null,context);
 	if (context.token != '') {
 		if (context.state == jgeXml.sElement) {
-			prefixLen += 2;
+			depth++;
 		}
 		else if (context.state == jgeXml.sEndElement) {
-			prefixLen -= 2;
+			depth--;
 		}
-		console.log(jgeXml.getStateName(context.state)+' '+context.position+' '+prefixLen+' '+context.token);
+		console.log(jgeXml.getStateName(context.state)+' '+context.position+' '+depth+' '+context.token);
 	}
+	if (depth != 0) process.exitCode = 1;
 }

@@ -9,14 +9,15 @@ var xml = fs.readFileSync(filename,'utf8');
 console.log(xml);
 console.log();
 
-var prefixLen = 0;
+var depth = 0;
 
 jgeXml.parse(xml,function(state,token){
 	if (state == jgeXml.sElement) {
-		prefixLen += 2;
+		depth++;
 	}
 	else if (state == jgeXml.sEndElement) {
-		prefixLen -= 2;
+		depth--;
 	}
-	console.log(jgeXml.getStateName(state)+' '+prefixLen+' '+token);
+	console.log(jgeXml.getStateName(state)+' '+depth+' '+token);
+	if (depth != 0) process.exitCode = 1;
 });
