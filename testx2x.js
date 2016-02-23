@@ -44,9 +44,9 @@ var xml = fs.readFileSync(filename,'utf8');
 var s1 = x2x(xml); // normalise declaration, spacing and empty elements etc
 var s2 = x2x(s1); // compare
 var same = (s1 == s2);
-console.log(same);
 if (!same) {
 	console.log(s1);
 	console.log();
 }
 console.log(s2);
+console.log(same);

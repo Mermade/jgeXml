@@ -1,6 +1,6 @@
 /*
 
-stacking xml parser
+The Just-Good-Enough XML Parser
 
 */
 
@@ -113,7 +113,7 @@ function staxParse(s,callback,context) {
 						}
 					});
 				}
-				
+
 				if (context.state == sComment) {
 					context.token = context.token.replaceAll('-- ','');
 					context.token = context.token.replaceAll(' --','').trim();
