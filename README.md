@@ -1,7 +1,9 @@
 # jgeXml
 The Just-Good-Enough XML Parser
 
-jgeXml provides routines to parse XML (both pull and push modes are supported), to write XML and to convert XML to JSON.
+jgeXml provides event-driven routines to parse XML 1.0 (both pull and push modes are supported), to write XML and to convert XML to JSON.
+
+An experimental jpath builder is included for querying JSON objects, including those converted from XML.
 
 The code has no dependencies on other modules or native libraries.
 
@@ -19,29 +21,36 @@ sProcessingInstruction
 sEndDocument
 ```
 
-No event is generated for ignoreable whitespace.
+No event is generated for ignoreable whitespace, unlike SAX. Empty elements are normalised into sElement/sEndElement pairs.
 
 ## Notes
 
-Both when reading and writing, attributes follow the element event, as per the ordering in the source XML.
+jgeXml is a non-validating parser.
 
-The attributePrefix (to avoid name clashes with child elements) is configurable per parse.
+Both when reading and writing, attributes follow after the element event, and in the order they are given in the source.
 
-Child elements can be represented as properties or objects.
+When converting to JSON, the attributePrefix (to avoid name clashes with child elements) is configurable per parse.
+
+Child elements can be represented as properties or objects in JSON.
+
+The parser by default treats all content as strings when converting to JSON, optionally data can be coerced
+to primitive numbers or null values.
 
 ## Limitations
 
-jgeXml is currently schema/DTD agnostic. It can parse XML documents with schema information, but it is up to the
-consumer to interpret the namespace portions of element names.
+Probably not thread safe.
+
+jgeXml assumes the XML is well-formed.
+
+jgeXml is currently schema agnostic and staunchly atheist when it comes to DTDs. It can parse XML documents with schema information, but it is up to the
+consumer to interpret the namespace portions of element names. It cannot parse internal DTDs. DOCTYPEs are handled as comments. 
+xmlWrite minimally supports DTDs but you must build them and the DOCTYPE yourself.
 
 It can parse and transform XSD files as XML, conversion to JSON schema is planned.
 
 The parser currently does not support CDATA segments, though the xmlWrite module does.
 
-The parser treats all content as strings when converting to JSON, i.e. data is not coerced
-to primitive numbers or null values.
-
-The parser is string-based, to process streams, read the data into a string first.
+The parser is string-based; to process streams, read the data into a string first. It may be memory intensive on large documents.
 
 ## Examples
 
