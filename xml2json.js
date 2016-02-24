@@ -57,6 +57,7 @@ function parseString(xml,attributePrefix,valueProperty) {
 
 		if (state == jgeXml.sContent) {
 			if (token != '') {
+				var closeObject = false;
 				// content should be following a property name not the beginning of an object
 				// so remove assumption it was a container
 				if ((!valueProperty) && (s.charAt(s.length-1) == '{')) {
@@ -78,6 +79,10 @@ function parseString(xml,attributePrefix,valueProperty) {
 						if (s.charAt(stack[stack.length-1].position) != '[') {
 							s = s.insert(stack[stack.length-1].position,'[');
 						}
+						if (valueProperty) {
+							s += ',{';
+							closeObject = true;
+						}
 					}
 					stack[stack.length-1].hasContent = true;
 				}
@@ -85,6 +90,10 @@ function parseString(xml,attributePrefix,valueProperty) {
 					s += '"value": ';
 				}
 				s += '"' + encode(token) + '"';
+				if (closeObject) {
+					s += '}';
+				}
+
 			}
 		}
 		else if (state == jgeXml.sEndElement) {
