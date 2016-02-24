@@ -1,6 +1,6 @@
 {
   "name": "jgexml",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "The Just-Good-Enough XML Parser",
   "main": "jgeXml.js",
   "scripts": {
