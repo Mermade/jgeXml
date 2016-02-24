@@ -30,13 +30,21 @@ function getString() {
 
 function newContext() {
 	var context = {};
-	context.position = s.length;
+	context.position = s.length-1; //mutable
+	context.anchor = context.position; //immutable
 	context.hasContent = false;
 	context.hasAttribute = false;
 	return context;
 }
 
-function parseString(xml,attributePrefix) {
+function dump(stack) {
+	for (var i=0;i<stack.length;i++) {
+		console.log('Entry '+i+' points to '+stack[i].anchor+' ->'+s.charAt(stack[i].anchor)+'<');
+	}
+	console.log('--');
+}
+
+function parseString(xml,attributePrefix,valueProperty) {
 
 	var stack = [];
 	var depth = 0; //depth tracks the depth of XML element nesting, not the output JSON
@@ -51,8 +59,8 @@ function parseString(xml,attributePrefix) {
 			if (token != '') {
 				// content should be following a property name not the beginning of an object
 				// so remove assumption it was a container
-				if (s.charAt(s.length-1) == '{') {
-					s = s.substr(0,s.length-1);
+				if ((!valueProperty) && (s.charAt(s.length-1) == '{')) {
+					s = s.replaceAt(s.length-1,' ');
 				}
 
 				// if we're following another property, separate with a comma
@@ -61,7 +69,7 @@ function parseString(xml,attributePrefix) {
 				}
 				// if we have had attributes, this is definitely a container not a primitive
 				// treat this value as an anonymous property
-				if (stack[stack.length-1].hasAttribute) {
+				if ((stack[stack.length-1].hasAttribute) && (!valueProperty)) {
 					s += ' "' + attributePrefix + '": ';
 				}
 				else {
@@ -73,20 +81,21 @@ function parseString(xml,attributePrefix) {
 					}
 					stack[stack.length-1].hasContent = true;
 				}
+				if (valueProperty) {
+					s += '"value":';
+				}
 				s += '"' + encode(token) + '"';
 			}
 		}
 		else if (state == jgeXml.sEndElement) {
-			// if we're in an array, close it
+			//dump(stack);
+
 			if (s.charAt(stack[stack.length-1].position) == '[') {
+				// if we're in an array, close it
 				s += ']}';
 			}
-			// if we're in an object, close it
-			if (s.charAt(stack[stack.length-1].position) == '{') {
-				s += '}';
-			}
-			// TODO the need for this one is puzzling me
-			if (s.charAt(stack[stack.length-1].position) == '"') {
+			else if (s.charAt(stack[stack.length-1].anchor) == '{') {
+				// if we're in an object, close it
 				s += '}';
 			}
 
@@ -112,7 +121,7 @@ function parseString(xml,attributePrefix) {
 			}
 
 			if (token+'<'+depth+'>' != lastElement) {
-				// element has changed, if we're in an array, terminate it
+				// element has changed, if we're in an array, terminate it just before the comma we (maybe) added
 				if (s.charAt(stack[stack.length-1].position) == '[') {
 					s = s.insert(s.length-1,']');
 				}
@@ -120,7 +129,7 @@ function parseString(xml,attributePrefix) {
 				stack[stack.length-1].position = s.length; //update position of previous element (array insertion point)
 			}
 			else {
-				// array detected, new element matches previous endElement
+				// array detected, new element matches previous endElement and at same depth
 				// only need to insert array opening bracket once
 				if (s.charAt(stack[stack.length-1].position) != '[') {
 					s = s.insert(stack[stack.length-1].position,'[');
@@ -128,11 +137,12 @@ function parseString(xml,attributePrefix) {
 			}
 			lastElement = token+'<'+depth+'>';
 			s += '{'; // here we assume all elements are containers not values, this supports attributes
-			depth++;
 			stack.push(newContext());
+			depth++;
 		}
 	});
 
+	// remove final trailing comma, if any
 	if (s.charAt(s.length-1) == ',') {
 		s = s.substr(0,s.length-1);
 	}
@@ -144,8 +154,8 @@ function parseString(xml,attributePrefix) {
 }
 
 module.exports = {
-	xml2json : function(xml,attributePrefix) {
-		return parseString(xml,attributePrefix);
+	xml2json : function(xml,attributePrefix,valueProperty) {
+		return parseString(xml,attributePrefix,valueProperty);
 	},
 	getString : getString
 }
