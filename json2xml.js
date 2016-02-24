@@ -29,16 +29,14 @@ var result = [];
 				xmlWrite.startElement(key);
 			}
 			else {
-				//if (key!=0)
-				xmlWrite.startElement(parent);
+				if (key!=0) xmlWrite.startElement(parent);
 			}
 			traverse(obj[key],key);
 			if (!array) {
 				xmlWrite.endElement(key);
 			}
 			else {
-				//if (key!=0) 
-				xmlWrite.endElement(parent);
+				if (key!=(obj.length-1)) xmlWrite.endElement(parent);
 			}
 		}
 	}
