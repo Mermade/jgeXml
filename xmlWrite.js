@@ -18,8 +18,13 @@ function encode(s) {
 }
 
 module.exports = {
-	startDocument : function (encoding) {
-		xml = '<?xml version="1.0" encoding="' + encoding + '"?>';
+	startDocument : function (encoding,standalone) {
+		xml = '<?xml version="1.0" encoding="' + encoding + '"' +
+		(standalone ? ' standalone="' + standalone + '"' : '') + ' ?>';
+	},
+
+	docType : function (s) {
+		xml += '<!DOCTYPE ' + s + '>';
 	},
 
 	startElement : function (s) {
@@ -33,7 +38,7 @@ module.exports = {
 	},
 
 	attribute : function (a,v) {
-		xml += ' ' + a + ' = "' + encode(v) + '"';
+		xml += ' ' + a + '="' + encode(v) + '"';
 	},
 
 	content : function (s) {
