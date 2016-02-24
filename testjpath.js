@@ -18,7 +18,7 @@ try {
 	var result = jpath.build(obj);
 	for (var i in result) {
 		// log our jpath for each item
-		console.log(result[i].depth+' '+result[i].parent+'/'+result[i].display+' = '+result[i].value);
+		console.log(result[i].depth+' '+result[i].parent+'.'+result[i].display+' = '+result[i].value);
 	}
 }
 catch (err) {

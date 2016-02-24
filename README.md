@@ -3,8 +3,6 @@ The Just-Good-Enough XML Parser
 
 jgeXml provides event-driven routines to parse XML 1.0 (both pull and push modes are supported), to write XML and to convert XML to JSON.
 
-An experimental jpath builder is included for querying JSON objects, including those converted from XML.
-
 The code has no dependencies on other modules or native libraries.
 
 ## Events (stateCodes)
@@ -35,6 +33,8 @@ Child elements can be represented as properties or objects in JSON.
 
 The parser by default treats all content as strings when converting to JSON, optionally data can be coerced
 to primitive numbers or null values.
+
+An experimental limited JSONPath utility is under development.
 
 ## Limitations
 

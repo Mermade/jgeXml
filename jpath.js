@@ -9,7 +9,7 @@ var result = [];
 		if (!obj.hasOwnProperty(key)) continue;
 
 		var display = key;
-		var sep = '/';
+		var sep = '.';
 		if (Array.isArray(obj)) {
 			display = '['+key+']';
 			sep = '';
@@ -33,6 +33,6 @@ var result = [];
 
 module.exports = {
 	build : function(obj) {
-		return traverse(obj,'',0);
+		return traverse(obj,'$',0);
 	}
 }
