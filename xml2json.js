@@ -82,7 +82,7 @@ function parseString(xml,attributePrefix,valueProperty) {
 					stack[stack.length-1].hasContent = true;
 				}
 				if (valueProperty) {
-					s += '"value":';
+					s += '"value": ';
 				}
 				s += '"' + encode(token) + '"';
 			}
@@ -92,9 +92,9 @@ function parseString(xml,attributePrefix,valueProperty) {
 
 			if (s.charAt(stack[stack.length-1].position) == '[') {
 				// if we're in an array, close it
-				s += ']}';
+				s += ']';
 			}
-			else if (s.charAt(stack[stack.length-1].anchor) == '{') {
+			if (s.charAt(stack[stack.length-1].anchor) == '{') {
 				// if we're in an object, close it
 				s += '}';
 			}
