@@ -13,7 +13,7 @@ var xml = fs.readFileSync(filename,'utf8');
 console.log(xml);
 
 try {
-	var obj = x2j.xml2json(xml,'@',valueProperty);
+	var obj = x2j.xml2json(xml,{"attributePrefix": "@","valueProperty": valueProperty, "coerceTypes": false});
 	console.log();
 	console.log(JSON.stringify(obj,null,2));
 	console.log();

@@ -22,6 +22,23 @@ function encode(token) {
 	return token;
 }
 
+function emit(token,coerceTypes) {
+	if (coerceTypes) {
+		var num = parseInt(token,10);
+		if (!isNaN(num)) {
+			return num;
+		}
+		num = parseFloat(token);
+		if (!isNaN(num)) {
+			return num;
+		}
+		if (token == '') {
+			return 'null';
+		}
+	}
+	return '"' + encode(token) + '"';
+}
+
 var s;
 
 function getString() {
@@ -44,11 +61,19 @@ function dump(stack) {
 	console.log('--');
 }
 
-function parseString(xml,attributePrefix,valueProperty) {
+function parseString(xml,options) {
 
 	var stack = [];
 	var depth = 0; //depth tracks the depth of XML element nesting, not the output JSON
 	var lastElement = '';
+
+	var defaults = {
+		attributePrefix: "@",
+		valueProperty: false,
+		coerceTypes: false
+	};
+
+	options = Object.assign({},defaults,options); // merge/extend
 
 	s = '{';
 	stack.push(newContext());
@@ -60,7 +85,7 @@ function parseString(xml,attributePrefix,valueProperty) {
 				var closeObject = false;
 				// content should be following a property name not the beginning of an object
 				// so remove assumption it was a container
-				if ((!valueProperty) && (s.charAt(s.length-1) == '{')) {
+				if ((!options.valueProperty) && (s.charAt(s.length-1) == '{')) {
 					s = s.replaceAt(s.length-1,' ');
 				}
 
@@ -70,8 +95,8 @@ function parseString(xml,attributePrefix,valueProperty) {
 				}
 				// if we have had attributes, this is definitely a container not a primitive
 				// treat this value as an anonymous property
-				if ((stack[stack.length-1].hasAttribute) && (!valueProperty)) {
-					s += ' "' + attributePrefix + '": ';
+				if ((stack[stack.length-1].hasAttribute) && (!options.valueProperty)) {
+					s += ' "' + options.attributePrefix + '": ';
 				}
 				else {
 					if (stack[stack.length-1].hasContent) {
@@ -79,17 +104,17 @@ function parseString(xml,attributePrefix,valueProperty) {
 						if (s.charAt(stack[stack.length-1].position) != '[') {
 							s = s.insert(stack[stack.length-1].position,'[');
 						}
-						if (valueProperty) {
+						if (options.valueProperty) {
 							s += ',{';
 							closeObject = true;
 						}
 					}
 					stack[stack.length-1].hasContent = true;
 				}
-				if (valueProperty) {
+				if (options.valueProperty) {
 					s += '"value": ';
 				}
-				s += '"' + encode(token) + '"';
+				s += emit(token,options.coerceTypes);
 				if (closeObject) {
 					s += '}';
 				}
@@ -117,11 +142,11 @@ function parseString(xml,attributePrefix,valueProperty) {
 			if (s.charAt(s.length-1) !== '{') {
 				s += ',';
 			}
-			s += '"' + attributePrefix + token + '": ';
+			s += '"' + options.attributePrefix + token + '": ';
 			stack[stack.length-1].hasAttribute = true;
 		}
 		else if (state == jgeXml.sValue) {
-			s += '"' + encode(token) + '"';
+			s += emit(token,options.coerceTypes);
 		}
 		else if (state == jgeXml.sElement) {
 			// if this is not the first property, separate with a comma
@@ -163,8 +188,6 @@ function parseString(xml,attributePrefix,valueProperty) {
 }
 
 module.exports = {
-	xml2json : function(xml,attributePrefix,valueProperty) {
-		return parseString(xml,attributePrefix,valueProperty);
-	},
+	xml2json : parseString,
 	getString : getString
 }
