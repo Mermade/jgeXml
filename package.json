@@ -1,0 +1,24 @@
+{
+  "name": "jgexml",
+  "version": "0.1.1",
+  "description": "The Just-Good-Enough XML Parser",
+  "main": "jgeXml.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MikeRalphson/jgeXml.git"
+  },
+  "keywords": [
+    "xml",
+    "javascript",
+    "json"
+  ],
+  "author": "Mike Ralphson",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/MikeRalphson/jgeXml/issues"
+  },
+  "homepage": "https://github.com/MikeRalphson/jgeXml#readme"
+}
