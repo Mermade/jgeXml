@@ -28,20 +28,27 @@ function getString() {
 	return s;
 }
 
+function newContext() {
+	var context = {};
+	context.position = s.length;
+	context.hasContent = false;
+	context.hasAttribute = false;
+	return context;
+}
+
 function parseString(xml,attributePrefix) {
 
-	var hasContent = [];
-	var hasAttribute = false;
-	var lastElement = '';
 	var stack = [];
-	//var finished = 0;
-	stack.push(1);
+	var depth = 0; //depth tracks the depth of XML element nesting, not the output JSON
+	var lastElement = '';
 
 	s = '{';
+	stack.push(newContext());
+
 	jgeXml.parse(xml,function(state,token){
 
 		if (state == jgeXml.sContent) {
-			if (token != '') { // maybe move this in to only omit hasContent = true ??
+			if (token != '') {
 				// content should be following a property name not the beginning of an object
 				// so remove assumption it was a container
 				if (s.charAt(s.length-1) == '{') {
@@ -54,43 +61,38 @@ function parseString(xml,attributePrefix) {
 				}
 				// if we have had attributes, this is definitely a container not a primitive
 				// treat this value as an anonymous property
-				if (hasAttribute) {
-					s += ' "' + attributePrefix +'" : ';
+				if (stack[stack.length-1].hasAttribute) {
+					s += ' "' + attributePrefix + '": ';
 				}
 				else {
-					if (hasContent[hasContent.length-1]) {
-						//create array
-						if (s.charAt(stack[stack.length-1]) != '[') {
-							s = s.insert(stack[stack.length-1],'[');
+					if (stack[stack.length-1].hasContent) {
+						//create array for mixed content/elements
+						if (s.charAt(stack[stack.length-1].position) != '[') {
+							s = s.insert(stack[stack.length-1].position,'[');
 						}
 					}
-					hasContent[hasContent.length-1] = true;
+					stack[stack.length-1].hasContent = true;
 				}
 				s += '"' + encode(token) + '"';
 			}
 		}
 		else if (state == jgeXml.sEndElement) {
-			// drop hanging comma
-			if (s.charAt(s.length-1) == ',') {
-				s = s.substr(0,s.length-1);
-			}
 			// if we're in an array, close it
-			if (s.charAt(stack[stack.length-1]) == '[') {
-				s += ']';
+			if (s.charAt(stack[stack.length-1].position) == '[') {
+				s += ']}';
 			}
-			//// if we're in an object, close it or if it is empty
-			if ((s.charAt(stack[stack.length-1]) == '{') || (!hasContent[hasContent.length-1])) { //was -2
+			// if we're in an object, close it
+			if (s.charAt(stack[stack.length-1].position) == '{') {
 				s += '}';
 			}
-			// this has been folded into the test above, which was uncommented
-			//// close an empty element
-			//if (!hasContent) {
-			//	s += '}';
-			//}
-			lastElement = token;
+			// TODO the need for this one is puzzling me
+			if (s.charAt(stack[stack.length-1].position) == '"') {
+				s += '}';
+			}
+
 			stack.pop();
-			hasContent.pop(); // todo, combine these into an object on one array?
-			
+			depth--;
+			lastElement = token+'<'+depth+'>';
 		}
 		else if (state == jgeXml.sAttribute) {
 			// if not the first attribute, separate the properties with a comma
@@ -98,43 +100,36 @@ function parseString(xml,attributePrefix) {
 				s += ',';
 			}
 			s += '"' + attributePrefix + token + '": ';
-			hasAttribute = true;
+			stack[stack.length-1].hasAttribute = true;
 		}
 		else if (state == jgeXml.sValue) {
 			s += '"' + encode(token) + '"';
 		}
 		else if (state == jgeXml.sElement) {
-			hasAttribute = false;
-			hasContent.push(false);
 			// if this is not the first property, separate with a comma
-			if (s.charAt(s.length-1) !== '{') {
+			if (s.charAt(s.length-1) != '{') {
 				s += ',';
 			}
-			// if we're in an array and the property name changes, terminate the array
-			if (token != lastElement) {
-				if (s.charAt(stack[stack.length-1]) == '[') {
+
+			if (token+'<'+depth+'>' != lastElement) {
+				// element has changed, if we're in an array, terminate it
+				if (s.charAt(stack[stack.length-1].position) == '[') {
 					s = s.insert(s.length-1,']');
 				}
 				s += '"' + token + '": ';
-				stack[stack.length-1] = s.length;
-				stack.push(s.length);
-				s += '{'; // here we assume all elements are containers not values, this supports attributes
+				stack[stack.length-1].position = s.length; //update position of previous element (array insertion point)
 			}
 			else {
 				// array detected, new element matches previous endElement
 				// only need to insert array opening bracket once
-				if (s.charAt(stack[stack.length-1]) != '[') {
-					s = s.insert(stack[stack.length-1],'[');
-					//s = s.replaceAt(stack[stack.length-1],'[');
+				if (s.charAt(stack[stack.length-1].position) != '[') {
+					s = s.insert(stack[stack.length-1].position,'[');
 				}
-				stack.push(s.length);
-				//if (s.charAt(s.length-1) == '{') {
-				//	//anonymous object?
-				//	//s = s.substr(0,s.length-1); // drop previous opening brace
-				//	s += '"anon": ';
-				//}
-				s += '{';
 			}
+			lastElement = token+'<'+depth+'>';
+			s += '{'; // here we assume all elements are containers not values, this supports attributes
+			depth++;
+			stack.push(newContext());
 		}
 	});
 
