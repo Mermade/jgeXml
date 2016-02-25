@@ -180,6 +180,7 @@ function staxParse(s,callback,context) {
 				else if (c == '/') {
 					context.newState = sEndElement;
 					context.keepToken = true;
+					context.state = sAttributeSpacer; // to stop dummy attributes being emitted to pullparser
 					context.token = context.lastElement;
 				}
 			}
@@ -210,13 +211,13 @@ function staxParse(s,callback,context) {
 				context.boundary = '<';
 			}
 
-			if (callback) {
-				context.state = context.newState;
+			if (!callback) {
+				if (((context.state & 1) == 1) && ((context.token.trim() != '') || context.state == sValue)) {
+					context.position = i+1;
+					return context;
+				}
 			}
-			else {
-				context.position = i+1;
-				return context;
-			}
+			context.state = context.newState;
 
 			if (!context.keepToken) context.token = '';
 		}
@@ -242,6 +243,7 @@ module.exports = {
 	getStateName : function(state) {
 		return stateName(state);
 	},
+	sInitial : sInitial,
 	sDeclaration : sDeclaration,
 	sElement : sElement,
 	sAttribute : sAttribute,
