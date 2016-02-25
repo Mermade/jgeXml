@@ -15,16 +15,14 @@ var result = [];
 			sep = '';
 		}
 		
-		if (typeof obj[key] !== 'object') {
-			var item = {}
-			item.parent = prefix;
-			item.key = key;
-			item.display = display;
-			item.value = obj[key];
-			item.depth = depth;
-			result.push(item);
-		}
-		else {
+		var item = {}
+		item.parent = prefix;
+		item.key = key;
+		item.display = display;
+		item.value = obj[key];
+		item.depth = depth;
+		result.push(item);
+		if (typeof obj[key] === 'object') {
 			result = result.concat(traverse(obj[key],prefix+sep+display,depth+1));
 		}
 	}
@@ -42,7 +40,11 @@ function path(item,bracketed) {
 		return result;
 	}
 	else {
-		return item.parent+'.'+item.display;
+		var sep = '.';
+		if ((typeof(item.value) === 'object') && (!Array.isArray(item.value)) && (item.parent != '$')) {
+			sep = '';
+		}
+		return item.parent+sep+item.display;
 	}		
 }
 
