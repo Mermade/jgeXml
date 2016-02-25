@@ -14,12 +14,6 @@ var xml = fs.readFileSync(filename,'utf8');
 
 try {
 	var obj = x2j.xml2json(xml,{"attributePrefix": "@","valueProperty": valueProperty, "coerceTypes": false});
-	//var result = jpath.traverse(obj,'',0);
-	var result = jpath.build(obj);
-	for (var i in result) {
-		// log our jpath for each item
-		console.log(result[i].depth+' '+result[i].parent+'.'+result[i].display+' = '+result[i].value);
-	}
 }
 catch (err) {
 	console.error('That is not valid JSON');
@@ -27,5 +21,21 @@ catch (err) {
 	console.log(xml);
 	console.log();
 	console.log(x2j.getString());
-	process.exitCode = 1;
+	process.exit(1);
 }
+
+var result = jpath.build(obj);
+// we could do a select('*') here but it's redundant unless we want the bracketed form
+for (var i in result) {
+	// log our jpath for every item
+	console.log(result[i].depth+' '+jpath.path(result[i],false)+' = '+result[i].value);
+}
+console.log();
+
+var first = jpath.path(result[0]);
+var matches = jpath.select(result,first);
+for (var m in matches) {
+	console.log('select('+jpath.path(matches[m])+') = '+matches[m].value);
+}
+
+console.log('select('+jpath.path(result[result.length-1],true)+',true) = '+result[result.length-1].value);
