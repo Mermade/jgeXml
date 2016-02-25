@@ -1,7 +1,6 @@
-# jgeXml
+# jgeXml - The Just-Good-Enough XML Parser
 
 [![Join the chat at https://gitter.im/MikeRalphson/jgeXml](https://badges.gitter.im/MikeRalphson/jgeXml.svg)](https://gitter.im/MikeRalphson/jgeXml?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-The Just-Good-Enough XML Parser
 
 jgeXml provides event-driven routines to parse XML 1.0 (both pull and push modes are supported), to write XML and to convert between XML and JSON.
 
