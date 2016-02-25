@@ -1,6 +1,6 @@
 'use strict';
 
-function traverse(obj,prefix,depth) {
+function traverse(obj,prefix,depth,parent) {
 	
 var result = [];
 	
@@ -16,14 +16,15 @@ var result = [];
 		}
 		
 		var item = {}
-		item.parent = prefix;
+		item.prefix = prefix;
 		item.key = key;
 		item.display = display;
 		item.value = obj[key];
 		item.depth = depth;
+		item.parent = parent;
 		result.push(item);
 		if (typeof obj[key] === 'object') {
-			result = result.concat(traverse(obj[key],prefix+sep+display,depth+1));
+			result = result.concat(traverse(obj[key],prefix+sep+display,depth+1,obj));
 		}
 	}
 	return result;
@@ -31,20 +32,28 @@ var result = [];
 
 function path(item,bracketed) {
 	if (bracketed) {
-		var parents = item.parent.split('.');
 		var result = '';
+		var parents = item.prefix.split('.');
 		for (var p=0;p<parents.length;p++) {
-			result += '[' + parents[p] + '].';
+			result += "['" + parents[p] + "']";
 		}
-		result += '[' + item.display + ']';
+		if (item.display.charAt(0) == '[') {
+			result += item.display;
+		}
+		else {
+			result += '[' + item.display + ']';
+		}
 		return result;
 	}
 	else {
 		var sep = '.';
-		if ((typeof(item.value) === 'object') && (!Array.isArray(item.value)) && (item.parent != '$')) {
+		if ((typeof(item.value) === 'object') && (Array.isArray(item.parent)) && (item.prefix != '$')) {
 			sep = '';
 		}
-		return item.parent+sep+item.display;
+		if (item.display.charAt(0) == '[') {
+			sep = '';
+		}
+		return item.prefix+sep+item.display;
 	}		
 }
 
@@ -76,7 +85,7 @@ function select(tree,target,bracketed) {
 
 module.exports = {
 	build : function(obj) {
-		return traverse(obj,'$',0);
+		return traverse(obj,'$',0,{});
 	},
 	select : select,
 	selectRegex : selectRegex,

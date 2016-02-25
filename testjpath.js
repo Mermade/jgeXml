@@ -24,25 +24,25 @@ catch (err) {
 	process.exit(1);
 }
 
-var result = jpath.build(obj);
+var tree = jpath.build(obj);
 // we could do a select('*') here but it's redundant unless we want the bracketed form
-for (var i in result) {
+for (var i in tree) {
 	// log our jpath for every item
-	console.log(result[i].depth+' '+jpath.path(result[i],false)+' = '+result[i].value);
+	console.log(tree[i].depth+' '+jpath.path(tree[i],false)+' = '+tree[i].value);
 }
 console.log();
 
-var first = jpath.path(result[1]);
-var matches = jpath.select(result,first);
+var first = jpath.path(tree[1]);
+var matches = jpath.select(tree,first);
 for (var m in matches) {
 	console.log('First; select('+jpath.path(matches[m])+') = '+matches[m].value);
 }
 
-var last = result[result.length-1];
+var last = tree[tree.length-1];
 console.log('Last; select('+jpath.path(last,true)+',true) = '+last.value);
-console.log(last.parent)
+console.log(last.prefix)
 
-var parents = jpath.select(result,last.parent);
+var parents = jpath.select(tree,last.prefix);
 if (parents.length>0) {
 	var value = parents[0].value;
 	if (typeof(value) === 'object') {
