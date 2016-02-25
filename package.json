@@ -13,7 +13,13 @@
   "keywords": [
     "xml",
     "javascript",
-    "json"
+    "json",
+	"jsonpath",
+	"parser",
+	"pullparser",
+	"pullparsing",
+	"sax",
+	"stax"
   ],
   "author": "Mike Ralphson",
   "license": "BSD-3-Clause",
