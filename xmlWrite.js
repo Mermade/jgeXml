@@ -70,4 +70,4 @@ module.exports = {
 		//hanging is '' at this point
 		return xml;
 	}
-}
+};

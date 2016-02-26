@@ -15,7 +15,7 @@ var result = [];
 			sep = '';
 		}
 		
-		var item = {}
+		var item = {};
 		item.prefix = prefix;
 		item.key = key;
 		item.display = display;
@@ -90,4 +90,4 @@ module.exports = {
 	select : select,
 	selectRegex : selectRegex,
 	path : path
-}
+};

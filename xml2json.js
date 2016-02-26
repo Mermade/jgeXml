@@ -122,8 +122,6 @@ function parseString(xml,options) {
 			}
 		}
 		else if (state == jgeXml.sEndElement) {
-			//dump(stack);
-
 			if (s.charAt(stack[stack.length-1].position) == '[') {
 				// if we're in an array, close it
 				s += ']';
@@ -190,4 +188,4 @@ function parseString(xml,options) {
 module.exports = {
 	xml2json : parseString,
 	getString : getString
-}
+};

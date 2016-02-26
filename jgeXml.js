@@ -253,4 +253,4 @@ module.exports = {
 	sComment : sComment,
 	sProcessingInstruction: sProcessingInstruction,
 	sEndDocument : sEndDocument
-}
+};
