@@ -22,22 +22,31 @@ function fetchFromObject(obj, prop){
 }
 
 function transform(obj,rules) {
-	var name = '$';
-	for (name in rules) {
+	var objName = '$';
+	
+	for (var n in obj) {
+		objName = n;
+		continue;
+	}
+	
+	for (var ruleName in rules) {
 		var text = '';
-		var inner = fetchFromObject(rules,name);
+		var inner = fetchFromObject(rules,ruleName);
 		var elements = inner.split(/[\{\}]+/);
 		for (var i=1;i<elements.length;i=i+2) {
-			if (elements[i] == '$') {
-				elements[i] = elements[i].replaceAll('$',name);
-			}
-			else {
+			var oei = elements[i];
+			//console.log(ruleName+' '+objName);
+			console.log(obj);
+			elements[i] = elements[i].replaceAll('$',objName);
+			//console.log(elements.join(''));
+			if (oei != '$') {
 				elements[i] = fetchFromObject(obj,elements[i]);
 			}
 		}
-		obj[name] = elements.join('');
+		obj[objName] = elements.join('');
+		console.log(obj[objName]);
 	}
-	return obj[name];
+	return obj[objName];
 }
 
 module.exports = {
