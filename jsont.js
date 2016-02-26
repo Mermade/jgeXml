@@ -8,7 +8,7 @@ String.prototype.replaceAll = function(search, replacement) {
 function fetchFromObject(obj, prop){
     //property not found
     if (typeof obj === 'undefined') return false;
-    
+
     //index of next property split
     var i = prop.indexOf('.')
 
@@ -23,28 +23,34 @@ function fetchFromObject(obj, prop){
 
 function transform(obj,rules) {
 	var objName = '$';
-	
+
 	for (var n in obj) {
 		objName = n;
 		continue;
 	}
-	
-	for (var ruleName in rules) {
-		var text = '';
-		var inner = fetchFromObject(rules,ruleName);
+
+	var arrRules = [];
+
+	for (var r in rules) {
+		var rule = {};
+		rule.rule = rules[r];
+		rule.ruleName = r;
+		rule.processed = false;
+		arrRules.push(rule);
+	}
+
+	for (var r=arrRules.length-1;r>=0;r--) {
+		var inner = arrRules[r].rule;
 		var elements = inner.split(/[\{\}]+/);
 		for (var i=1;i<elements.length;i=i+2) {
 			var oei = elements[i];
-			//console.log(ruleName+' '+objName);
-			console.log(obj);
 			elements[i] = elements[i].replaceAll('$',objName);
-			//console.log(elements.join(''));
 			if (oei != '$') {
 				elements[i] = fetchFromObject(obj,elements[i]);
 			}
 		}
 		obj[objName] = elements.join('');
-		console.log(obj[objName]);
+		arrRules[r].processed = true;
 	}
 	return obj[objName];
 }
