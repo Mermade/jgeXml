@@ -1,6 +1,8 @@
 # jgeXml - The Just-Good-Enough XML Parser
 
 [![Join the chat at https://gitter.im/MikeRalphson/jgeXml](https://badges.gitter.im/MikeRalphson/jgeXml.svg)](https://gitter.im/MikeRalphson/jgeXml?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Share on Twitter][twitter-image]][twitter-link]
+[![Follow on Twitter][twitterFollow-image]][twitterFollow-link]
 
 jgeXml provides event-driven routines to parse XML 1.0 (both pull and push modes are supported), to write XML and to convert between XML and JSON.
 
@@ -57,3 +59,8 @@ The parser is string-based; to process streams, read the data into a string firs
 
 See testx2x for parsing XML to XML, testx2j for parsing XML to JSON, testj2x for converting JSON to XML,
 pullparser and pushparser for how to set up and run the parser.
+
+[twitter-image]: https://img.shields.io/twitter/url/http/PermittedSoc.svg?style=social
+[twitter-link]: https://twitter.com/share?source=tweetbutton&text=jgeXml%20parser&url=https%3A%2F%2Fgithub.com%2FMikeRalphson%2FjgeXml
+[twitterFollow-image]: https://img.shields.io/twitter/follow/PermittedSoc.svg?style=social
+[twitterFollow-link]: https://twitter.com/intent/follow?screen_name=PermittedSoc
