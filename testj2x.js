@@ -18,7 +18,7 @@ catch (err) {
 	process.exit(1);
 }
 
-var xml = j2x.getXml(obj);
+var xml = j2x.getXml(obj,'@','',2);
 console.log();
 console.log(xml);
 console.log();

@@ -2,6 +2,10 @@
 
 var xml = '';
 var hanging = '';
+var followsElement = true;
+var followsEndElement = false;
+var depth = 0;
+var pretty = 0;
 
 String.prototype.replaceAll = function(search, replacement) {
     var target = this;
@@ -21,7 +25,8 @@ function encode(s) {
 }
 
 module.exports = {
-	startDocument : function (encoding,standalone) {
+	startDocument : function (encoding,standalone,indent) {
+		if (indent) pretty = indent;
 		xml = '<?xml version="1.0" encoding="' + encoding + '"' +
 		(standalone ? ' standalone="' + standalone + '"' : '') + ' ?>';
 	},
@@ -31,8 +36,12 @@ module.exports = {
 	},
 
 	startElement : function (s) {
-		xml += hanging + '<' + s;
+		xml += hanging;
+		if ((pretty) && (followsElement || followsEndElement)) xml += '\n'+Array(pretty*depth+1).join(' ');
+		xml += '<' + s;
 		hanging = '>';
+		depth++;
+		followsElement = true;
 	},
 
 	emptyElement : function (s) {
@@ -47,6 +56,8 @@ module.exports = {
 	content : function (s) {
 		xml += hanging + encode(s);
 		hanging = '';
+		followsElement = false;
+		followsEndElement = false;
 	},
 
 	comment : function (s) {
@@ -65,7 +76,13 @@ module.exports = {
 	},
 
 	endElement : function (s) {
-		xml += hanging + '</' + s + '>';
+		depth--;
+		xml += hanging;
+		if ((pretty) && (followsEndElement)) xml += '\n'+Array(pretty*depth+1).join(' ');
+		xml += '</' + s + '>';
+		if ((pretty) && (followsElement)) xml += '\n';
+		followsElement = false;
+		followsEndElement = true;
 		hanging = '';
 	},
 
