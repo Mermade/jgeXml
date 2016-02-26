@@ -9,11 +9,14 @@ String.prototype.replaceAll = function(search, replacement) {
 };
 
 function encode(s) {
-	var es = s.replaceAll('&','&amp;');
-	es = es.replaceAll('<','&lt;');
-	es = es.replaceAll('>','&gt;');
-	es = es.replaceAll('"','&quot;');
-	es = es.replaceAll("'",'&apos;');
+	var es = s;
+	if (typeof s === 'string') { // might be a number
+		es = es.replaceAll('&','&amp;');
+		es = es.replaceAll('<','&lt;');
+		es = es.replaceAll('>','&gt;');
+		es = es.replaceAll('"','&quot;');
+		es = es.replaceAll("'",'&apos;');
+	}
 	return es;
 }
 
