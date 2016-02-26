@@ -5,7 +5,7 @@ String.prototype.replaceAll = function(search, replacement) {
     return target.split(search).join(replacement);
 };
 
-function fetchFromObject(obj, prop){
+function fetchFromObjectPath(obj, prop){
     //property not found
     if (typeof obj === 'undefined') return false;
 
@@ -15,10 +15,33 @@ function fetchFromObject(obj, prop){
     //property split found; recursive call
     if (i >= 0){
         //get object at property (before split), pass on remainder
-        return fetchFromObject(obj[prop.substring(0, i)], prop.substr(i+1));
+        return fetchFromObjectPath(obj[prop.substring(0, i)], prop.substr(i+1));
     }
 	//no split; get property
     return obj[prop];
+}
+
+function fetchFromObject(obj,prop) {
+	//this outer routine adds support for array element indexing
+	var index = -1;
+	if (prop.endsWith(']')) {
+		index = 0;
+		var a = prop.split('[');
+		prop = a[0];
+		a[1] = a[1].replace(']','');
+		index = parseInt(a[1],10);
+	}
+	var result;
+	if (prop == '') {
+		result = obj;
+	}
+	else {
+		result = fetchFromObjectPath(obj,prop);
+	}
+	if (index>=0) {
+		result = result[index];
+	}
+	return result;
 }
 
 function transform(obj,rules) {
@@ -42,29 +65,30 @@ function transform(obj,rules) {
 
 	for (var r=arrRules.length-1;r>=0;r--) {
 		var inner = arrRules[r].rule;
-		
+
 		if (arrRules[r].ruleName.indexOf('[*]') > 0) {
 			isArray = true;
 		}
-		
+
 		for (var o in obj) {
 			var newObjName = objName;
 			if (isArray) {
-				newObjName = objName+'['+o+']';
+				newObjName = o;
 			}
 			var elements = inner.split(/[\{\}]+/);
 			for (var i=1;i<elements.length;i=i+2) {
-				var oei = elements[i];
 				elements[i] = elements[i].replaceAll('$',arrRules[r].ruleName);
-				if (oei != '$') {
-					elements[i] = fetchFromObject(obj,elements[i]);
-				}
+				elements[i] = elements[i].replaceAll('[*]','['+o+']'); //specify the current index
+				elements[i] = elements[i].replaceAll('self','');
+				elements[i] = fetchFromObject(obj,elements[i]);
 			}
 			obj[newObjName] = elements.join('');
+			if (!isArray) continue;
 		}
 		arrRules[r].processed = true;
 	}
-	return obj[objName];
+	if (Array.isArray(obj)) return obj[0]
+	else return obj;
 }
 
 module.exports = {

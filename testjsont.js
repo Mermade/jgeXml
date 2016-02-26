@@ -12,7 +12,7 @@ function run(obj,rules) {
 }
 
 var obj = { "link": {"uri":"http://company.com", "title":"company homepage" }};
-var rules = { "link": "<a href=\"{link.uri}\">{link.title}: {$}</a>" };
+var rules = { "link": "<a href=\"{link.uri}\">{link.title}</a>" };
 run(obj,rules);
 
 obj = { "line": { "p1": {"x":2, "y":3},
