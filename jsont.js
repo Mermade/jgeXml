@@ -23,6 +23,7 @@ function fetchFromObject(obj, prop){
 
 function transform(obj,rules) {
 	var objName = '$';
+	var isArray = false;
 
 	for (var n in obj) {
 		objName = n;
@@ -41,15 +42,26 @@ function transform(obj,rules) {
 
 	for (var r=arrRules.length-1;r>=0;r--) {
 		var inner = arrRules[r].rule;
-		var elements = inner.split(/[\{\}]+/);
-		for (var i=1;i<elements.length;i=i+2) {
-			var oei = elements[i];
-			elements[i] = elements[i].replaceAll('$',objName);
-			if (oei != '$') {
-				elements[i] = fetchFromObject(obj,elements[i]);
-			}
+		
+		if (arrRules[r].ruleName.indexOf('[*]') > 0) {
+			isArray = true;
 		}
-		obj[objName] = elements.join('');
+		
+		for (var o in obj) {
+			var newObjName = objName;
+			if (isArray) {
+				newObjName = objName+'['+o+']';
+			}
+			var elements = inner.split(/[\{\}]+/);
+			for (var i=1;i<elements.length;i=i+2) {
+				var oei = elements[i];
+				elements[i] = elements[i].replaceAll('$',arrRules[r].ruleName);
+				if (oei != '$') {
+					elements[i] = fetchFromObject(obj,elements[i]);
+				}
+			}
+			obj[newObjName] = elements.join('');
+		}
 		arrRules[r].processed = true;
 	}
 	return obj[objName];

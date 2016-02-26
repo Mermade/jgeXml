@@ -21,3 +21,8 @@ rules = { "self": "<svg>{line}</svg>",
   "line": "<line x1=\"{$.p1.x}\" y1=\"{$.p1.y}\"" +
                 "x2=\"{$.p2.x}\" y2=\"{$.p2.y}\" />" };
 run(obj,rules);
+
+obj = ["red", "green", "blue"]
+rules = {"self": "<ul>\n{$}</ul>",
+	"self[*]": "  <li>{$}</li>\n"};
+run(obj,rules);
