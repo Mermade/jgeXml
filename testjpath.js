@@ -4,6 +4,32 @@ var fs = require('fs');
 var x2j = require('./xml2json');
 var jpath = require('./jpath');
 
+function dumpResults(tree,query) {
+	console.log();
+	console.log(query);
+	var matches = jpath.select(tree,query);
+	for (var m in matches) {
+		console.log(matches[m].value ? matches[m].value : matches[m]);
+	}
+	return matches;
+}
+
+function testBookStore(tree) {
+	console.log();
+	console.log('That looks like a bookstore!');
+	
+	dumpResults(tree,'$..*');
+	dumpResults(tree,'*');
+	dumpResults(tree,'$.store.book[*].author');
+	dumpResults(tree,'$..author');
+	dumpResults(tree,'$.store.*');
+	dumpResults(tree,'$.store..price');
+	dumpResults(tree,'$..book[2]');
+	dumpResults(tree,'$..book[2].price');
+	dumpResults(tree,'$..bicycle.price');
+	dumpResults(tree,'$..bicycle.price^');
+}
+
 var filename = process.argv[2];
 var valueProperty = false;
 if (process.argv.length>3) {
@@ -32,22 +58,28 @@ for (var i in tree) {
 }
 
 if (tree.length>0) {
-	var first = jpath.path(tree[1]);
-	var matches = jpath.select(tree,first);
-	for (var m in matches) {
-		console.log('First; select('+jpath.path(matches[m])+') = '+matches[m].value);
+	if (obj.store && obj.store.book) {
+		testBookStore(tree);
 	}
-
-	var last = tree[tree.length-1];
-	console.log('Last; select('+jpath.path(last,true)+',true) = '+last.value);
-	console.log(last.prefix)
-
-	var parents = jpath.select(tree,last.prefix);
-	if (parents.length>0) {
-		var value = parents[0].value;
-		if (typeof(value) === 'object') {
-			value = JSON.stringify(value,null,2);
+	else {
+		// generic examples
+		var first = jpath.path(tree[1]);
+		var matches = jpath.select(tree,first);
+		for (var m in matches) {
+			console.log('First; select('+jpath.path(matches[m])+') = '+matches[m].value);
 		}
-		console.log('select('+jpath.path(parents[0],true)+',true) = '+value);
+
+		var last = tree[tree.length-1];
+		console.log('Last; select('+jpath.path(last,true)+',true) = '+last.value);
+		console.log(last.prefix)
+
+		var parents = jpath.select(tree,last.prefix);
+		if (parents.length>0) {
+			var value = parents[0].value;
+			if (typeof(value) === 'object') {
+				value = JSON.stringify(value,null,2);
+			}
+			console.log('select('+jpath.path(parents[0],true)+',true) = '+value);
+		}
 	}
 }

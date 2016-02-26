@@ -1,9 +1,14 @@
 'use strict';
 
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
+
 function traverse(obj,prefix,depth,parent) {
-	
+
 var result = [];
-	
+
 	for (var key in obj) {
 		// skip loop if the property is from prototype
 		if (!obj.hasOwnProperty(key)) continue;
@@ -14,7 +19,7 @@ var result = [];
 			display = '['+key+']';
 			sep = '';
 		}
-		
+
 		var item = {};
 		item.prefix = prefix;
 		item.key = key;
@@ -54,14 +59,14 @@ function path(item,bracketed) {
 			sep = '';
 		}
 		return item.prefix+sep+item.display;
-	}		
+	}
 }
 
 function selectRegex(tree,expr,bracketed) {
+	// not currently working, we are going to need some serious escaping of the regex
 	if (expr == '') {
 		expr = '*';
 	}
-	expr = '/' + expr + '/';
 	var result = [];
 	for (var i=0;i<tree.length;i++) {
 		var p = path(tree[i],bracketed);
@@ -74,10 +79,38 @@ function selectRegex(tree,expr,bracketed) {
 
 function select(tree,target,bracketed) {
 	var result = [];
+	var returnParent = false;
+	var checkEnd = false;
+
+	// ^
+	if (target.endsWith('^')) { // unoffical JSONPath extension
+		target = target.substring(0,target.length-1);
+		returnParent = true;
+	}
+	// .*
+	if (target.endsWith('.*') && (target != '$..*')) {
+		target = target.substring(0,target.length-2);
+	}
+	// [*]
+	target = target.replaceAll('[*]','[]');
+	// ..
+	if ((target.indexOf('..') > 0) && (target != '$..*')) {
+		var x = target.split('..');
+		target = x[x.length-1];
+		//target = target.replaceAll('..','.');
+		target = target.replaceAll('$','');
+		checkEnd = true;
+	}
+
 	for (var i=0;i<tree.length;i++) {
 		var p = path(tree[i],bracketed);
-		if ((target == '*') || (p == target)) {
-			result.push(tree[i]);
+		if ((target == '*') || (target == '$..*') || (p == target) || ((p.endsWith(target) && checkEnd))) {
+			if (returnParent) {
+				result.push(tree[i].parent);
+			}
+			else {
+				result.push(tree[i]);
+			}
 		}
 	}
 	return result;
