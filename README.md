@@ -61,6 +61,6 @@ See testx2x for parsing XML to XML, testx2j for parsing XML to JSON, testj2x for
 pullparser and pushparser for how to set up and run the parser.
 
 [twitter-image]: https://img.shields.io/twitter/url/http/PermittedSoc.svg?style=social
-[twitter-link]: https://twitter.com/share?source=tweetbutton&text=jgeXml%20parser&url=https%3A%2F%2Fgithub.com%2FMikeRalphson%2FjgeXml
+[twitter-link]: https://twitter.com/share?source=tweetbutton&text=jgeXml%20parser%20Via%20%40PermittedSoc&url=https%3A%2F%2Fgithub.com%2FMikeRalphson%2FjgeXml
 [twitterFollow-image]: https://img.shields.io/twitter/follow/PermittedSoc.svg?style=social
 [twitterFollow-link]: https://twitter.com/intent/follow?screen_name=PermittedSoc
