@@ -26,3 +26,12 @@ obj = ["red", "green", "blue"]
 rules = {"self": "<ul>\n{$}</ul>",
 	"self[*]": "  <li>{$}</li>\n"};
 run(obj,rules);
+
+obj = { "color": "blue",
+  "closed": true,
+  "points": [[10,10],[20,10],[20,20],[10,20]] };
+rules = { "self": "<svg><{closed} stroke=\"{color}\" points=\"{points}\" />"+
+          "</svg>",
+  "closed": function(x){return x ? "polygon" : "polyline";}, 
+  "points[*][*]": "{$} " };
+run(obj,rules);

@@ -75,7 +75,13 @@ function transform(obj,rules) {
 			if (isArray) {
 				newObjName = o;
 			}
-			var elements = inner.split(/[\{\}]+/);
+			var elements;
+			if (typeof inner === 'function') {
+				elements = [inner(obj[arrRules[r].ruleName])];
+			}
+			else {
+				elements = inner.split(/[\{\}]+/);
+			}
 			for (var i=1;i<elements.length;i=i+2) {
 				elements[i] = elements[i].replaceAll('$',arrRules[r].ruleName);
 				elements[i] = elements[i].replaceAll('[*]','['+o+']'); //specify the current index
