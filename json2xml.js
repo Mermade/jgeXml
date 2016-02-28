@@ -44,9 +44,14 @@ var result = [];
 }
 
 module.exports = {
-	getXml : function(obj,attrPrefix,standalone,indent) {
+	getXml : function(obj,attrPrefix,standalone,indent,fragment) {
 		if (attrPrefix) attributePrefix = attrPrefix;
-		xmlWrite.startDocument('UTF8',standalone,indent);
+		if (fragment) {
+			xmlWrite.startFragment(indent);
+		}
+		else {
+			xmlWrite.startDocument('UTF8',standalone,indent);
+		}
 		traverse(obj,'');
 		return xmlWrite.endDocument();
 	}
