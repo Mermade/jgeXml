@@ -24,9 +24,21 @@ function encode(s) {
 	return es;
 }
 
+function startFragment(indent) {
+	if (indent) pretty = indent
+	else pretty = 0;
+	followsElement = true;
+	followsEndElement = false;
+	xml = '';
+	hanging = '';
+	depth = 0;
+}
+
 module.exports = {
+	startFragment: startFragment,
+
 	startDocument : function (encoding,standalone,indent) {
-		if (indent) pretty = indent;
+		startFragment(indent);
 		xml = '<?xml version="1.0" encoding="' + encoding + '"' +
 		(standalone ? ' standalone="' + standalone + '"' : '') + ' ?>';
 	},
@@ -37,11 +49,14 @@ module.exports = {
 
 	startElement : function (s) {
 		xml += hanging;
-		if ((pretty) && (followsElement || followsEndElement)) xml += '\n'+Array(pretty*depth+1).join(' ');
-		xml += '<' + s;
-		hanging = '>';
-		depth++;
-		followsElement = true;
+		if (s != '') {
+			if ((pretty) && (followsElement || followsEndElement)) xml += '\n'+Array(pretty*depth+1).join(' ');
+			xml += '<' + s;
+			hanging = '>';
+			depth++;
+			followsElement = true;
+		}
+		else hanging = '';
 	},
 
 	emptyElement : function (s) {
@@ -75,15 +90,30 @@ module.exports = {
 		hanging = '';
 	},
 
-	endElement : function (s) {
-		depth--;
-		xml += hanging;
-		if ((pretty) && (followsEndElement)) xml += '\n'+Array(pretty*depth+1).join(' ');
-		xml += '</' + s + '>';
-		if ((pretty) && (followsElement)) xml += '\n';
+	fragment : function (s) {
+		xml += hanging + s;
+		hanging = '';
 		followsElement = false;
 		followsEndElement = true;
+	},
+
+	endElement : function (s) {
+		xml += hanging;
+		if (s !== '') {
+			depth--;
+			if ((pretty) && (followsEndElement)) xml += '\n'+Array(pretty*depth+1).join(' ');
+			xml += '</' + s + '>';
+			if ((pretty) && (followsElement)) xml += '\n';
+			followsElement = false;
+			followsEndElement = true;
+		}
 		hanging = '';
+	},
+
+	endFragment : function () {
+		xml += hanging;
+		hanging = '';
+		return xml;
 	},
 
 	endDocument : function () {
