@@ -11,6 +11,8 @@ function run(obj,rules) {
 	console.log(jsont.transform(obj,rules));	
 }
 
+// see http://goessner.net/articles/jsont/
+
 var obj = { "link": {"uri":"http://company.com", "title":"company homepage" }};
 var rules = { "link": "<a href=\"{link.uri}\">{link.title}</a>" };
 run(obj,rules);
