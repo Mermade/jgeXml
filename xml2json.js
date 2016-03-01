@@ -1,26 +1,9 @@
 'use strict';
 
+var util = require('util');
 var jgeXml = require('./jgeXml.js');
 
-String.prototype.replaceAt = function(index, character) {
-    return this.substr(0, index) + character + this.substr(index+character.length);
-};
-
-String.prototype.insert = function (index, string) {
-	if (index > 0)
-		return this.substring(0, index) + string + this.substring(index, this.length);
-	else
-		return string + this;
-};
-
-function encode(token) {
-	token = token.replaceAll('\\','\\\\');
-	token = token.replaceAll('\r','\\r');
-	token = token.replaceAll('\n','\\n');
-	token = token.replaceAll('\t','\\t');
-	token = token.replaceAll('"','\\"');
-	return token;
-}
+var debuglog = util.debuglog('jgexml');
 
 function emit(token,coerceTypes) {
 	if (coerceTypes) {
@@ -36,29 +19,16 @@ function emit(token,coerceTypes) {
 			return 'null';
 		}
 	}
-	return '"' + encode(token) + '"';
+	return token;
 }
-
-var s;
 
 function getString() {
-	return s;
+	// deprecated
+	return '';
 }
 
-function newContext() {
-	var context = {};
-	context.position = s.length-1; //mutable
-	context.anchor = context.position; //immutable
-	context.hasContent = false;
-	context.hasAttribute = false;
-	return context;
-}
-
-function dump(stack) {
-	for (var i=0;i<stack.length;i++) {
-		console.log('Entry '+i+' points to '+stack[i].anchor+' ->'+s.charAt(stack[i].anchor)+'<');
-	}
-	console.log('--');
+function clone(obj) {
+	return JSON.parse(JSON.stringify(obj));
 }
 
 function parseString(xml,options) {
@@ -69,119 +39,141 @@ function parseString(xml,options) {
 
 	var defaults = {
 		attributePrefix: "@",
+		textName: '#text',
 		valueProperty: false,
 		coerceTypes: false
 	};
 
 	options = Object.assign({},defaults,options); // merge/extend
 
-	s = '{';
-	stack.push(newContext());
+	var obj = {};
+	var o = obj;
+	var oo = obj;
 
-	jgeXml.parse(xml,function(state,token){
+	var currentElementName = '';
+	var currentAttributeName = '';
+	var currentContent = '';
+	var index = -1;
+	var attributes = [];
 
-		if (state == jgeXml.sContent) {
-			if (token != '') {
-				var closeObject = false;
-				// content should be following a property name not the beginning of an object
-				// so remove assumption it was a container
-				if ((!options.valueProperty) && (s.charAt(s.length-1) == '{')) {
-					s = s.replaceAt(s.length-1,' ');
-				}
+	jgeXml.parse(xml,function(state,token) {
 
-				// if we're following another property, separate with a comma
-				if (s.charAt(s.length-1) == '"') {
-					s += ',';
-				}
-				// if we have had attributes, this is definitely a container not a primitive
-				// treat this value as an anonymous property
-				if ((stack[stack.length-1].hasAttribute) && (!options.valueProperty)) {
-					s += ' "' + options.attributePrefix + '": ';
-				}
-				else {
-					if (stack[stack.length-1].hasContent) {
-						//create array for mixed content/elements
-						if (s.charAt(stack[stack.length-1].position) != '[') {
-							s = s.insert(stack[stack.length-1].position,'[');
-						}
-						if (options.valueProperty) {
-							s += ',{';
-							closeObject = true;
-						}
-					}
-					stack[stack.length-1].hasContent = true;
-				}
-				if (options.valueProperty) {
-					s += '"value": ';
-				}
-				s += emit(token,options.coerceTypes);
-				if (closeObject) {
-					s += '}';
-				}
+		if (state == jgeXml.sElement) {
 
+			var context = {};
+			context.cursor = o;
+			context.parent = oo;
+			context.index = index;
+			context.attributes = clone(attributes);
+			context.elementName = currentElementName;
+			context.content = clone(currentContent);
+			stack.push(context);
+
+			oo = o;
+			index = -1;
+			attributes = [];
+			currentElementName = token;
+
+			if (o[currentElementName]) {
+				if (!Array.isArray(o[currentElementName])) {
+					debuglog('arrayising '+currentElementName);
+					var a = [];
+					a.push(o[currentElementName]);
+					o[currentElementName] = a;
+				}
+				var n = {};
+				o[currentElementName].push(n);
+				index = o[currentElementName].length-1;
+				o = n;
+			}
+			else {
+				o[currentElementName] = {}; // we start off assuming each element is an object not just a property
+				o = o[currentElementName];
+			}
+		}
+		else if (state == jgeXml.sContent) {
+			token = emit(token,options.coerceTypes);
+			if (currentContent != '') {
+				// arrayise currentContent
+				var a = [];
+				a.push(currentContent);
+				currentContent = a;
+			}
+			if (Array.isArray(currentContent)) {
+				currentContent.push(token);
+			}
+			else {
+				currentContent = (currentContent ? currentContent + ' ' + token : token);
+			}
+
+			if (index>=0) {
+				oo[currentElementName][index] = currentContent;
+			}
+			else {
+				oo[currentElementName] = currentContent;
 			}
 		}
 		else if (state == jgeXml.sEndElement) {
-			if (s.charAt(stack[stack.length-1].position) == '[') {
-				// if we're in an array, close it
-				s += ']';
-			}
-			if (s.charAt(stack[stack.length-1].anchor) == '{') {
-				// if we're in an object, close it
-				s += '}';
+			// do attributes
+
+			for (var i=0;i<attributes.length;i++) {
+				var target = o;
+				var check;
+
+				if (index>=0) {
+					check = oo[currentElementName][index];
+				}
+				else {
+					check = oo[currentElementName];
+				}
+				debuglog('check = '+JSON.stringify(check));
+
+				if ((Object.keys(o).length == 0) && (typeof check === 'string')) {
+					debuglog('Objectifying '+currentElementName+'['+index+']');
+					debuglog(JSON.stringify(o));
+					target = {};
+					if (currentContent !== '') {
+						target[options.textName] = currentContent;
+					}
+					if (index>=0) {
+						oo[currentElementName][index] = target;
+					}
+					else {
+						oo[currentElementName] = target;
+					}
+				}
+				debuglog('Adding '+attributes[i].name+'='+attributes[i].value);
+				if (index>=0) {
+					target[attributes[i].name] = attributes[i].value;
+				}
+				else {
+					target[attributes[i].name] = attributes[i].value;
+				}
+				debuglog(JSON.stringify(oo[currentElementName]));
 			}
 
+			// finish up
+			var context = stack[stack.length-1];
+			currentElementName = context.elementName;
+			o = context.cursor;
+			oo = context.parent;
+			index = context.index;
+			attributes = context.attributes;
+			currentContent = context.content;
 			stack.pop();
-			depth--;
-			lastElement = token+'<'+depth+'>';
 		}
 		else if (state == jgeXml.sAttribute) {
-			// if not the first attribute, separate the properties with a comma
-			if (s.charAt(s.length-1) !== '{') {
-				s += ',';
-			}
-			s += '"' + options.attributePrefix + token + '": ';
-			stack[stack.length-1].hasAttribute = true;
+			currentAttributeName = options.attributePrefix+token;
 		}
 		else if (state == jgeXml.sValue) {
-			s += emit(token,options.coerceTypes);
-		}
-		else if (state == jgeXml.sElement) {
-			// if this is not the first property, separate with a comma
-			if (s.charAt(s.length-1) != '{') {
-				s += ',';
-			}
-
-			if (token+'<'+depth+'>' != lastElement) {
-				// element has changed, if we're in an array, terminate it just before the comma we (maybe) added
-				if (s.charAt(stack[stack.length-1].position) == '[') {
-					s = s.insert(s.length-1,']');
-				}
-				s += '"' + token + '": ';
-				stack[stack.length-1].position = s.length; //update position of previous element (array insertion point)
-			}
-			else {
-				// array detected, new element matches previous endElement and at same depth
-				// only need to insert array opening bracket once
-				if (s.charAt(stack[stack.length-1].position) != '[') {
-					s = s.insert(stack[stack.length-1].position,'[');
-				}
-			}
-			lastElement = token+'<'+depth+'>';
-			s += '{'; // here we assume all elements are containers not values, this supports attributes
-			stack.push(newContext());
-			depth++;
+			token = emit(token,options.coerceTypes);
+			var attr = {};
+			attr.name = currentAttributeName;
+			attr.value = token;
+			attributes.push(attr);
 		}
 	});
 
-	// remove final trailing comma, if any
-	if (s.charAt(s.length-1) == ',') {
-		s = s.substr(0,s.length-1);
-	}
-
-	s += '}';
-
-	var obj = JSON.parse(s);
 	return obj;
 }
 
