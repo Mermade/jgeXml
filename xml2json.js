@@ -89,6 +89,10 @@ function parseString(xml,options) {
 			else {
 				o[currentElementName] = {}; // we start off assuming each element is an object not just a property
 				o = o[currentElementName];
+				if (options.valueProperty) {
+					currentElementName = 'value';
+					oo = o;
+				}
 			}
 		}
 		else if (state == jgeXml.sContent) {
@@ -160,6 +164,7 @@ function parseString(xml,options) {
 			index = context.index;
 			attributes = context.attributes;
 			currentContent = context.content;
+			if (options.valueProperty) currentContent = '';
 			stack.pop();
 		}
 		else if (state == jgeXml.sAttribute) {
