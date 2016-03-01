@@ -100,20 +100,25 @@ function parseString(xml,options) {
 			if (currentContent != '') {
 				// arrayise currentContent
 				var a = [];
-				a.push(currentContent);
-				currentContent = a;
+				a.push(clone(currentContent));
+				var cont = {};
+				cont[options.textName] = a;
+				currentContent = cont;
 			}
-			if (Array.isArray(currentContent)) {
-				currentContent.push(token);
+			if (typeof currentContent === 'object') { //if (Array.isArray(currentContent)) {
+				currentContent[options.textName].push(token);
 			}
 			else {
-				currentContent = (currentContent ? currentContent + ' ' + token : token);
+				currentContent = token;
 			}
 
 			if (index>=0) {
 				oo[currentElementName][index] = currentContent;
 			}
 			else {
+				if (typeof oo[currentElementName] != 'object') {
+					//mixedContent = true;
+				}
 				oo[currentElementName] = currentContent;
 			}
 		}
@@ -132,7 +137,7 @@ function parseString(xml,options) {
 				}
 				debuglog('check = '+JSON.stringify(check));
 
-				if ((Object.keys(o).length == 0) && (typeof check === 'string')) {
+				if ((Object.keys(o).length == 0) && (typeof check != 'object')) { // primitive types
 					debuglog('Objectifying '+currentElementName+'['+index+']');
 					debuglog(JSON.stringify(o));
 					target = {};
