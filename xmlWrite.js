@@ -6,6 +6,7 @@ var followsElement = true;
 var followsEndElement = false;
 var depth = 0;
 var pretty = 0;
+var spacer = ' ';
 
 String.prototype.replaceAll = function(search, replacement) {
     var target = this;
@@ -24,9 +25,20 @@ function encode(s) {
 	return es;
 }
 
-function startFragment(indent) {
-	if (indent) pretty = indent
-	else pretty = 0;
+function startFragment(indent,indentStr) {
+	if (indent) {
+		pretty = indent;
+		if ((indentStr) && (indentStr !== '')) {
+			spacer = indentStr;
+		}
+		else {
+			spacer = ' ';
+		}
+	}
+	else {
+		pretty = 0;
+	}
+
 	followsElement = true;
 	followsEndElement = false;
 	xml = '';
@@ -37,8 +49,8 @@ function startFragment(indent) {
 module.exports = {
 	startFragment: startFragment,
 
-	startDocument : function (encoding,standalone,indent) {
-		startFragment(indent);
+	startDocument : function (encoding,standalone,indent,indentStr) {
+		startFragment(indent,indentStr);
 		xml = '<?xml version="1.0" encoding="' + encoding + '"' +
 		(standalone ? ' standalone="' + standalone + '"' : '') + ' ?>';
 	},
@@ -50,7 +62,7 @@ module.exports = {
 	startElement : function (s) {
 		xml += hanging;
 		if (s != '') {
-			if ((pretty) && (followsElement || followsEndElement)) xml += '\n'+Array(pretty*depth+1).join(' ');
+			if ((pretty) && (followsElement || followsEndElement)) xml += '\n'+Array(pretty*depth+1).join(spacer);
 			xml += '<' + s;
 			hanging = '>';
 			depth++;
@@ -101,7 +113,7 @@ module.exports = {
 		xml += hanging;
 		if (s !== '') {
 			depth--;
-			if ((pretty) && (followsEndElement)) xml += '\n'+Array(pretty*depth+1).join(' ');
+			if ((pretty) && (followsEndElement)) xml += '\n'+Array(pretty*depth+1).join(spacer);
 			xml += '</' + s + '>';
 			if ((pretty) && (followsElement)) xml += '\n';
 			followsElement = false;
