@@ -5,38 +5,34 @@ var xmlWrite = require('./xmlWrite');
 var attributePrefix = '@';
 
 function traverse(obj,parent) {
-	
+
 var result = [];
-	
-	for (var key in obj){
+
+	var array = Array.isArray(obj);
+	for (var key in obj) {
 		// skip loop if the property is from prototype
 		if (!obj.hasOwnProperty(key)) continue;
 
-		var array = Array.isArray(obj);
-		
+		var propArray = Array.isArray(obj[key]);
+		var output = array ? parent : key;
+
 		if (typeof obj[key] !== 'object'){
 			if (key.indexOf(attributePrefix)==0) {
 				xmlWrite.attribute(key.substring(1),obj[key]);
 			}
 			else {
-				xmlWrite.startElement(key);
+				xmlWrite.startElement(output);
 				xmlWrite.content(obj[key]);
-				xmlWrite.endElement(key);
+				xmlWrite.endElement(output);
 			}
 		}
 		else {
-			if (!array) {
-				xmlWrite.startElement(key);
+			if (!propArray) {
+				xmlWrite.startElement(output);
 			}
-			else {
-				if (key!=0) xmlWrite.startElement(parent);
-			}
-			traverse(obj[key],key);
-			if (!array) {
-				xmlWrite.endElement(key);
-			}
-			else {
-				if (key!=(obj.length-1)) xmlWrite.endElement(parent);
+			traverse(obj[key],output);
+			if (!propArray) {
+				xmlWrite.endElement(output);
 			}
 		}
 	}
@@ -44,13 +40,13 @@ var result = [];
 }
 
 module.exports = {
-	getXml : function(obj,attrPrefix,standalone,indent,fragment) {
+	getXml : function(obj,attrPrefix,standalone,indent,fragment,indentStr) {
 		if (attrPrefix) attributePrefix = attrPrefix;
 		if (fragment) {
-			xmlWrite.startFragment(indent);
+			xmlWrite.startFragment(indent,indentStr);
 		}
 		else {
-			xmlWrite.startDocument('UTF8',standalone,indent);
+			xmlWrite.startDocument('UTF8',standalone,indent,indentStr);
 		}
 		traverse(obj,'');
 		return xmlWrite.endDocument();
