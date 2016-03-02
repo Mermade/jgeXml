@@ -50,6 +50,9 @@ function transform(obj,rules) {
 				elements[i] = elements[i].replaceAll('[*]','['+o+']'); //specify the current index
 				elements[i] = elements[i].replaceAll('self','');
 				elements[i] = jpath.fetchFromObject(obj,elements[i]);
+				if (Array.isArray(elements[i])) {
+					elements[i] = elements[i].join(''); // avoid commas being output
+				}
 			}
 			obj[newObjName] = elements.join('');
 			if (!isArray) continue;
