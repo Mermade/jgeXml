@@ -5,6 +5,40 @@ String.prototype.replaceAll = function(search, replacement) {
     return target.split(search).join(replacement);
 };
 
+function fetchFromObject(obj, prop) {
+    //property not found
+    if (typeof obj === 'undefined') return false;
+	if (prop == '') return obj;
+
+	var props = prop.split('.');
+	var arr = props[0].split(/[\[\]]+/);
+	var index = -1;
+	if (arr.length>1) {
+		index = parseInt(arr[1],10);
+	}
+
+    //property split found; recursive call
+    if (props.length>1) {
+		var pos = prop.indexOf('.');
+        //get object at property (before split), pass on remainder
+		if (index>=0) {
+			return fetchFromObject(obj[arr[0]][index], prop.substr(pos+1)); //was props
+		}
+		else {
+			return fetchFromObject(obj[arr[0]], prop.substr(pos+1));;
+		}
+	}
+	//no split; get property[index] or property
+	var source = obj;
+	if (arr[0]) source = obj[prop];
+	if (index>=0) {
+		return source[index];
+	}
+    else {
+		return source;
+	}
+}
+
 function traverse(obj,prefix,depth,parent) {
 
 var result = [];
@@ -122,5 +156,6 @@ module.exports = {
 	},
 	select : select,
 	selectRegex : selectRegex,
-	path : path
+	path : path,
+	fetchFromObject : fetchFromObject
 };

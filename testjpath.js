@@ -30,6 +30,15 @@ function testBookStore(tree) {
 	dumpResults(tree,'$..bicycle.price^');
 }
 
+function propTest(obj,path) {
+	console.log(path+' = '+jpath.fetchFromObject(obj,path))
+}
+
+function testProperties(obj) {
+	console.log();
+	propTest(obj,'store.book[2].price');	
+}
+
 var filename = process.argv[2];
 var valueProperty = false;
 if (process.argv.length>3) {
@@ -60,6 +69,7 @@ for (var i in tree) {
 if (tree.length>0) {
 	if (obj.store && obj.store.book) {
 		testBookStore(tree);
+		testProperties(obj);
 	}
 	else {
 		// generic examples
