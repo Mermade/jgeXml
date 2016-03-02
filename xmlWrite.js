@@ -93,7 +93,7 @@ module.exports = {
 	},
 
 	processingInstruction : function (s) {
-		xml += hanging + '<?' + encode(s) + ' ?>';
+		xml += hanging + '<? ' + encode(s) + ' ?>';
 		hanging = '';
 	},
 
@@ -110,12 +110,18 @@ module.exports = {
 	},
 
 	endElement : function (s) {
+		var suppress = false;
+		if (hanging == '>') {
+			hanging = '/>';
+			suppress = true;
+		}
 		xml += hanging;
 		if (s !== '') {
 			depth--;
-			if ((pretty) && (followsEndElement)) xml += '\n'+Array(pretty*depth+1).join(spacer);
-			xml += '</' + s + '>';
-			if ((pretty) && (followsElement)) xml += '\n';
+			if (!suppress) {
+				if (pretty && followsEndElement) xml += '\n'+Array(pretty*depth+1).join(spacer);
+				xml += '</' + s + '>';
+			}
 			followsElement = false;
 			followsEndElement = true;
 		}
