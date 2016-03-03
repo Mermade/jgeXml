@@ -4,7 +4,7 @@
 [![Share on Twitter][twitter-image]][twitter-link]
 [![Follow on Twitter][twitterFollow-image]][twitterFollow-link]
 
-jgeXml provides event-driven routines to parse XML 1.0 (both pull and push modes are supported), to write XML and to convert between XML and JSON.
+jgeXml provides event-driven routines to parse XML 1.0 (both pull and push modes are supported), to write XML (documents or fragments) and to convert between XML and JSON (one way JSON to YAML conversion is also supported).
 
 The code has no dependencies on other modules or native libraries.
 
@@ -37,7 +37,7 @@ Child elements can be represented as properties or objects in JSON.
 The parser by default treats all content as strings when converting to JSON, optionally data can be coerced
 to primitive numbers or null values.
 
-An experimental limited JSONPath utility is under development.
+Experimental JSONPath and JSONT utilities are under development.
 
 ## Limitations
 
@@ -57,8 +57,7 @@ The parser is string-based; to process streams, read the data into a string firs
 
 ## Examples
 
-See testx2x for parsing XML to XML, testx2j for parsing XML to JSON, testj2x for converting JSON to XML,
-pullparser and pushparser for how to set up and run the parser.
+See testx2x for parsing XML to XML, testx2j for parsing XML to JSON, testj2x for converting JSON to XML, testj2y for converting JSON to YAML, testfrag for writing XML fragments, testjpath for JSONPath examples, testjsont for JSONT examples and pullparser / pushparser for how to set up and run the parser.
 
 [twitter-image]: https://img.shields.io/twitter/url/http/PermittedSoc.svg?style=social
 [twitter-link]: https://twitter.com/share?source=tweetbutton&text=jgeXml%20parser%20Via%20%40PermittedSoc&url=https%3A%2F%2Fgithub.com%2FMikeRalphson%2FjgeXml
