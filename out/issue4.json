@@ -1,0 +1,19 @@
+{
+  "painting": {
+    "img": {
+      "@src": "madonna.jpg",
+      "@alt": "Foligno Madonna, by Raphael"
+    },
+    "caption": {
+      "#text": [
+        "This is Raphael's 'Foligno' Madonna, painted in",
+        "-",
+        "."
+      ],
+      "date": [
+        "1511",
+        "1512"
+      ]
+    }
+  }
+}

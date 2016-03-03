@@ -4,7 +4,7 @@
   "description": "The Just-Good-Enough XML Parser",
   "main": "jgeXml.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node testRunner"
   },
   "repository": {
     "type": "git",

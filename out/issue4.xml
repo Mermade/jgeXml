@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<painting>
+  <img src="madonna.jpg" alt="Foligno Madonna, by Raphael"/>
+  <caption>
+    <#text>This is Raphael&apos;s &apos;Foligno&apos; Madonna, painted in</#text>
+    <#text>-</#text>
+    <#text>.</#text>
+    <date>1511</date>
+    <date>1512</date>
+  </caption>
+</painting>
