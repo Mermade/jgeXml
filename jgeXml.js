@@ -70,7 +70,7 @@ function reset(context) {
 
 // to create a push parser, pass in a callback function and omit the context parameter
 // to create a pull parser, pass in null for the callback function and initially provide an empty object as the context
-function staxParse(s,callback,context) {
+function jgeParse(s,callback,context) {
 
 	//comments - done trivially, needs hardening
 	//processing instructions - done trivially, needs hardening
@@ -238,7 +238,7 @@ function staxParse(s,callback,context) {
 
 module.exports = {
 	parse : function(s,callback,context) {
-		return staxParse(s,callback,context);
+		return jgeParse(s,callback,context);
 	},
 	getStateName : function(state) {
 		return stateName(state);
