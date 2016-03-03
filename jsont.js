@@ -13,7 +13,7 @@ function transform(obj,rules) {
 
 	for (var n in obj) {
 		objName = n;
-		continue;
+		break;
 	}
 
 	var arrRules = [];
@@ -40,27 +40,40 @@ function transform(obj,rules) {
 			}
 			var elements;
 			if (typeof inner === 'function') {
-				elements = [inner(obj[arrRules[r].ruleName])];
+				if (o == arrRules[r].ruleName) {
+					elements = [inner(obj[arrRules[r].ruleName])];
+				}
+				else {
+					elements = [];
+				}
 			}
 			else {
 				elements = inner.split(/[\{\}]+/);
 			}
+
 			for (var i=1;i<elements.length;i=i+2) {
 				elements[i] = elements[i].replaceAll('$',arrRules[r].ruleName);
 				elements[i] = elements[i].replaceAll('[*]','['+o+']'); //specify the current index
 				elements[i] = elements[i].replaceAll('self','');
 				elements[i] = jpath.fetchFromObject(obj,elements[i]);
+
+				if (elements[i] == null) {
+					elements = []; //abort
+				}
+
 				if (Array.isArray(elements[i])) {
 					elements[i] = elements[i].join(''); // avoid commas being output
 				}
 			}
-			obj[newObjName] = elements.join('');
+			if (elements.length>0) {
+				obj[newObjName] = elements.join('');
+			}
 			if (!isArray) continue;
 		}
 		arrRules[r].processed = true;
 	}
 	if (Array.isArray(obj)) return obj[0]
-	else return obj;
+	else return obj[objName];
 }
 
 module.exports = {
