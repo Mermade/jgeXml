@@ -46,7 +46,7 @@ module.exports = {
 			xmlWrite.startFragment(indent,indentStr);
 		}
 		else {
-			xmlWrite.startDocument('UTF8',standalone,indent,indentStr);
+			xmlWrite.startDocument('UTF-8',standalone,indent,indentStr);
 		}
 		traverse(obj,'');
 		return xmlWrite.endDocument();
