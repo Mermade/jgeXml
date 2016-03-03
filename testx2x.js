@@ -10,7 +10,7 @@ function x2x(xml) {
 	jgeXml.parse(xml,function(state,token){
 
 		if (state == jgeXml.sDeclaration) {
-			xmlWrite.startDocument('UTF-8');
+			xmlWrite.startDocument('UTF-8','',2);
 		}
 		else if (state == jgeXml.sComment) {
 			xmlWrite.comment(token);
