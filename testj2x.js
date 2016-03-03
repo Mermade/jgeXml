@@ -24,7 +24,7 @@ catch (err) {
 	process.exit(1);
 }
 
-var xml = j2x.getXml(obj,'@','',indent,false,indentStr);
+var xml = j2x.getXml(obj,'@','',indent,indentStr,false);
 console.log();
 console.log(xml);
 console.log();

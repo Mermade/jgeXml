@@ -40,7 +40,7 @@ var result = [];
 }
 
 module.exports = {
-	getXml : function(obj,attrPrefix,standalone,indent,fragment,indentStr) {
+	getXml : function(obj,attrPrefix,standalone,indent,indentStr,fragment) {
 		if (attrPrefix) attributePrefix = attrPrefix;
 		if (fragment) {
 			xmlWrite.startFragment(indent,indentStr);
