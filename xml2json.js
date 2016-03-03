@@ -3,8 +3,6 @@
 var util = require('util');
 var jgeXml = require('./jgeXml.js');
 
-var debuglog = util.debuglog('jgexml');
-
 function emit(token,coerceTypes) {
 	if (coerceTypes) {
 		var num = parseInt(token,10);
@@ -27,8 +25,30 @@ function getString() {
 	return '';
 }
 
-function clone(obj) {
-	return JSON.parse(JSON.stringify(obj));
+function postProcess(obj,parent) {
+
+	for (var key in obj) {
+		// skip loop if the property is from prototype
+		if (!obj.hasOwnProperty(key)) continue;
+
+		var propArray = Array.isArray(obj[key]);
+		if (propArray && obj[key].length == 1) {
+			obj[key] = obj[key][0];
+		}
+		if ((typeof obj[key] == 'object') && (parent != '')) {
+			var firstKey = Object.keys(obj[key])[0];
+			if ((Object.keys(obj[key]).length == 1) && (typeof obj[key][firstKey] != 'object')) {
+				obj[key] = obj[key][firstKey];
+			}
+		}
+
+		if (typeof obj[key] !== 'object') {
+		}
+		else {
+			postProcess(obj[key],key);
+		}
+	}
+	return obj;
 }
 
 function parseString(xml,options) {
@@ -40,6 +60,7 @@ function parseString(xml,options) {
 	var defaults = {
 		attributePrefix: "@",
 		textName: '#text',
+		valName: 'value',
 		valueProperty: false,
 		coerceTypes: false
 	};
@@ -47,129 +68,64 @@ function parseString(xml,options) {
 	options = Object.assign({},defaults,options); // merge/extend
 
 	var obj = {};
-	var o = obj;
-	var oo = obj;
+	var newCursor = obj;
+	var cursor = obj;
 
 	var currentElementName = '';
 	var currentAttributeName = '';
-	var currentContent = '';
 	var index = -1;
-	var attributes = [];
 
 	jgeXml.parse(xml,function(state,token) {
 
 		if (state == jgeXml.sElement) {
+			var parentElementName = currentElementName;
 
 			var context = {};
-			context.cursor = o;
-			context.parent = oo;
+			context.cursor = newCursor;
+			context.parent = cursor;
 			context.index = index;
-			context.attributes = clone(attributes);
 			context.elementName = currentElementName;
-			context.content = clone(currentContent);
 			stack.push(context);
 
-			oo = o;
-			index = -1;
-			attributes = [];
+			cursor = newCursor;
 			currentElementName = token;
 
-			if (o[currentElementName]) {
-				if (!Array.isArray(o[currentElementName])) {
-					debuglog('arrayising '+currentElementName);
-					var a = [];
-					a.push(o[currentElementName]);
-					o[currentElementName] = a;
-				}
+			if (newCursor[currentElementName]) {
 				var n = {};
-				o[currentElementName].push(n);
-				index = o[currentElementName].length-1;
-				o = n;
+				newCursor[currentElementName].push(n);
+				index = newCursor[currentElementName].length-1;
+				newCursor = n;
 			}
 			else {
-				o[currentElementName] = {}; // we start off assuming each element is an object not just a property
-				o = o[currentElementName];
-				if (options.valueProperty) {
-					currentElementName = 'value';
-					oo = o;
+				if (parentElementName != '') {
+					newCursor[currentElementName] = [{}]; // we start off assuming each element is an object in an array not just a property
+					newCursor = newCursor[currentElementName][0];
 				}
+				else {
+					newCursor[currentElementName] = {}; // root object
+					newCursor = newCursor[currentElementName];
+				}
+				index = 0;
 			}
 		}
 		else if (state == jgeXml.sContent) {
 			token = emit(token,options.coerceTypes);
-			if (currentContent != '') {
-				// arrayise currentContent
-				var a = [];
-				a.push(clone(currentContent));
-				var cont = {};
-				cont[options.textName] = a;
-				currentContent = cont;
+			var target = cursor[currentElementName][index][options.textName];
+			if (!target) {
+				target = cursor[currentElementName][index][options.textName] = [];
 			}
-			if (typeof currentContent === 'object') { //if (Array.isArray(currentContent)) {
-				currentContent[options.textName].push(token);
-			}
-			else {
-				currentContent = token;
-			}
-
-			if (index>=0) {
-				oo[currentElementName][index] = currentContent;
-			}
-			else {
-				if (typeof oo[currentElementName] != 'object') {
-					//mixedContent = true;
-				}
-				oo[currentElementName] = currentContent;
-			}
+			var n = {};
+			n[options.valName] = token;
+			target.push(n);
 		}
 		else if (state == jgeXml.sEndElement) {
-			// do attributes
-
-			for (var i=0;i<attributes.length;i++) {
-				var target = o;
-				var check;
-
-				if (index>=0) {
-					check = oo[currentElementName][index];
-				}
-				else {
-					check = oo[currentElementName];
-				}
-				debuglog('check = '+JSON.stringify(check));
-
-				if ((Object.keys(o).length == 0) && (typeof check != 'object')) { // primitive types
-					debuglog('Objectifying '+currentElementName+'['+index+']');
-					debuglog(JSON.stringify(o));
-					target = {};
-					if (currentContent !== '') {
-						target[options.textName] = currentContent;
-					}
-					if (index>=0) {
-						oo[currentElementName][index] = target;
-					}
-					else {
-						oo[currentElementName] = target;
-					}
-				}
-				debuglog('Adding '+attributes[i].name+'='+attributes[i].value);
-				if (index>=0) {
-					target[attributes[i].name] = attributes[i].value;
-				}
-				else {
-					target[attributes[i].name] = attributes[i].value;
-				}
-				debuglog(JSON.stringify(oo[currentElementName]));
-			}
-
 			// finish up
 			var context = stack[stack.length-1];
 			currentElementName = context.elementName;
-			o = context.cursor;
-			oo = context.parent;
+			newCursor = context.cursor;
+			cursor = context.parent;
 			index = context.index;
-			attributes = context.attributes;
-			currentContent = context.content;
-			if (options.valueProperty) currentContent = '';
+
 			stack.pop();
 		}
 		else if (state == jgeXml.sAttribute) {
@@ -177,12 +133,14 @@ function parseString(xml,options) {
 		}
 		else if (state == jgeXml.sValue) {
 			token = emit(token,options.coerceTypes);
-			var attr = {};
-			attr.name = currentAttributeName;
-			attr.value = token;
-			attributes.push(attr);
+			cursor[currentElementName][index][currentAttributeName] = token;
 		}
 	});
+
+	if (!options.valueProperty) {
+		obj = postProcess(obj,''); // first pass
+		obj = postProcess(obj,''); // second pass
+	}
 
 	return obj;
 }
