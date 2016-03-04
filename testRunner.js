@@ -57,7 +57,7 @@ function diff(s1,s2) {
 }
 
 function runXmlTest(filename,components) {
-	var stem = ''
+	var stem = '';
 	for (var c=0;c<components.length-1;c++) {
 		stem += (stem ? '.' : '') + components[c];
 	}
@@ -68,7 +68,7 @@ function runXmlTest(filename,components) {
 		console.log('  Convert and compare to JSON');
 		exists = true;
 	}
-	catch(err) {};
+	catch(err) {}
 		
 	if (exists) {
 		var xml = fs.readFileSync('test/'+filename,'utf8');
@@ -81,7 +81,7 @@ function runXmlTest(filename,components) {
 			passing++;
 		}
 		else {
-			diff(json,compare)
+			diff(json,compare);
 			console.log('  Fail');
 			failing++;
 		}
@@ -90,7 +90,7 @@ function runXmlTest(filename,components) {
 }
 
 function runJsonTest(filename,components) {
-	var stem = ''
+	var stem = '';
 	for (var c=0;c<components.length-1;c++) {
 		stem += (stem ? '.' : '') + components[c];
 	}
@@ -101,7 +101,7 @@ function runJsonTest(filename,components) {
 		console.log('  Convert and compare to XML');
 		exists = true;
 	}
-	catch(err) {};
+	catch(err) {}
 
 	if (exists) {
 		var json = fs.readFileSync('test/'+filename,'utf8');
@@ -114,7 +114,7 @@ function runJsonTest(filename,components) {
 			passing++;
 		}
 		else {
-			diff(xml,compare)
+			diff(xml,compare);
 			console.log('  Fail');
 			failing++;
 		}
@@ -136,4 +136,4 @@ for (var t in tests) {
 }
 
 console.log(passing + ' passing, ' + failing + ' failing');
-process.exitCode = (failing == 0) ? 0 : 1;
+process.exitCode = (failing === 0) ? 0 : 1;
