@@ -18,7 +18,8 @@ const sContent = 11;
 const sAttributeSpacer = 12;
 const sComment = 13;
 const sProcessingInstruction = 15;
-const sEndDocument = 17;
+const sCData = 17;
+const sEndDocument = 19;
 
 String.prototype.replaceAll = function(search, replacement) {
     var target = this;
@@ -53,6 +54,9 @@ function stateName(state) {
 	else if (state == sProcessingInstruction) {
 		return 'PROCESSING_INSTRUCTION';
 	}
+	else if (state == sCData) {
+		return 'CDATA';
+	}
 	else if (state == sEndDocument) {
 		return 'END_DOCUMENT';
 	}
@@ -62,7 +66,8 @@ function reset(context) {
 	context.state = sInitial;
 	context.newState = sInitial;
 	context.token = '';
-	context.boundary = '<';
+	context.boundary = ['<?'];
+	context.bIndex = -1;
 	context.lastElement = '';
 	context.keepToken = false;
 	context.position = 0;
@@ -71,10 +76,6 @@ function reset(context) {
 // to create a push parser, pass in a callback function and omit the context parameter
 // to create a pull parser, pass in null for the callback function and initially provide an empty object as the context
 function jgeParse(s,callback,context) {
-
-	//comments - done trivially, needs hardening
-	//processing instructions - done trivially, needs hardening
-	//TODO CDATA segments
 
 	if (context && context.newState) {
 		if (!context.keepToken) context.token = '';
@@ -95,7 +96,18 @@ function jgeParse(s,callback,context) {
 			}
 		}
 
-		if (context.boundary.indexOf(c)>=0) {
+		context.bIndex = -1;
+		for (var b=0;b<context.boundary.length;b++) {
+			if (s.substr(i,context.boundary[b].length) == context.boundary[b]) {
+				context.bIndex = b;
+				if (context.boundary[context.bIndex].length>1) {
+					i = i + context.boundary[context.bIndex].length-1;
+				}
+				break;
+			}
+		}
+
+		if (context.bIndex >= 0) {
 
 			if ((context.state != sValue) && (context.state != sComment)) { // && (context.state != sContent)
 				context.token = context.token.trim();
@@ -103,28 +115,22 @@ function jgeParse(s,callback,context) {
 
 			context.keepToken = false;
 			if (((context.state & 1) == 1) && ((context.token.trim() != '') || context.state == sValue)) {
-				context.token = context.token.replaceAll('&amp;','&');
-				context.token = context.token.replaceAll('&quot;','"');
-				context.token = context.token.replaceAll('&apos;',"'");
-				context.token = context.token.replaceAll('&gt;','>');
-				context.token = context.token.replaceAll('&lt;','<');
-				if (context.token.indexOf('&#') >= 0) {
-					context.token = context.token.replace(/&(?:#([0-9]+)|#x([0-9a-fA-F]+));/g, function(match, group1, group2) {
-						if (group2) {
-							return String.fromCharCode(parseInt(group2,16));
-						}
-						else {
-							return String.fromCharCode(group1);
-						}
-					});
-				}
-
-				if (context.state == sComment) {
-					context.token = context.token.replaceAll('-- ','');
-					context.token = context.token.replaceAll(' --','').trim();
-				}
-				if (context.state == sProcessingInstruction) {
-					context.token = context.token.replaceAll('?','').trim();
+				if (context.state != sCData) {
+					context.token = context.token.replaceAll('&amp;','&');
+					context.token = context.token.replaceAll('&quot;','"');
+					context.token = context.token.replaceAll('&apos;',"'");
+					context.token = context.token.replaceAll('&gt;','>');
+					context.token = context.token.replaceAll('&lt;','<');
+					if (context.token.indexOf('&#') >= 0) {
+						context.token = context.token.replace(/&(?:#([0-9]+)|#x([0-9a-fA-F]+));/g, function(match, group1, group2) {
+							if (group2) {
+								return String.fromCharCode(parseInt(group2,16));
+							}
+							else {
+								return String.fromCharCode(group1);
+							}
+						});
+					}
 				}
 
 				if (callback) {
@@ -134,48 +140,52 @@ function jgeParse(s,callback,context) {
 
 			if (context.state == sInitial) {
 				context.newState = sDeclaration;
-				context.boundary = '>';
+				context.boundary = ['?>'];
 			}
 			else if (context.state == sDeclaration) {
 				context.newState = sPreElement;
-				context.boundary = '<';
+				context.boundary = ['<'];
 			}
 			else if (context.state == sPreElement) {
 				context.newState = sElement;
-				context.boundary = ' ?!/>';
+				context.boundary = [' ','!--','?','![CDATA[','/','>'];
 			}
 			else if (context.state == sElement) {
 				context.lastElement = context.token;
 				if (c == '?') {
 					context.newState = sProcessingInstruction;
-					context.boundary = '>';
+					context.boundary = ['?>'];
 				}
-				else if (c == '!') {
+				else if (context.boundary[context.bIndex] == '!--') {
 					context.newState = sComment;
-					context.boundary = '>';
+					context.boundary = ['-->'];
+				}
+				else if (context.boundary[context.bIndex] == '![CDATA[') {
+					context.newState = sCData;
+					context.boundary = [']]>'];
 				}
 				else if (c == '/') {
 					context.newState = sEndElement;
-					context.boundary = '>';
+					context.boundary = ['>'];
 					context.keepToken = true;
 				}
 				else if (c == ' ') {
 					context.newState = sAttribute;
-					context.boundary = '/=>';
+					context.boundary = ['/','=','>'];
 				}
 				else if (c == '>') {
 					context.newState = sContent;
-					context.boundary = '<';
+					context.boundary = ['<'];
 				}
 			}
 			else if (context.state == sAttribute) {
 				if (c == '=' ) {
 					context.newState = sAttrNML;
-					context.boundary = '\'"';
+					context.boundary = ['\'','"'];
 				}
 				else if (c == '>') {
 					context.newState = sContent;
-					context.boundary = '<';
+					context.boundary = ['<'];
 				}
 				else if (c == '/') {
 					context.newState = sEndElement;
@@ -186,29 +196,31 @@ function jgeParse(s,callback,context) {
 			}
 			else if (context.state == sAttrNML) {
 				context.newState = sValue;
-				context.boundary = c;
+				context.boundary = [c];
 			}
 			else if (context.state == sValue) {
 				context.newState = sAttribute;
-				context.boundary = '=/>';
+				context.boundary = ['=','/','>'];
 			}
 			else if (context.state == sEndElement) {
-				//context.newState = sPreElement;
-				//context.boundary = '<';
 				context.newState = sContent;
-				context.boundary = '<';
+				context.boundary = ['<'];
 			}
 			else if (context.state == sContent) {
 				context.newState = sElement;
-				context.boundary = ' !?/>';
+				context.boundary = [' ','!--','?','![CDATA[','/','>'];
 			}
 			else if (context.state == sComment) {
-				context.newState = sPreElement;
-				context.boundary = '<';
+				context.newState = sContent;
+				context.boundary = ['<'];
 			}
 			else if (context.state == sProcessingInstruction) {
-				context.newState = sPreElement;
-				context.boundary = '<';
+				context.newState = sContent;
+				context.boundary = ['<'];
+			}
+			else if (context.state == sCData) {
+				context.newState = sContent;
+				context.boundary = ['<'];
 			}
 
 			if (!callback) {
@@ -233,7 +245,6 @@ function jgeParse(s,callback,context) {
 	else {
 		return context;
 	}
-
 }
 
 module.exports = {
@@ -252,5 +263,6 @@ module.exports = {
 	sContent : sContent,
 	sComment : sComment,
 	sProcessingInstruction: sProcessingInstruction,
+	sCData : sCData,
 	sEndDocument : sEndDocument
 };

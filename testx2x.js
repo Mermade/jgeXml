@@ -18,6 +18,9 @@ function x2x(xml) {
 		else if (state == jgeXml.sProcessingInstruction) {
 			xmlWrite.processingInstruction(token);
 		}
+		else if (state == jgeXml.sCData) {
+			xmlWrite.cdata(token);
+		}
 		else if (state == jgeXml.sContent) {
 			xmlWrite.content(token);
 		}

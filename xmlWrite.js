@@ -88,17 +88,21 @@ module.exports = {
 	},
 
 	comment : function (s) {
-		xml += hanging + '<!-- ' + encode(s) + ' -->';
+		xml += hanging + '<!--' + encode(s) + '-->';
 		hanging = '';
 	},
 
 	processingInstruction : function (s) {
-		xml += hanging + '<? ' + encode(s) + ' ?>';
+		xml += hanging;
+		if ((pretty) && (followsElement || followsEndElement)) xml += '\n'+Array(pretty*depth+1).join(spacer);
+		xml += '<?' + encode(s) + '?>';
 		hanging = '';
 	},
 
 	cdata : function (s) {
-		xml += hanging + '<![CDATA[' + s + ']]>';
+		xml += hanging;
+		if ((pretty) && (followsElement || followsEndElement)) xml += '\n'+Array(pretty*depth+1).join(spacer);
+		xml += '<![CDATA[' + s + ']]>';
 		hanging = '';
 	},
 

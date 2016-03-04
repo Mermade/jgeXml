@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Address xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="SimpleAddress.xsd">
+  <?RemoveFromMailingList main?>
   <Recipient>Mr. Walter C. Brown</Recipient>
-  <House>49</House>
+  <House>49<!--<Bellevue>-->A</House>
   <Street>Featherstone Street</Street>
   <Town>LONDON</Town>
   <PostCode>EC1Y 8SY</PostCode>
+  <![CDATA[Customer123]]>
   <Country>UK</Country>
 </Address>

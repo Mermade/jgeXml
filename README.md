@@ -21,6 +21,7 @@ sEndElement
 sContent
 sComment
 sProcessingInstruction
+sCData
 sEndDocument
 ```
 
@@ -52,8 +53,6 @@ consumer to interpret the namespace portions of element names. It cannot parse i
 xmlWrite minimally supports DTDs but you must build them and the DOCTYPE yourself.
 
 It can parse and transform XSD files as XML, conversion to JSON schema is planned.
-
-The parser currently does not support CDATA segments, though the xmlWrite module does.
 
 The parser is string-based; to process streams, read the data into a string first. It may be memory intensive on large documents.
 
