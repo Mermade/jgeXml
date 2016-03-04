@@ -100,12 +100,13 @@ function parseString(xml,options) {
 				if (parentElementName != '') {
 					newCursor[currentElementName] = [{}]; // we start off assuming each element is an object in an array not just a property
 					newCursor = newCursor[currentElementName][0];
+					index = 0;
 				}
 				else {
 					newCursor[currentElementName] = {}; // root object
 					newCursor = newCursor[currentElementName];
+					index = -1;
 				}
-				index = 0;
 			}
 		}
 		else if (state == jgeXml.sContent) {
@@ -133,7 +134,12 @@ function parseString(xml,options) {
 		}
 		else if (state == jgeXml.sValue) {
 			token = emit(token,options.coerceTypes);
-			cursor[currentElementName][index][currentAttributeName] = token;
+			if (index>=0) {
+				cursor[currentElementName][index][currentAttributeName] = token;
+			}
+			else {
+				cursor[currentElementName][currentAttributeName] = token;
+			}
 		}
 	});
 
