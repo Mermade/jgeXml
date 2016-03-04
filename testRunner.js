@@ -7,34 +7,19 @@ var crypto = require('crypto');
 var x2j = require('./xml2json');
 var j2x = require('./json2xml');
 var j2y = require('./json2yaml');
+var xsd2j = require('./xsd2json');
 
 var passing = 0;
 var failing = 0;
-
-function sha1(data) {
-	var shasum = crypto.createHash('sha256');
-	var digest = '';
-
-	var s = new stream.Readable();
-	s._read = function noop() {};
-	s.push(data);
-	s.push(null);
-
-	s.on('data', function(d) {
-	  shasum.update(d);
-	});
-
-	s.on('end', function() {
-	  digest = shasum.digest('hex');
-	});
-	return digest;
-}
 
 function lines(s) {
 	return s.split('\n');
 }
 
 function diff(s1,s2) {
+	var red = '\x1b[31m';
+	var green = '\x1b[32m';
+	var normal = '\x1b[0m';
 	var l1 = lines(s1);
 	var l2 = lines(s2);
 	var top = l1.length > l2.length ? l2.length : l1.length;
@@ -46,11 +31,11 @@ function diff(s1,s2) {
 			for (var c=cs;c<l;c++) {
 				console.log('  '+l1[c]);
 			}
-			console.log('- \x1b[31m'+l1[l]+'\x1b[0m');
-			console.log('+ \x1b[32m'+l2[l]+'\x1b[0m');
+			console.log('- '+red+l1[l]+normal);
+			console.log('+ '+green+l2[l]+normal);
 			cs = Math.min(top,l+4);
 			for (var c=l+1;c<cs;c++) {
-				console.log('  '+l1[c]);
+				console.log('  '+((l1[c] == l2[c]) ? green : red)+l1[c]+normal);
 			}
 			break;
 		}
@@ -87,7 +72,39 @@ function runXmlTest(filename,components) {
 			failing++;
 		}
 	}
+}
 
+function runXsdTest(filename,components) {
+	var stem = '';
+	for (var c=0;c<components.length-1;c++) {
+		stem += (stem ? '.' : '') + components[c];
+	}
+
+	var exists = false;
+	try {
+		fs.statSync('out/'+stem+'.json',fs.R_OK);
+		console.log('  Convert and compare to JSON');
+		exists = true;
+	}
+	catch(err) {}
+
+	if (exists) {
+		var xml = fs.readFileSync('test/'+filename,'utf8');
+		var j1 = x2j.xml2json(xml,{"attributePrefix": "@","valueProperty": false, "coerceTypes": false});
+		var obj = xsd2j.getJsonSchema(j1,'test/'+filename);
+		var json = JSON.stringify(obj,null,2);
+		var compare = fs.readFileSync('out/'+stem+'.json','utf8');
+		compare = compare.replaceAll('\r\n','\n');
+
+		if (json == compare) {
+			passing++;
+		}
+		else {
+			diff(json,compare);
+			console.log('  Fail');
+			failing++;
+		}
+	}
 }
 
 function runJsonTest(filename,components) {
@@ -163,6 +180,9 @@ for (var t in tests) {
 	var components = filename.split('.');
 	if (components[components.length-1] == 'xml') {
 		runXmlTest(filename,components);
+	}
+	else if (components[components.length-1] == 'xsd') {
+		runXsdTest(filename,components);
 	}
 	else if (components[components.length-1] == 'json') {
 		runJsonTest(filename,components);
