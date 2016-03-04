@@ -23,24 +23,24 @@
 }
  */
 
- function reset() {
- }
+function reset() {
+}
 
- function clone(obj) {
+function clone(obj) {
 	 return JSON.parse(JSON.stringify(obj));
- }
+}
 
- function hoik(obj,target,key) {
-	 if (target && obj[key]) {
-		 target[key] = clone(obj[key]);
-		 delete(obj[key]);
-	 }
- }
+function hoik(obj,target,key) {
+	if (target && obj && obj[key]) {
+		target[key] = clone(obj[key]);
+		delete(obj[key]);
+	}
+}
 
- function rename(obj,key,newName) {
-	 obj[newName] = obj[key];
-	 delete obj[key];
- }
+function rename(obj,key,newName) {
+	obj[newName] = obj[key];
+	delete obj[key];
+}
 
 function mandate(obj,parent,key) {
 	if (!parent.required) parent.required = [];
@@ -56,9 +56,8 @@ function clean(obj,parent,key) {
 		rename(obj,key,'properties');
 		hoik(obj,parent,'properties'); //leaves empty complexType to be cleaned up later
 	}
-	
+
 	if ((key == '@minOccurs') && (obj[key] > 0)) mandate(obj,parent,key);
-	//if (key.startsWith('json:')) rename(obj,key,key.replace('json',''));
 	//if (key.startsWith('xs:')) delete obj[key];
 	if (key.startsWith('xs:')) rename(obj,key,key.replace('xs:','json:')); //temp
 	if (key.startsWith('xmlns:')) rename(obj,key,key.replace('xmlns:','json:')); //temp
@@ -68,16 +67,19 @@ function clean(obj,parent,key) {
 }
 
 function postProcess(obj,parent,key) {
-	if (key == 'required') hoik(obj,parent,key); // as we put it one level too far down, in the properties
+	if (key == 'json:required') {
+		hoik(obj,parent,key); // as we put it one level too far down, in the properties
+	}
+	if (key.startsWith('json:')) rename(obj,key,key.replace('json:',''));
 }
 
 function isEmpty(obj) {
-    for(var prop in obj) {
-        if(obj.hasOwnProperty(prop))
-            return false;
+    for (var prop in obj) {
+        if ((obj.hasOwnProperty(prop) && (typeof obj[prop] !== undefined))) {
+			return false;
+		}
     }
-
-    return true;
+ 	return true;
 }
 
 function removeEmpties(obj,parent,key) {
@@ -116,22 +118,25 @@ null    The JSON null value.
 object  A JSON object.
 string  A JSON string.
 		*/
-		
+
 		if (type == 'xs:integer') type = 'integer';
 		if (type == 'xs:string') type = 'string';
 		if (type == 'xs:date') type = 'string';
 		if (type == 'xs:boolean') type = 'boolean';
 		if (type == 'xs:anyURI') type = 'string';
-		
+
 		parent[name] = {};
 		parent[name].type = type;
 
 		if (occurs >= 1) {
-			if (!parent.required) {
-				parent.required = [];
+			if (!parent['json:required']) {
+				parent['json:required'] = [];
 			}
-			parent.required.push(name);
+			parent['json:required'].push(name);
 		}
+
+		// TODO process restrictions and enumerations
+
 		delete(obj[key]);
 	}
 }
@@ -152,12 +157,10 @@ function recurse(obj,parent,callback) {
 					recurse(obj[key][i],obj[key],callback);
 				}
 			}
-			else {
-
-			}
+			//else {
+			//}
 			recurse(obj[key],obj,callback);
 		}
-
 		callback(obj,parent,key);
 
 	}
@@ -183,7 +186,10 @@ module.exports = {
 		hoik(obj['json:schema'],obj,'object');
 
 		recurse(obj,{},function(obj,parent,key) {
-			removeEmpties(obj,parent,key);
+			removeEmpties(obj,parent,key); // first pass
+		});
+		recurse(obj,{},function(obj,parent,key) {
+			removeEmpties(obj,parent,key); // second pass to clean up anything emptied by first pass
 		});
 
 		recurse(obj,{},function(obj,parent,key) {
