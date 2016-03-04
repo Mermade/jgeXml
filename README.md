@@ -1,6 +1,8 @@
 # jgeXml - The Just-Good-Enough XML Parser
 
+[![Build status](https://travis-ci.org/MikeRalphson/jgeXml.svg?branch=master)](https://travis-ci.org/MikeRalphson/jgeXml)
 [![Join the chat at https://gitter.im/MikeRalphson/jgeXml](https://badges.gitter.im/MikeRalphson/jgeXml.svg)](https://gitter.im/MikeRalphson/jgeXml?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Share on Twitter][twitter-image]][twitter-link]
 [![Follow on Twitter][twitterFollow-image]][twitterFollow-link]
 
