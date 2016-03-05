@@ -22,6 +22,8 @@ sContent
 sComment
 sProcessingInstruction
 sCData
+sDocType
+sError
 sEndDocument
 ```
 
@@ -29,7 +31,7 @@ No event is generated for ignoreable whitespace, unlike SAX. Empty elements are 
 
 ## Notes
 
-jgeXml is a non-validating parser.
+jgeXml is a non-validating parser. It attempts to report if the XML is well-formed or not.
 
 Both when reading and writing, attributes follow after the element event, and in the order they are given in the source.
 
@@ -44,12 +46,10 @@ Experimental JSONPath and JSONT utilities are under development.
 
 ## Limitations
 
-Probably not thread safe.
-
-jgeXml assumes the XML is well-formed.
+XML/YAML *generation* is probably not thread safe.
 
 jgeXml is currently schema agnostic and staunchly atheist when it comes to DTDs. It can parse XML documents with schema information, but it is up to the
-consumer to interpret the namespace portions of element names. It cannot parse internal DTDs. DOCTYPEs are handled as comments.
+consumer to interpret the namespace portions of element names. It cannot parse internal DTDs.
 xmlWrite minimally supports DTDs but you must build them and the DOCTYPE yourself.
 
 It can parse and transform XSD files as XML, conversion to JSON schema is planned.
