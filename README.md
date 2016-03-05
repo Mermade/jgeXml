@@ -10,6 +10,15 @@ jgeXml provides event-driven routines to parse XML 1.0 (both pull and push modes
 
 The code has no dependencies on other modules or native libraries.
 
+Setting up a push-parser is as simple as:
+
+```javascript
+	var jgeXml = require('jgeXml');
+	var result = jgeXml.parse(xml,function(state,token) {
+		//...
+	});
+```
+
 ## Events (stateCodes)
 
 ```
@@ -23,6 +32,7 @@ sComment
 sProcessingInstruction
 sCData
 sDocType
+sDTD
 sError
 sEndDocument
 ```
@@ -37,7 +47,7 @@ Both when reading and writing, attributes follow after the element event, and in
 
 When converting to JSON, the attributePrefix (to avoid name clashes with child elements) is configurable per parse.
 
-Child elements can be represented as properties or objects in JSON.
+In JSON, child elements can be represented as properties (the default) or objects (exposing the parser's intermediary state).
 
 The parser by default treats all content as strings when converting to JSON, optionally data can be coerced
 to primitive numbers or null values.
