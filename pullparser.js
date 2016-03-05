@@ -4,8 +4,10 @@ var fs = require('fs');
 var jgeXml = require('./jgeXml.js');
 
 var filename = process.argv[2];
+var encoding = 'utf8';
+if (process.argv.length>3) encoding = process.argv[3];
 
-var xml = fs.readFileSync(filename,'utf8');
+var xml = fs.readFileSync(filename,encoding);
 console.log(xml);
 console.log();
 
