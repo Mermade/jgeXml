@@ -19,7 +19,9 @@ const sAttributeSpacer = 12;
 const sComment = 13;
 const sProcessingInstruction = 15;
 const sCData = 17;
-const sEndDocument = 19;
+const sDocType = 19;
+const sError = 21;
+const sEndDocument = 23;
 
 String.prototype.replaceAll = function(search, replacement) {
     var target = this;
@@ -57,6 +59,12 @@ function stateName(state) {
 	else if (state == sCData) {
 		return 'CDATA';
 	}
+	else if (state == sDocType) {
+		return 'DOCTYPE';
+	}
+	else if (state == sError) {
+		return 'ERROR';
+	}
 	else if (state == sEndDocument) {
 		return 'END_DOCUMENT';
 	}
@@ -66,11 +74,13 @@ function reset(context) {
 	context.state = sInitial;
 	context.newState = sInitial;
 	context.token = '';
-	context.boundary = ['<?'];
+	context.boundary = ['<?','<'];
 	context.bIndex = -1;
 	context.lastElement = '';
 	context.keepToken = false;
 	context.position = 0;
+	context.depth = 0;
+	context.wellFormed = false;
 }
 
 // to create a push parser, pass in a callback function and omit the context parameter
@@ -86,12 +96,16 @@ function jgeParse(s,callback,context) {
 		reset(context);
 	}
 
+	var validControlChars = ['\t','\r','\n'];
 	var c;
 	for (var i=context.position;i<s.length;i++) {
 		c = s.charAt(i);
+		if ((c.charCodeAt(0) < 32) && (validControlChars.indexOf(c) < 0)) {
+			context.state = sError;
+		}
 
 		if (context.state != sContent) {
-			if ((c == '\t') || (c == '\r') || (c == '\n')) { //other unicode spaces are not treated as whitespace
+			if (validControlChars.indexOf(c) >= 0) { //other unicode spaces are not treated as whitespace
 				c = ' ';
 			}
 		}
@@ -115,6 +129,7 @@ function jgeParse(s,callback,context) {
 
 			context.keepToken = false;
 			if (((context.state & 1) == 1) && ((context.token.trim() != '') || context.state == sValue)) {
+				// TODO test element names for validity (using regex?)
 				if (context.state != sCData) {
 					context.token = context.token.replaceAll('&amp;','&');
 					context.token = context.token.replaceAll('&quot;','"');
@@ -124,23 +139,40 @@ function jgeParse(s,callback,context) {
 					if (context.token.indexOf('&#') >= 0) {
 						context.token = context.token.replace(/&(?:#([0-9]+)|#x([0-9a-fA-F]+));/g, function(match, group1, group2) {
 							if (group2) {
-								return String.fromCharCode(parseInt(group2,16));
+								var e = String.fromCharCode(parseInt(group2,16));
+								if ((e.charCodeAt(0) < 32) && (validControlChars.indexOf(e) < 0)) {
+									context.state = sError;
+								}
+								return e;
 							}
 							else {
-								return String.fromCharCode(group1);
+								var e = String.fromCharCode(group1);
+								if ((e.charCodeAt(0) < 32) && (validControlChars.indexOf(e) < 0)) {
+									context.state = sError;
+								}
+								return e;
 							}
 						});
 					}
+					// TODO test for invalid control characters
 				}
 
+				if (context.state == sElement) context.depth++;
+				else if (context.state == sEndElement) context.depth--;
 				if (callback) {
 					callback(context.state,context.token);
 				}
 			}
 
 			if (context.state == sInitial) {
-				context.newState = sDeclaration;
-				context.boundary = ['?>'];
+				if (context.boundary[context.bIndex] == '<?') {
+					context.newState = sDeclaration;
+					context.boundary = ['?>'];
+				}
+				else {
+					context.newState = sElement;
+					context.boundary = ['>',' ','/','!--','?','!DOCTYPE','![CDATA['];
+				}
 			}
 			else if (context.state == sDeclaration) {
 				context.newState = sPreElement;
@@ -148,11 +180,24 @@ function jgeParse(s,callback,context) {
 			}
 			else if (context.state == sPreElement) {
 				context.newState = sElement;
-				context.boundary = [' ','!--','?','![CDATA[','/','>'];
+				context.boundary = ['>',' ','/','!--','?','!DOCTYPE','![CDATA['];
 			}
 			else if (context.state == sElement) {
 				context.lastElement = context.token;
-				if (c == '?') {
+				if (c == '>') {
+					context.newState = sContent;
+					context.boundary = ['<'];
+				}
+				else if (c == ' ') {
+					context.newState = sAttribute;
+					context.boundary = ['/','=','>'];
+				}
+				else if (c == '/') {
+					context.newState = sEndElement;
+					context.boundary = ['>'];
+					context.keepToken = true;
+				}
+				else if (c == '?') {
 					context.newState = sProcessingInstruction;
 					context.boundary = ['?>'];
 				}
@@ -164,18 +209,9 @@ function jgeParse(s,callback,context) {
 					context.newState = sCData;
 					context.boundary = [']]>'];
 				}
-				else if (c == '/') {
-					context.newState = sEndElement;
+				else if (context.boundary[context.bIndex] == '!DOCTYPE') {
+					context.newState = sDocType;
 					context.boundary = ['>'];
-					context.keepToken = true;
-				}
-				else if (c == ' ') {
-					context.newState = sAttribute;
-					context.boundary = ['/','=','>'];
-				}
-				else if (c == '>') {
-					context.newState = sContent;
-					context.boundary = ['<'];
 				}
 			}
 			else if (context.state == sAttribute) {
@@ -203,12 +239,12 @@ function jgeParse(s,callback,context) {
 				context.boundary = ['=','/','>'];
 			}
 			else if (context.state == sEndElement) {
-				context.newState = sContent;
+				if (context.depth != 0) context.newState = sContent;
 				context.boundary = ['<'];
 			}
 			else if (context.state == sContent) {
 				context.newState = sElement;
-				context.boundary = [' ','!--','?','![CDATA[','/','>'];
+				context.boundary = ['>',' ','/','!--','?','![CDATA['];
 			}
 			else if (context.state == sComment) {
 				context.newState = sContent;
@@ -220,6 +256,10 @@ function jgeParse(s,callback,context) {
 			}
 			else if (context.state == sCData) {
 				context.newState = sContent;
+				context.boundary = ['<'];
+			}
+			else if (context.state == sDocType) {
+				context.newState = sPreElement;
 				context.boundary = ['<'];
 			}
 
@@ -238,9 +278,13 @@ function jgeParse(s,callback,context) {
 		}
 
 	}
+	if ((context.state == sEndElement) && (context.depth == 0)) {
+		context.wellFormed = true;
+	}
 	context.state = sEndDocument;
 	if (callback) {
 		callback(context.state,context.token);
+		return context.wellFormed;
 	}
 	else {
 		return context;
@@ -248,12 +292,8 @@ function jgeParse(s,callback,context) {
 }
 
 module.exports = {
-	parse : function(s,callback,context) {
-		return jgeParse(s,callback,context);
-	},
-	getStateName : function(state) {
-		return stateName(state);
-	},
+	parse : jgeParse,
+	getStateName : stateName,
 	sInitial : sInitial,
 	sDeclaration : sDeclaration,
 	sElement : sElement,
@@ -264,5 +304,6 @@ module.exports = {
 	sComment : sComment,
 	sProcessingInstruction: sProcessingInstruction,
 	sCData : sCData,
+	sDocType : sDocType,
 	sEndDocument : sEndDocument
 };
