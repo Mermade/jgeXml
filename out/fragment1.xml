@@ -1,0 +1,5 @@
+<!DOCTYPE fubar>
+<foo>
+  <?nitfol xyzzy?>
+  <bar><!--potrzebie-->baz<![CDATA[snafu]]></bar>
+</foo>

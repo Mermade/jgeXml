@@ -6,7 +6,7 @@
       "title": "XHTML 1.0 Strict Example",
       "script": {
         "@type": "application/javascript",
-        "#text": "function loadpdf() {      document.getElementById(\"pdf-object\").src=\"http://www.w3.org/TR/xhtml1/xhtml1.pdf\";   }"
+        "#text": "function loadpdf() {document.getElementById(\"pdf-object\").src=\"http://www.w3.org/TR/xhtml1/xhtml1.pdf\";}"
       }
     },
     "body": {
