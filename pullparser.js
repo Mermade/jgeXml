@@ -20,6 +20,6 @@ while (!context.state || context.state != jgeXml.sEndDocument) {
 	else if (context.state == jgeXml.sEndElement) {
 		depth--;
 	}
-	console.log(jgeXml.getStateName(context.state)+' '+context.position+' '+depth+' '+context.token);
+	console.log(jgeXml.getStateName(context.state)+' '+context.position+' '+depth+' '+context.depth+' '+context.token);
 	if (depth != 0) process.exitCode = 1;
 }

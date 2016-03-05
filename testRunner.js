@@ -4,6 +4,7 @@ var fs = require('fs');
 var stream = require('stream');
 var crypto = require('crypto');
 
+var jgeXml = require('./jgeXml');
 var x2j = require('./xml2json');
 var j2x = require('./json2xml');
 var j2y = require('./json2yaml');
@@ -11,6 +12,7 @@ var xsd2j = require('./xsd2json');
 
 var passing = 0;
 var failing = 0;
+var encoding;
 
 function lines(s) {
 	return s.split('\n');
@@ -51,16 +53,16 @@ function runXmlTest(filename,components) {
 	var exists = false;
 	try {
 		fs.statSync('out/'+stem+'.json',fs.R_OK);
-		console.log('  Convert and compare to JSON');
 		exists = true;
 	}
 	catch(err) {}
 
 	if (exists) {
-		var xml = fs.readFileSync('test/'+filename,'utf8');
+		console.log('  Convert and compare to JSON');
+		var xml = fs.readFileSync('test/'+filename,encoding);
 		var obj = x2j.xml2json(xml,{"attributePrefix": "@","valueProperty": false, "coerceTypes": false});
 		var json = JSON.stringify(obj,null,2);
-		var compare = fs.readFileSync('out/'+stem+'.json','utf8');
+		var compare = fs.readFileSync('out/'+stem+'.json',encoding);
 		compare = compare.replaceAll('\r\n','\n');
 
 		if (json == compare) {
@@ -83,17 +85,17 @@ function runXsdTest(filename,components) {
 	var exists = false;
 	try {
 		fs.statSync('out/'+stem+'.json',fs.R_OK);
-		console.log('  Convert and compare to JSON');
 		exists = true;
 	}
 	catch(err) {}
 
 	if (exists) {
-		var xml = fs.readFileSync('test/'+filename,'utf8');
+		console.log('  Convert and compare to JSON');
+		var xml = fs.readFileSync('test/'+filename,encoding);
 		var j1 = x2j.xml2json(xml,{"attributePrefix": "@","valueProperty": false, "coerceTypes": false});
 		var obj = xsd2j.getJsonSchema(j1,'test/'+filename);
 		var json = JSON.stringify(obj,null,2);
-		var compare = fs.readFileSync('out/'+stem+'.json','utf8');
+		var compare = fs.readFileSync('out/'+stem+'.json',encoding);
 		compare = compare.replaceAll('\r\n','\n');
 
 		if (json == compare) {
@@ -116,16 +118,16 @@ function runJsonTest(filename,components) {
 	var	exists = false;
 	try {
 		fs.statSync('out/'+stem+'.xml',fs.R_OK);
-		console.log('  Convert and compare to XML');
 		exists = true;
 	}
 	catch(err) {}
 
 	if (exists) {
-		var json = fs.readFileSync('test/'+filename,'utf8');
+		console.log('  Convert and compare to XML');
+		var json = fs.readFileSync('test/'+filename,encoding);
 		var obj = JSON.parse(json);
 		var xml = j2x.getXml(obj,'@','',2);
-		var compare = fs.readFileSync('out/'+stem+'.xml','utf8');
+		var compare = fs.readFileSync('out/'+stem+'.xml',encoding);
 		compare = compare.replaceAll('\r\n','\n');
 
 		if (xml == compare) {
@@ -154,10 +156,10 @@ function runYamlTest(filename,components) {
 	catch(err) {}
 
 	if (exists) {
-		var json = fs.readFileSync('test/'+filename,'utf8');
+		var json = fs.readFileSync('test/'+filename,encoding);
 		var obj = JSON.parse(json);
 		var yaml = j2y.getYaml(obj);
-		var compare = fs.readFileSync('out/'+stem+'.yaml','utf8');
+		var compare = fs.readFileSync('out/'+stem+'.yaml',encoding);
 		compare = compare.replaceAll('\r\n','\n');
 
 		if (yaml == compare) {
@@ -171,17 +173,42 @@ function runYamlTest(filename,components) {
 	}
 }
 
+function testXml(filename,components,expected) {
+	if (!expected) console.log('  Expected to fail');
+	var xml = fs.readFileSync('test/'+filename,encoding);
+	var result = jgeXml.parse(xml,function(){
+		//nop
+	});
+	if (result == expected) {
+		passing++;
+	}
+	else {
+		failing++;
+	}
+}
+
 process.exitCode = 1; // in case of crash
+
+var xmlTypes = ['xml','xsl','xhtml','svg','wsdl','config'];
 
 var tests = fs.readdirSync('test');
 for (var t in tests) {
 	var filename = tests[t];
 	console.log(filename);
 	var components = filename.split('.');
-	if (components[components.length-1] == 'xml') {
+
+	encoding = 'utf8';
+	if (components.indexOf('utf16') >= 0) encoding = 'ucs2';
+
+	if ((xmlTypes.indexOf(components[components.length-1]) >= 0) && (components.indexOf('invalid') >= 0)) {
+		testXml(filename,components,false);
+	}
+	else if (xmlTypes.indexOf(components[components.length-1]) >= 0) {
+		testXml(filename,components,true);
 		runXmlTest(filename,components);
 	}
 	else if (components[components.length-1] == 'xsd') {
+		testXml(filename,components,true);
 		runXsdTest(filename,components);
 	}
 	else if (components[components.length-1] == 'json') {
