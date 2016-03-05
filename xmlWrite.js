@@ -51,7 +51,7 @@ module.exports = {
 
 	startDocument : function (encoding,standalone,indent,indentStr) {
 		startFragment(indent,indentStr);
-		xml = '<?xml version="1.0" encoding="' + encoding + '"' +
+		xml = '<?xml version="1.0" encoding="' + (encoding ? encoding : 'UTF-8') + '"' +
 		(standalone ? ' standalone="' + standalone + '"' : '') + ' ?>';
 	},
 
