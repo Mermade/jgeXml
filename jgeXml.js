@@ -85,6 +85,7 @@ function reset(context) {
 	context.position = 0;
 	context.depth = 0;
 	context.wellFormed = false;
+	context.validControlChars = ['\t','\r','\n'];
 }
 
 // to create a push parser, pass in a callback function and omit the context parameter
@@ -100,16 +101,15 @@ function jgeParse(s,callback,context) {
 		reset(context);
 	}
 
-	var validControlChars = ['\t','\r','\n'];
 	var c;
 	for (var i=context.position;i<s.length;i++) {
 		c = s.charAt(i);
-		if ((c.charCodeAt(0) < 32) && (validControlChars.indexOf(c) < 0)) {
-			context.state = sError;
+		if ((c.charCodeAt(0) < 32) && (context.validControlChars.indexOf(c) < 0)) {
+			context.newState = context.state = sError;
 		}
 
 		if (context.state != sContent) {
-			if (validControlChars.indexOf(c) >= 0) { //other unicode spaces are not treated as whitespace
+			if (context.validControlChars.indexOf(c) >= 0) { //other unicode spaces are not treated as whitespace
 				c = ' ';
 			}
 		}
@@ -144,15 +144,15 @@ function jgeParse(s,callback,context) {
 						context.token = context.token.replace(/&(?:#([0-9]+)|#x([0-9a-fA-F]+));/g, function(match, group1, group2) {
 							if (group2) {
 								var e = String.fromCharCode(parseInt(group2,16));
-								if ((e.charCodeAt(0) < 32) && (validControlChars.indexOf(e) < 0)) {
-									context.state = sError;
+								if ((e.charCodeAt(0) < 32) && (context.validControlChars.indexOf(e) < 0)) {
+									context.newState = context.state = sError;
 								}
 								return e;
 							}
 							else {
 								var e = String.fromCharCode(group1);
-								if ((e.charCodeAt(0) < 32) && (validControlChars.indexOf(e) < 0)) {
-									context.state = sError;
+								if ((e.charCodeAt(0) < 32) && (context.validControlChars.indexOf(e) < 0)) {
+									context.newState = context.state = sError;
 								}
 								return e;
 							}
@@ -162,9 +162,17 @@ function jgeParse(s,callback,context) {
 				}
 
 				if (context.state == sElement) context.depth++;
-				else if (context.state == sEndElement) context.depth--;
+				else if (context.state == sEndElement) {
+					context.depth--;
+					if (context.depth<0) {
+						context.newState = context.state = sError;
+					}
+				}
 				if (callback) {
 					callback(context.state,context.token);
+				}
+				if (context.state == sError) {
+					context.boundary = [];
 				}
 			}
 
@@ -181,6 +189,9 @@ function jgeParse(s,callback,context) {
 			else if (context.state == sDeclaration) {
 				context.newState = sPreElement;
 				context.boundary = ['<'];
+				if (context.token.indexOf('1.1')>0) {
+					context.validControlChars.push('\u2028','\u0085','\u0015');
+				}
 			}
 			else if (context.state == sPreElement) {
 				context.newState = sElement;

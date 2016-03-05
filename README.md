@@ -6,7 +6,8 @@
 [![Share on Twitter][twitter-image]][twitter-link]
 [![Follow on Twitter][twitterFollow-image]][twitterFollow-link]
 
-jgeXml provides event-driven routines to parse XML 1.0 (both pull and push modes are supported), to write XML (documents or fragments) and to convert between XML and JSON (one way JSON to YAML conversion is also supported).
+jgeXml provides event-driven routines to parse XML 1.0 / 1.1. Both pull and push modes are supported. Tools are included to writing XML
+(documents or fragments) and to convert between XML and JSON (one way JSON to YAML conversion is also supported).
 
 The code has no dependencies on other modules or native libraries.
 
