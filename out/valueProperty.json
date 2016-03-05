@@ -1,0 +1,50 @@
+{
+  "test": [
+    {
+      "element": [
+        {
+          "@name": "parent1",
+          "elementInner": [
+            {
+              "@name": "child1",
+              "#text": [
+                {
+                  "value": "sibling1"
+                }
+              ]
+            },
+            {
+              "@name": "child2",
+              "#text": [
+                {
+                  "value": "sibling2"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "@name": "parent2",
+          "elementInner": [
+            {
+              "@name": "child1",
+              "#text": [
+                {
+                  "value": "sibling3"
+                }
+              ]
+            },
+            {
+              "@name": "child2",
+              "#text": [
+                {
+                  "value": "sibling4"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

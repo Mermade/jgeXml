@@ -12,7 +12,9 @@ var xsd2j = require('./xsd2json');
 
 var passing = 0;
 var failing = 0;
-var encoding;
+var encoding = 'utf'; // nodejs input encoding, not XML encoding
+var valueProperty = false;
+var coerceTypes = false;
 
 function lines(s) {
 	return s.split('\n');
@@ -60,7 +62,7 @@ function runXmlTest(filename,components) {
 	if (exists) {
 		console.log('  Convert and compare to JSON');
 		var xml = fs.readFileSync('test/'+filename,encoding);
-		var obj = x2j.xml2json(xml,{"attributePrefix": "@","valueProperty": false, "coerceTypes": false});
+		var obj = x2j.xml2json(xml,{"attributePrefix": "@", "valueProperty": valueProperty, "coerceTypes": coerceTypes});
 		var json = JSON.stringify(obj,null,2);
 		var compare = fs.readFileSync('out/'+stem+'.json',encoding);
 		compare = compare.replaceAll('\r\n','\n');
@@ -92,7 +94,7 @@ function runXsdTest(filename,components) {
 	if (exists) {
 		console.log('  Convert and compare to JSON');
 		var xml = fs.readFileSync('test/'+filename,encoding);
-		var j1 = x2j.xml2json(xml,{"attributePrefix": "@","valueProperty": false, "coerceTypes": false});
+		var j1 = x2j.xml2json(xml,{"attributePrefix": "@", "valueProperty": valueProperty, "coerceTypes": coerceTypes});
 		var obj = xsd2j.getJsonSchema(j1,'test/'+filename);
 		var json = JSON.stringify(obj,null,2);
 		var compare = fs.readFileSync('out/'+stem+'.json',encoding);
@@ -176,8 +178,8 @@ function runYamlTest(filename,components) {
 function testXml(filename,components,expected) {
 	if (!expected) console.log('  Expected to fail');
 	var xml = fs.readFileSync('test/'+filename,encoding);
-	var result = jgeXml.parse(xml,function(){
-		//nop
+	var result = jgeXml.parse(xml,function(state,token) {
+		var stateName = jgeXml.getStateName(state);
 	});
 	if (result == expected) {
 		passing++;
@@ -199,6 +201,12 @@ for (var t in tests) {
 
 	encoding = 'utf8';
 	if (components.indexOf('utf16') >= 0) encoding = 'ucs2';
+
+	valueProperty = false;
+	if (components.indexOf('valueProperty') >= 0) valueProperty = true;
+
+	coerceTypes = false;
+	if (components.indexOf('coerceTypes') >= 0) coerceTypes = true;
 
 	if ((xmlTypes.indexOf(components[components.length-1]) >= 0) && (components.indexOf('invalid') >= 0)) {
 		testXml(filename,components,false);

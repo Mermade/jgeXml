@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="yes" ?>
+
+<!--open the DOCTYPE declaration -
+  the open square bracket indicates an internal DTD-->
+
+<!DOCTYPE foo [
+
+<!--define the internal DTD-->
+  <!ELEMENT foo (#PCDATA)>
+
+<!--close the DOCTYPE declaration-->
+]>
+
+<foo>Hello World.</foo>

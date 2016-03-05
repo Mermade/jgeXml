@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test>
+	<element name="parent1">
+		<elementInner name="child1">sibling1</elementInner>
+		<elementInner name="child2">sibling2</elementInner>
+	</element>
+	<element name="parent2">
+		<elementInner name="child1">sibling3</elementInner>
+		<elementInner name="child2">sibling4</elementInner>
+	</element>
+</test>

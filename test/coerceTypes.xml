@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<Tests>
+	<quoting>
+		<data>1</data>
+	</quoting>
+	<quoting>
+		<data>2</data>
+	</quoting>
+</Tests>
