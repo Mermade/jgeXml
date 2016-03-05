@@ -2,9 +2,7 @@
 
 var xmlWrite = require('./xmlWrite');
 
-var attributePrefix = '@';
-
-function traverse(obj,parent) {
+function traverse(obj,parent,attributePrefix) {
 
 var result = [];
 
@@ -30,7 +28,7 @@ var result = [];
 			if (!propArray) {
 				xmlWrite.startElement(output);
 			}
-			traverse(obj[key],output);
+			traverse(obj[key],output,attributePrefix);
 			if (!propArray) {
 				xmlWrite.endElement(output);
 			}
@@ -41,14 +39,14 @@ var result = [];
 
 module.exports = {
 	getXml : function(obj,attrPrefix,standalone,indent,indentStr,fragment) {
-		if (attrPrefix) attributePrefix = attrPrefix;
+		var attributePrefix = (attrPrefix ? attrPrefix : '@');
 		if (fragment) {
 			xmlWrite.startFragment(indent,indentStr);
 		}
 		else {
 			xmlWrite.startDocument('UTF-8',standalone,indent,indentStr);
 		}
-		traverse(obj,'');
+		traverse(obj,'',attributePrefix);
 		return xmlWrite.endDocument();
 	}
 };
