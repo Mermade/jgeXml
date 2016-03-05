@@ -5,6 +5,7 @@ var stream = require('stream');
 var crypto = require('crypto');
 
 var jgeXml = require('./jgeXml');
+var xw = require('./xmlWrite');
 var x2j = require('./xml2json');
 var j2x = require('./json2xml');
 var j2y = require('./json2yaml');
@@ -223,6 +224,40 @@ for (var t in tests) {
 		runJsonTest(filename,components);
 		runYamlTest(filename,components);
 	}
+}
+
+var frag1 = `<!DOCTYPE fubar>
+<foo>
+  <?nitfol xyzzy?>
+  <bar><!--potrzebie-->baz<![CDATA[snafu]]></bar>
+</foo>`;
+var xml = fs.readFileSync('out/fragment1.xml',encoding);
+xml = xml.replaceAll('\r','');
+if (frag1 == xml) {
+	passing++;
+}
+else {
+	diff(frag1,xml);
+	failing++;
+}
+
+xw.startFragment(2);
+xw.docType('fubar');
+xw.startElement('foo');
+xw.processingInstruction('nitfol xyzzy');
+xw.startElement('bar');
+xw.comment('potrzebie');
+xw.content('baz');
+xw.cdata('snafu');
+xw.endElement('bar');
+xw.endElement('foo');
+frag1 = xw.endFragment();
+if (frag1 == xml) {
+	passing++;
+}
+else {
+	diff(frag1,xml);
+	failing++;
 }
 
 console.log(passing + ' passing, ' + failing + ' failing');
