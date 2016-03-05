@@ -20,8 +20,9 @@ const sComment = 13;
 const sProcessingInstruction = 15;
 const sCData = 17;
 const sDocType = 19;
-const sError = 21;
-const sEndDocument = 23;
+const sDTD = 21;
+const sError = 23;
+const sEndDocument = 25;
 
 String.prototype.replaceAll = function(search, replacement) {
     var target = this;
@@ -61,6 +62,9 @@ function stateName(state) {
 	}
 	else if (state == sDocType) {
 		return 'DOCTYPE';
+	}
+	else if (state == sDTD) {
+		return 'DTD';
 	}
 	else if (state == sError) {
 		return 'ERROR';
@@ -186,7 +190,7 @@ function jgeParse(s,callback,context) {
 				context.lastElement = context.token;
 				if (c == '>') {
 					context.newState = sContent;
-					context.boundary = ['<'];
+					context.boundary = ['<!DOCTYPE','<'];
 				}
 				else if (c == ' ') {
 					context.newState = sAttribute;
@@ -211,7 +215,7 @@ function jgeParse(s,callback,context) {
 				}
 				else if (context.boundary[context.bIndex] == '!DOCTYPE') {
 					context.newState = sDocType;
-					context.boundary = ['>'];
+					context.boundary = ['>','['];
 				}
 			}
 			else if (context.state == sAttribute) {
@@ -221,7 +225,7 @@ function jgeParse(s,callback,context) {
 				}
 				else if (c == '>') {
 					context.newState = sContent;
-					context.boundary = ['<'];
+					context.boundary = ['<!DOCTYPE','<'];
 				}
 				else if (c == '/') {
 					context.newState = sEndElement;
@@ -240,25 +244,41 @@ function jgeParse(s,callback,context) {
 			}
 			else if (context.state == sEndElement) {
 				if (context.depth != 0) context.newState = sContent;
-				context.boundary = ['<'];
+				context.boundary = ['<!DOCTYPE','<'];
 			}
 			else if (context.state == sContent) {
-				context.newState = sElement;
-				context.boundary = ['>',' ','/','!--','?','![CDATA['];
+				if (context.boundary[context.bIndex] == '<!DOCTYPE') {
+					context.newState = sDocType;
+					context.boundary = ['>','['];
+				}
+				else {
+					context.newState = sElement;
+					context.boundary = ['>',' ','/','!--','?','![CDATA['];
+				}
 			}
 			else if (context.state == sComment) {
 				context.newState = sContent;
-				context.boundary = ['<'];
+				context.boundary = ['<!DOCTYPE','<'];
 			}
 			else if (context.state == sProcessingInstruction) {
 				context.newState = sContent;
-				context.boundary = ['<'];
+				context.boundary = ['<!DOCTYPE','<'];
 			}
 			else if (context.state == sCData) {
 				context.newState = sContent;
-				context.boundary = ['<'];
+				context.boundary = ['<!DOCTYPE','<'];
 			}
 			else if (context.state == sDocType) {
+				if (context.boundary[context.bIndex] == '[') {
+					context.newState = sDTD;
+					context.boundary = [']>'];
+				}
+				else {
+					context.newState = sPreElement;
+					context.boundary = ['<'];
+				}
+			}
+			else if (context.state == sDTD) {
 				context.newState = sPreElement;
 				context.boundary = ['<'];
 			}
@@ -305,5 +325,6 @@ module.exports = {
 	sProcessingInstruction: sProcessingInstruction,
 	sCData : sCData,
 	sDocType : sDocType,
+	sDTD : sDTD,
 	sEndDocument : sEndDocument
 };

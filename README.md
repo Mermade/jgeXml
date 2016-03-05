@@ -49,7 +49,7 @@ Experimental JSONPath and JSONT utilities are under development.
 XML/YAML *generation* is probably not thread safe.
 
 jgeXml is currently schema agnostic and staunchly atheist when it comes to DTDs. It can parse XML documents with schema information, but it is up to the
-consumer to interpret the namespace portions of element names. It cannot parse internal DTDs.
+consumer to interpret the namespace portions of element names. It can parse internal DTDs, but does nothing with them.
 xmlWrite minimally supports DTDs but you must build them and the DOCTYPE yourself.
 
 It can parse and transform XSD files as XML, conversion to JSON schema is planned.
