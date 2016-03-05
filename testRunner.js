@@ -62,7 +62,7 @@ function runXmlTest(filename,components) {
 
 	if (exists) {
 		console.log('  Convert and compare to JSON');
-		var xml = fs.readFileSync('test/'+filename,encoding);
+		var xml = fs.readFileSync(testdir+'/'+filename,encoding);
 		var obj = x2j.xml2json(xml,{"attributePrefix": "@", "valueProperty": valueProperty, "coerceTypes": coerceTypes});
 		var json = JSON.stringify(obj,null,2);
 		var compare = fs.readFileSync('out/'+stem+'.json',encoding);
@@ -94,9 +94,9 @@ function runXsdTest(filename,components) {
 
 	if (exists) {
 		console.log('  Convert and compare to JSON');
-		var xml = fs.readFileSync('test/'+filename,encoding);
+		var xml = fs.readFileSync(testdir+'/'+filename,encoding);
 		var j1 = x2j.xml2json(xml,{"attributePrefix": "@", "valueProperty": valueProperty, "coerceTypes": coerceTypes});
-		var obj = xsd2j.getJsonSchema(j1,'test/'+filename);
+		var obj = xsd2j.getJsonSchema(j1,testdir+'/'+filename);
 		var json = JSON.stringify(obj,null,2);
 		var compare = fs.readFileSync('out/'+stem+'.json',encoding);
 		compare = compare.replaceAll('\r\n','\n');
@@ -127,7 +127,7 @@ function runJsonTest(filename,components) {
 
 	if (exists) {
 		console.log('  Convert and compare to XML');
-		var json = fs.readFileSync('test/'+filename,encoding);
+		var json = fs.readFileSync(testdir+'/'+filename,encoding);
 		var obj = JSON.parse(json);
 		var xml = j2x.getXml(obj,'@','',2);
 		var compare = fs.readFileSync('out/'+stem+'.xml',encoding);
@@ -159,7 +159,7 @@ function runYamlTest(filename,components) {
 	catch(err) {}
 
 	if (exists) {
-		var json = fs.readFileSync('test/'+filename,encoding);
+		var json = fs.readFileSync(testdir+'/'+filename,encoding);
 		var obj = JSON.parse(json);
 		var yaml = j2y.getYaml(obj);
 		var compare = fs.readFileSync('out/'+stem+'.yaml',encoding);
@@ -178,7 +178,7 @@ function runYamlTest(filename,components) {
 
 function testXml(filename,components,expected) {
 	if (!expected) console.log('  Expected to fail');
-	var xml = fs.readFileSync('test/'+filename,encoding);
+	var xml = fs.readFileSync(testdir+'/'+filename,encoding);
 	var result = jgeXml.parse(xml,function(state,token) {
 		var stateName = jgeXml.getStateName(state);
 	});
@@ -186,15 +186,19 @@ function testXml(filename,components,expected) {
 		passing++;
 	}
 	else {
+		console.log('  Error');
 		failing++;
 	}
 }
 
 process.exitCode = 1; // in case of crash
 
+var testdir = 'test';
+if (process.argv.length>2) testdir = process.argv[2];
+
 var xmlTypes = ['xml','xsl','xhtml','svg','wsdl','config'];
 
-var tests = fs.readdirSync('test');
+var tests = fs.readdirSync(testdir);
 for (var t in tests) {
 	var filename = tests[t];
 	console.log(filename);

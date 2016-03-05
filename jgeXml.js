@@ -312,7 +312,7 @@ function jgeParse(s,callback,context) {
 		}
 
 	}
-	if ((context.state == sEndElement) && (context.depth == 0)) {
+	if ((context.state == sEndElement) && (context.depth == 0) && (context.token.trim() == '')) {
 		context.wellFormed = true;
 	}
 	context.state = sEndDocument;

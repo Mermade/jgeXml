@@ -11,13 +11,14 @@ console.log();
 
 var depth = 0;
 
-jgeXml.parse(xml,function(state,token){
+var result = jgeXml.parse(xml,function(state,token){
 	if (state == jgeXml.sElement) {
 		depth++;
 	}
 	else if (state == jgeXml.sEndElement) {
 		depth--;
 	}
-	console.log(jgeXml.getStateName(state)+' '+depth+' '+token);
-	if (depth != 0) process.exitCode = 1;
+	console.log(jgeXml.getStateName(state)+' '+depth+' "'+token+'"');
 });
+console.log(result);
+if (!result) process.exitCode = 1;
