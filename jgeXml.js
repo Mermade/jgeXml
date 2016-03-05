@@ -184,6 +184,7 @@ function jgeParse(s,callback,context) {
 				else {
 					context.newState = sElement;
 					context.boundary = ['>',' ','/','!--','?','!DOCTYPE','![CDATA['];
+					context.boundary = context.boundary.concat(context.validControlChars);
 				}
 			}
 			else if (context.state == sDeclaration) {
@@ -196,6 +197,7 @@ function jgeParse(s,callback,context) {
 			else if (context.state == sPreElement) {
 				context.newState = sElement;
 				context.boundary = ['>',' ','/','!--','?','!DOCTYPE','![CDATA['];
+				context.boundary = context.boundary.concat(context.validControlChars);
 			}
 			else if (context.state == sElement) {
 				context.lastElement = context.token;
@@ -265,6 +267,7 @@ function jgeParse(s,callback,context) {
 				else {
 					context.newState = sElement;
 					context.boundary = ['>',' ','/','!--','?','![CDATA['];
+					context.boundary = context.boundary.concat(context.validControlChars);
 				}
 			}
 			else if (context.state == sComment) {
