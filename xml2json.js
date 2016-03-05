@@ -97,19 +97,12 @@ function parseString(xml,options) {
 				newCursor = n;
 			}
 			else {
-				if (parentElementName != '') {
-					newCursor[currentElementName] = [{}]; // we start off assuming each element is an object in an array not just a property
-					newCursor = newCursor[currentElementName][0];
-					index = 0;
-				}
-				else {
-					newCursor[currentElementName] = {}; // root object
-					newCursor = newCursor[currentElementName];
-					index = -1;
-				}
+				newCursor[currentElementName] = [{}]; // we start off assuming each element is an object in an array not just a property
+				newCursor = newCursor[currentElementName][0];
+				index = 0;
 			}
 		}
-		else if (state == jgeXml.sContent) {
+		else if ((state == jgeXml.sContent) || (state == jgeXml.sCData)) {
 			token = emit(token,options.coerceTypes);
 			var target = cursor[currentElementName][index][options.textName];
 			if (!target) {
@@ -134,12 +127,7 @@ function parseString(xml,options) {
 		}
 		else if (state == jgeXml.sValue) {
 			token = emit(token,options.coerceTypes);
-			if (index>=0) {
-				cursor[currentElementName][index][currentAttributeName] = token;
-			}
-			else {
-				cursor[currentElementName][currentAttributeName] = token;
-			}
+			cursor[currentElementName][index][currentAttributeName] = token;
 		}
 	});
 
