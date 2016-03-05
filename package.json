@@ -1,11 +1,11 @@
 {
   "name": "jgexml",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "description": "The Just-Good-Enough XML Parser",
   "main": "jgeXml.js",
   "scripts": {
     "test": "node testRunner",
-	"cover": "istanbul cover testRunner.js"
+    "cover": "istanbul cover testRunner.js"
   },
   "repository": {
     "type": "git",
