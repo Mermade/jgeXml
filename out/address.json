@@ -12,6 +12,7 @@
     "Street": "Featherstone Street",
     "Town": "LONDON",
     "PostCode": "EC1Y 8SY",
+    "#text": "Customer123",
     "Country": "UK"
   }
 }

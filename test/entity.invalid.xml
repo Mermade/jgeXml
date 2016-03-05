@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<Tests>
+	<array>
+		<data1 attribute="attrval1">dataval1</data1>
+		<data2 attribute="attrval2">dataval&#07;2</data2>
+	</array>
+	<array>
+		<data3 attribute="attrval3">3</data3>
+		<data4 attribute="attrval4">dataval4</data4>
+	</array>
+</Tests>

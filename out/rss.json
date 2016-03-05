@@ -1,0 +1,21 @@
+{
+  "rss": {
+    "@version": "2.0",
+    "channel": {
+      "title": "Example Channel",
+      "link": "http://example.com/",
+      "description": "My example channel",
+      "item": [
+        {
+          "title": "News for September the Second",
+          "link": "http://example.com/2002/09/01",
+          "description": "other things happened today"
+        },
+        {
+          "title": "News for September the First",
+          "link": "http://example.com/2002/09/02"
+        }
+      ]
+    }
+  }
+}

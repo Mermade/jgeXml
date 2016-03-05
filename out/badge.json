@@ -1,0 +1,83 @@
+{
+  "svg": {
+    "@xmlns": "http://www.w3.org/2000/svg",
+    "@width": "121",
+    "@height": "20",
+    "linearGradient": {
+      "@id": "b",
+      "@x2": "0",
+      "@y2": "100%",
+      "stop": [
+        {
+          "@offset": "0",
+          "@stop-color": "#bbb",
+          "@stop-opacity": ".1"
+        },
+        {
+          "@offset": "1",
+          "@stop-opacity": ".1"
+        }
+      ]
+    },
+    "mask": {
+      "@id": "a",
+      "rect": {
+        "@width": "121",
+        "@height": "20",
+        "@rx": "3",
+        "@fill": "#fff"
+      }
+    },
+    "g": [
+      {
+        "@mask": "url(#a)",
+        "path": [
+          {
+            "@fill": "#555",
+            "@d": "M0 0h87v20H0z"
+          },
+          {
+            "@fill": "#4c1",
+            "@d": "M87 0h34v20H87z"
+          },
+          {
+            "@fill": "url(#b)",
+            "@d": "M0 0h121v20H0z"
+          }
+        ]
+      },
+      {
+        "@fill": "#fff",
+        "@text-anchor": "middle",
+        "@font-family": "DejaVu Sans,Verdana,Geneva,sans-serif",
+        "@font-size": "11",
+        "text": [
+          {
+            "@x": "43.5",
+            "@y": "15",
+            "@fill": "#010101",
+            "@fill-opacity": ".3",
+            "#text": "XML"
+          },
+          {
+            "@x": "43.5",
+            "@y": "14",
+            "#text": "XML"
+          },
+          {
+            "@x": "103",
+            "@y": "15",
+            "@fill": "#010101",
+            "@fill-opacity": ".3",
+            "#text": "VALID"
+          },
+          {
+            "@x": "103",
+            "@y": "14",
+            "#text": "VALID"
+          }
+        ]
+      }
+    ]
+  }
+}

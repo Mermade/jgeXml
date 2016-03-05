@@ -1,0 +1,42 @@
+{
+  "html": {
+    "@xmlns": "http://www.w3.org/1999/xhtml",
+    "@xml:lang": "en",
+    "head": {
+      "title": "XHTML 1.0 Strict Example",
+      "script": {
+        "@type": "application/javascript",
+        "#text": "function loadpdf() {      document.getElementById(\"pdf-object\").src=\"http://www.w3.org/TR/xhtml1/xhtml1.pdf\";   }"
+      }
+    },
+    "body": {
+      "@onload": "loadpdf()",
+      "p": {
+        "#text": [
+          "This is an example of an",
+          "1.0 Strict document."
+        ],
+        "abbr": {
+          "@title": "Extensible HyperText Markup Language",
+          "#text": "XHTML"
+        },
+        "br": [
+          {},
+          {}
+        ],
+        "img": {
+          "@id": "validation-icon",
+          "@src": "http://www.w3.org/Icons/valid-xhtml10",
+          "@alt": "Valid XHTML 1.0 Strict"
+        },
+        "object": {
+          "@id": "pdf-object",
+          "@type": "application/pdf",
+          "@data": "http://www.w3.org/TR/xhtml1/xhtml1.pdf",
+          "@width": "100%",
+          "@height": "500"
+        }
+      }
+    }
+  }
+}
