@@ -95,12 +95,12 @@ function elements(obj,parent,key) {
 	var type = '';
 
 	if ((element['@name']) && (element['@type'])) {
-		var name = element['@name'];
-		var type = element['@type'];
+		name = element['@name'];
+		type = element['@type'];
 	}
 	else if ((element['@name']) && (element['xs:simpleType'])) {
-		var name = element['@name'];
-		var type = element['xs:simpleType']['xs:restriction']['@base'];
+		name = element['@name'];
+		type = element['xs:simpleType']['xs:restriction']['@base'];
 	}
 
 	if (name && type) {

@@ -40,7 +40,7 @@ function diff(s1,s2) {
 			console.log('- '+red+l1[l]+normal);
 			console.log('+ '+green+l2[l]+normal);
 			cs = Math.min(top,l+4);
-			for (var c=l+1;c<cs;c++) {
+			for (c=l+1;c<cs;c++) {
 				console.log('  '+((l1[c] == l2[c]) ? green : red)+l1[c]+normal);
 			}
 			break;
@@ -78,7 +78,7 @@ function runXmlTest(filename,components) {
 			failing++;
 		}
 						
-		var exists = false;
+		exists = false;
 		try {
 			fs.statSync('out/'+stem+'.jpath',fs.R_OK);
 			exists = true;

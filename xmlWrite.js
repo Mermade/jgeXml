@@ -61,8 +61,8 @@ module.exports = {
 
 	startElement : function (s) {
 		xml += hanging;
-		if (s != '') {
-			if ((pretty) && (followsElement || followsEndElement)) xml += '\n'+Array(pretty*depth+1).join(spacer);
+		if (s !== '') {
+			if ((pretty) && (followsElement || followsEndElement)) xml += '\n'+new Array(pretty*depth+1).join(spacer);
 			xml += '<' + s;
 			hanging = '>';
 			depth++;
@@ -94,14 +94,14 @@ module.exports = {
 
 	processingInstruction : function (s) {
 		xml += hanging;
-		if ((pretty) && (followsElement || followsEndElement)) xml += '\n'+Array(pretty*depth+1).join(spacer);
+		if ((pretty) && (followsElement || followsEndElement)) xml += '\n'+new Array(pretty*depth+1).join(spacer);
 		xml += '<?' + encode(s) + '?>';
 		hanging = '';
 	},
 
 	cdata : function (s) {
 		xml += hanging;
-		if ((pretty) && (followsElement || followsEndElement)) xml += '\n'+Array(pretty*depth+1).join(spacer);
+		if ((pretty) && (followsElement || followsEndElement)) xml += '\n'+new Array(pretty*depth+1).join(spacer);
 		xml += '<![CDATA[' + s + ']]>';
 		hanging = '';
 	},
@@ -123,7 +123,7 @@ module.exports = {
 		if (s !== '') {
 			depth--;
 			if (!suppress) {
-				if (pretty && followsEndElement) xml += '\n'+Array(pretty*depth+1).join(spacer);
+				if (pretty && followsEndElement) xml += '\n'+new Array(pretty*depth+1).join(spacer);
 				xml += '</' + s + '>';
 			}
 			followsElement = false;

@@ -132,7 +132,7 @@ function jgeParse(s,callback,context) {
 			}
 
 			context.keepToken = false;
-			if (((context.state & 1) == 1) && ((context.token.trim() != '') || context.state == sValue)) {
+			if (((context.state & 1) == 1) && ((context.token.trim() !== '') || context.state == sValue)) {
 				// TODO test element names for validity (using regex?)
 				if (context.state != sCData) {
 					context.token = context.token.replaceAll('&amp;','&');
@@ -142,15 +142,16 @@ function jgeParse(s,callback,context) {
 					context.token = context.token.replaceAll('&lt;','<');
 					if (context.token.indexOf('&#') >= 0) {
 						context.token = context.token.replace(/&(?:#([0-9]+)|#x([0-9a-fA-F]+));/g, function(match, group1, group2) {
+							var e;
 							if (group2) {
-								var e = String.fromCharCode(parseInt(group2,16));
+								e = String.fromCharCode(parseInt(group2,16));
 								if ((e.charCodeAt(0) < 32) && (context.validControlChars.indexOf(e) < 0)) {
 									context.newState = context.state = sError;
 								}
 								return e;
 							}
 							else {
-								var e = String.fromCharCode(group1);
+								e = String.fromCharCode(group1);
 								if ((e.charCodeAt(0) < 32) && (context.validControlChars.indexOf(e) < 0)) {
 									context.newState = context.state = sError;
 								}
@@ -256,7 +257,7 @@ function jgeParse(s,callback,context) {
 				context.boundary = ['=','/','>'];
 			}
 			else if (context.state == sEndElement) {
-				if (context.depth != 0) context.newState = sContent;
+				if (context.depth !== 0) context.newState = sContent;
 				context.boundary = ['<!DOCTYPE','<'];
 			}
 			else if (context.state == sContent) {
@@ -298,7 +299,7 @@ function jgeParse(s,callback,context) {
 			}
 
 			if (!callback) {
-				if (((context.state & 1) == 1) && ((context.token.trim() != '') || context.state == sValue)) {
+				if (((context.state & 1) == 1) && ((context.token.trim() !== '') || context.state == sValue)) {
 					context.position = i+1;
 					return context;
 				}
@@ -312,7 +313,7 @@ function jgeParse(s,callback,context) {
 		}
 
 	}
-	if ((context.state == sEndElement) && (context.depth == 0) && (context.token.trim() == '')) {
+	if ((context.state == sEndElement) && (context.depth === 0) && (context.token.trim() === '')) {
 		context.wellFormed = true;
 	}
 	context.state = sEndDocument;

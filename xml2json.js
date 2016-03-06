@@ -13,7 +13,7 @@ function emit(token,coerceTypes) {
 		if (!isNaN(num)) {
 			return num;
 		}
-		if (token == '') {
+		if (token === '') {
 			return 'null';
 		}
 	}
@@ -35,7 +35,7 @@ function postProcess(obj,parent) {
 		if (propArray && obj[key].length == 1) {
 			obj[key] = obj[key][0];
 		}
-		if ((typeof obj[key] == 'object') && (parent != '')) {
+		if ((typeof obj[key] == 'object') && (parent !== '')) {
 			var firstKey = Object.keys(obj[key])[0];
 			if ((Object.keys(obj[key]).length == 1) && (typeof obj[key][firstKey] != 'object')) {
 				obj[key] = obj[key][firstKey];
@@ -54,7 +54,7 @@ function postProcess(obj,parent) {
 function parseString(xml,options) {
 
 	var stack = [];
-	var depth = 0; //depth tracks the depth of XML element nesting, not the output JSON
+	var context = {};
 	var lastElement = '';
 
 	var defaults = {
@@ -80,7 +80,7 @@ function parseString(xml,options) {
 		if (state == jgeXml.sElement) {
 			var parentElementName = currentElementName;
 
-			var context = {};
+			context = {};
 			context.cursor = newCursor;
 			context.parent = cursor;
 			context.index = index;
@@ -108,13 +108,13 @@ function parseString(xml,options) {
 			if (!target) {
 				target = cursor[currentElementName][index][options.textName] = [];
 			}
-			var n = {};
-			n[options.valName] = token;
-			target.push(n);
+			var nt = {};
+			nt[options.valName] = token;
+			target.push(nt);
 		}
 		else if (state == jgeXml.sEndElement) {
 			// finish up
-			var context = stack[stack.length-1];
+			context = stack[stack.length-1];
 			currentElementName = context.elementName;
 			newCursor = context.cursor;
 			cursor = context.parent;

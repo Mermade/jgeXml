@@ -15,7 +15,7 @@ var result = [];
 		var output = array ? parent : key;
 
 		if (typeof obj[key] !== 'object'){
-			if (key.indexOf(attributePrefix)==0) {
+			if (key.indexOf(attributePrefix) === 0) {
 				xmlWrite.attribute(key.substring(1),obj[key]);
 			}
 			else {

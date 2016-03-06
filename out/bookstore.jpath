@@ -1,0 +1,7 @@
+[
+	{
+		"query": "$.store.book[2].price",
+		"fetch": "store.book[2].price",
+		"expected": "8.99"
+	}
+]

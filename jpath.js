@@ -25,7 +25,7 @@ function fetchFromObject(obj, prop) {
 			return fetchFromObject(obj[arr[0]][index], prop.substr(pos+1)); //was props
 		}
 		else {
-			return fetchFromObject(obj[arr[0]], prop.substr(pos+1));;
+			return fetchFromObject(obj[arr[0]], prop.substr(pos+1));
 		}
 	}
 	//no split; get property[index] or property
@@ -98,8 +98,8 @@ function path(item,bracketed) {
 
 function selectRegex(tree,expr,bracketed) {
 	// not currently working, we are going to need some serious escaping of the regex
-	if (expr == '') {
-		expr = '*';
+	if (!expr) {
+		expr = /[*]/;
 	}
 	var result = [];
 	for (var i=0;i<tree.length;i++) {

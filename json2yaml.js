@@ -37,16 +37,16 @@ var result = [];
 		var output = array ? parent : key;
 
 		if (typeof obj[key] !== 'object'){
-			yaml += Array(depth*2+1).join(' ');
+			yaml += new Array(depth*2+1).join(' ');
 			yaml += encodeKey(key) + ': ' + encodeValue(obj[key])+'\n';
 		}
 		else {
 			if (!array) {
-				yaml += Array(depth*2+1).join(' ');
+				yaml += new Array(depth*2+1).join(' ');
 				yaml += encodeKey(output) + ':\n';
 			}
 			else {
-				yaml += Array(depth*2+1).join(' ');
+				yaml += new Array(depth*2+1).join(' ');
 				yaml += '-\n';
 			}
 			
