@@ -8,7 +8,7 @@ String.prototype.replaceAll = function(search, replacement) {
 function fetchFromObject(obj, prop) {
     //property not found
     if (typeof obj === 'undefined') return false;
-	if (prop == '') return obj;
+	if (!prop) return obj;
 
 	var props = prop.split('.');
 	var arr = props[0].split(/[\[\]]+/);

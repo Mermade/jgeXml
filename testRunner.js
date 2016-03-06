@@ -10,6 +10,7 @@ var x2j = require('./xml2json');
 var j2x = require('./json2xml');
 var j2y = require('./json2yaml');
 var xsd2j = require('./xsd2json');
+var jpath = require('./jpath');
 
 var passing = 0;
 var failing = 0;
@@ -76,6 +77,45 @@ function runXmlTest(filename,components) {
 			console.log('  Fail');
 			failing++;
 		}
+						
+		var exists = false;
+		try {
+			fs.statSync('out/'+stem+'.jpath',fs.R_OK);
+			exists = true;
+		}
+		catch(err) {}
+
+		if (exists) {
+			console.log('  Test JSONPath');
+			var jpt	= fs.readFileSync('out/'+stem+'.jpath',encoding);
+			var jpo = JSON.parse(jpt);
+			
+			var tree = jpath.build(obj);
+			var success = true;
+			
+			for (var j in jpo) {
+				var test = jpo[j];
+				
+				var query = test.query;
+				var fetch = test.fetch;
+				var expected = test.expected;
+				
+				var output = jpath.select(tree,query)[0].value;
+				
+				if ((expected != output) || (expected != jpath.fetchFromObject(obj,fetch))) {
+					console.log(output);
+					console.log(jpath.fetchFromObject(obj,fetch));
+					console.log(expected);
+					success = false;
+				}
+				
+			}
+			if (!success) {
+				console.log('  Fail jpath');
+				failing++;
+			}
+		}
+		
 	}
 }
 
@@ -108,7 +148,7 @@ function runXsdTest(filename,components) {
 			diff(json,compare);
 			console.log('  Fail');
 			failing++;
-		}
+		}		
 	}
 }
 
