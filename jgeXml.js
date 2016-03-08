@@ -86,6 +86,7 @@ function reset(context) {
 	context.depth = 0;
 	context.wellFormed = false;
 	context.validControlChars = ['\t','\r','\n'];
+	context.error = false;
 }
 
 // to create a push parser, pass in a callback function and omit the context parameter
@@ -159,7 +160,6 @@ function jgeParse(s,callback,context) {
 							}
 						});
 					}
-					// TODO test for invalid control characters
 				}
 
 				if (context.state == sElement) context.depth++;
@@ -168,6 +168,9 @@ function jgeParse(s,callback,context) {
 					if (context.depth<0) {
 						context.newState = context.state = sError;
 					}
+				}
+				if (context.state == sError) {
+					context.error = true;
 				}
 				if (callback) {
 					callback(context.state,context.token);
@@ -258,7 +261,7 @@ function jgeParse(s,callback,context) {
 			}
 			else if (context.state == sEndElement) {
 				if (context.depth !== 0) context.newState = sContent;
-				context.boundary = ['<!DOCTYPE','<'];
+				context.boundary = ['<']; // don't allow DOCTYPE's after the first sEndElement
 			}
 			else if (context.state == sContent) {
 				if (context.boundary[context.bIndex] == '<!DOCTYPE') {
@@ -315,6 +318,12 @@ function jgeParse(s,callback,context) {
 	}
 	if ((context.state == sEndElement) && (context.depth === 0) && (context.token.trim() === '')) {
 		context.wellFormed = true;
+	}
+	if ((!context.wellFormed) && (!context.error)) {
+		if (callback) {
+			// generate a final error, only for pushparsers though
+			callback(sError,context.token);
+		}
 	}
 	context.state = sEndDocument;
 	if (callback) {

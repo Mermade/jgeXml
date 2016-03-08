@@ -219,10 +219,14 @@ function runYamlTest(filename,components) {
 function testXml(filename,components,expected) {
 	if (!expected) console.log('  Expected to fail');
 	var xml = fs.readFileSync(testdir+'/'+filename,encoding);
+	var ok = true;
 	var result = jgeXml.parse(xml,function(state,token) {
 		var stateName = jgeXml.getStateName(state);
+		if (stateName == 'ERROR') {
+			ok = false;
+		}
 	});
-	if (result == expected) {
+	if ((result == expected) && (ok == expected)) {
 		passing++;
 	}
 	else {
