@@ -77,7 +77,7 @@ function runXmlTest(filename,components) {
 			console.log('  Fail');
 			failing++;
 		}
-						
+
 		exists = false;
 		try {
 			fs.statSync('out/'+stem+'.jpath',fs.R_OK);
@@ -89,33 +89,33 @@ function runXmlTest(filename,components) {
 			console.log('  Test JSONPath');
 			var jpt	= fs.readFileSync('out/'+stem+'.jpath',encoding);
 			var jpo = JSON.parse(jpt);
-			
+
 			var tree = jpath.build(obj);
 			var success = true;
-			
+
 			for (var j in jpo) {
 				var test = jpo[j];
-				
+
 				var query = test.query;
 				var fetch = test.fetch;
 				var expected = test.expected;
-				
+
 				var output = jpath.select(tree,query)[0].value;
-				
+
 				if ((expected != output) || (expected != jpath.fetchFromObject(obj,fetch))) {
 					console.log(output);
 					console.log(jpath.fetchFromObject(obj,fetch));
 					console.log(expected);
 					success = false;
 				}
-				
+
 			}
 			if (!success) {
 				console.log('  Fail jpath');
 				failing++;
 			}
 		}
-		
+
 	}
 }
 
@@ -148,7 +148,7 @@ function runXsdTest(filename,components) {
 			diff(json,compare);
 			console.log('  Fail');
 			failing++;
-		}		
+		}
 	}
 }
 
@@ -235,6 +235,28 @@ function testXml(filename,components,expected) {
 	}
 }
 
+function testXmlPull(filename,components,expected) {
+	if (!expected) console.log('  Expected to fail');
+	var xml = fs.readFileSync(testdir+'/'+filename,encoding);
+	var ok = true;
+	var context = {};
+	while ((!context.state) || (context.state != jgeXml.sEndDocument)) {
+		context = jgeXml.parse(xml,null,context);
+		var stateName = jgeXml.getStateName(context.state);
+		if (stateName == 'ERROR') {
+			ok = false;
+		}
+	}
+	var result = context.wellFormed;
+	if ((result == expected) && (ok == expected)) {
+		passing++;
+	}
+	else {
+		console.log('  Error');
+		failing++;
+	}
+}
+
 process.exitCode = 1; // in case of crash
 
 var testdir = 'test';
@@ -261,7 +283,12 @@ for (var t in tests) {
 		testXml(filename,components,false);
 	}
 	else if (xmlTypes.indexOf(components[components.length-1]) >= 0) {
-		testXml(filename,components,true);
+		if (components.indexOf('pull') >= 0) {
+			testXmlPull(filename,components,true);
+		}
+		else {
+			testXml(filename,components,true);
+		}
 		runXmlTest(filename,components);
 	}
 	else if (components[components.length-1] == 'xsd') {

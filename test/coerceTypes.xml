@@ -1,9 +1,18 @@
 <?xml version="1.0"?>
 <Tests>
 	<quoting>
+		<data>string</data>
+	</quoting>
+	<quoting>
 		<data>1</data>
 	</quoting>
 	<quoting>
 		<data>2</data>
+	</quoting>
+	<quoting>
+		<data>2.5</data>
+	</quoting>
+	<quoting>
+		<data></data>
 	</quoting>
 </Tests>

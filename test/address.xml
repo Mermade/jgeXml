@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- pre doctype comment -->
 <!DOCTYPE document SYSTEM "subjects.dtd">
 <Address xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="SimpleAddress.xsd">

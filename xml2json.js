@@ -5,15 +5,15 @@ var jgeXml = require('./jgeXml.js');
 
 function emit(token,coerceTypes) {
 	if (coerceTypes) {
-		var num = parseInt(token,10);
+		var num = parseFloat(token);
 		if (!isNaN(num)) {
 			return num;
 		}
-		num = parseFloat(token);
+		num = parseInt(token,10);
 		if (!isNaN(num)) {
 			return num;
 		}
-		if (token === '') {
+		if (Object.keys(token).length === 0) {
 			return 'null';
 		}
 	}

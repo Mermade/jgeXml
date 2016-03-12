@@ -2,10 +2,19 @@
   "Tests": {
     "quoting": [
       {
+        "data": "string"
+      },
+      {
         "data": 1
       },
       {
         "data": 2
+      },
+      {
+        "data": 2.5
+      },
+      {
+        "data": {}
       }
     ]
   }
