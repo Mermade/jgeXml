@@ -24,7 +24,13 @@
           "type": "string"
         },
         "Country": {
-          "type": "string"
+          "enum": [
+            "IN",
+            "DE",
+            "ES",
+            "UK",
+            "US"
+          ]
         }
       },
       "required": [

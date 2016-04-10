@@ -185,7 +185,16 @@ string  A JSON string.
 			parent[name].pattern = '@[a-z]*://(-\.)?([^\s/?\.#-]+\.?)+(/[^\s]*)?$@i';
 		}
 
-		parent[name].type = type;
+		if (element['xs:simpleType'] && element['xs:simpleType']['xs:restriction'] && element['xs:simpleType']['xs:restriction']['xs:enumeration']) {
+			var source = element['xs:simpleType']['xs:restriction']['xs:enumeration'];
+			parent[name]["enum"] = [];
+			for (var i=0;i<source.length;i++) {
+				parent[name]["enum"].push(source[i]);
+			}
+		}
+		else {
+			parent[name].type = type;
+		}
 
 		if (occurs >= 1) {
 			if (!parent['json:required']) {
@@ -195,7 +204,7 @@ string  A JSON string.
 			//mandate(obj,parent,name);
 		}
 
-		// TODO process restrictions and enumerations
+		// TODO process arrays, restrictions and enumerations
 
 		delete obj[key];
 	}
