@@ -20,8 +20,15 @@ catch (err) {
 	process.exit(1);
 }
 
+console.log(JSON.stringify(obj,null,2));
+
 var json = xsd.getJsonSchema(obj,filename);
 console.log();
 console.log(JSON.stringify(json,null,2));
 console.log();
 console.log('Same (should be false): ' + (obj == json));
+
+if (process.argv.length>3) {
+	var outfile = process.argv[3];
+	fs.writeFileSync(outfile,JSON.stringify(json,null,2),'utf8');
+}
