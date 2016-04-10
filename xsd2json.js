@@ -59,8 +59,7 @@ function clean(obj,parent,key) {
 	if (key == '@xmlns') delete obj[key];
 
 	if (key == 'xs:sequence') {
-		rename(obj,key,'properties');
-		hoik(obj,parent,'properties'); //may leave empty complexType etc to be cleaned up later
+		hoik(obj,parent,'xs:sequence','properties'); //may leave empty complexType etc to be cleaned up later
 	}
 
 	if (key == '@minOccurs') {
@@ -84,6 +83,18 @@ function postProcess(obj,parent,key) {
 	}
 	if (key == 'json:additionalProperties') {
 		hoik(obj,parent,key,'additionalProperties'); // as we put it one level too far down, in the properties
+	}
+	if (key.startsWith('@')) {
+		hoik(obj,obj.properties,key); // as we put it one level too far up, outside the properties
+		if (obj.required) {
+			if (!parent.required) {
+				hoik(obj,parent,'required'); //?
+			}
+			else {
+				obj.required = obj.required.concat(parent.required);
+				delete parent.required;
+			}
+		}
 	}
 	if (key == 'ref') {
 		obj[key] = '#/definitions/'+obj[key];
@@ -128,15 +139,14 @@ function removeEmpties(obj,parent,key) {
 function elements(obj,parent,key) {
 	var element = obj[key];
 
-	if (!element) {
-		console.log(key);
+	if (typeof element == 'undefined') {
+		console.log(key); // TODO what triggers this?
 		return false;
 	}
 
 	var name = '';
 	var type = 'object';
 	var isAttribute = (key == 'xs:attribute');
-	// TODO required and additionalProperties for attributes are being placed wrongly one level too low
 
 	if (element['@name']) {
 		name = element['@name'];
@@ -185,6 +195,10 @@ function elements(obj,parent,key) {
 			type = 'string';
 			parent[name].pattern = '^[1-9][0-9]{3}-[0-1][0-9]-[0-3][0-9].*';
 		}
+		if (type == 'xs:dateTime') {
+			type = 'string';
+			parent[name].pattern = '^[1-9][0-9]{3}-[0-1][0-9]-[0-3][0-9].*';
+		}
 		if (type == 'xs:positiveInteger') {
 			type = 'integer';
 			parent[name]["json:minimum"] = 0;
@@ -207,14 +221,13 @@ function elements(obj,parent,key) {
 		}
 		// TODO process restrictions, patterns
 
-		parent['json:additionalProperties'] = false;
+		if (!isAttribute) parent['json:additionalProperties'] = false;
 		if (minOccurs >= 1) {
 			if (!parent['json:required']) {
 				parent['json:required'] = [];
 			}
 			parent['json:required'].push(orgName);
-			//mandate(obj,parent,name);
-		}
+	}
 
 		if (maxOccurs > 1) {
 			var items = clone(parent[name]);
@@ -242,7 +255,10 @@ function extractDefinitions(obj,parent,top) {
 					top.definitions[o.name].required = o.required;
 				}
 				var isArray = false;
-				if ((parent.properties[o.name]) && (parent.properties[o.name].type)) {
+				if (!parent.properties) {
+					parent.properties = {};
+				}
+				if (parent.properties[o.name] && parent.properties[o.name].type) {
 					if (parent.properties[o.name].type == 'array') isArray = true;
 				}
 				parent.properties[o.name] = {};
@@ -298,7 +314,7 @@ module.exports = {
 			id = src["xs:schema"]["@xmlns"];
 		}
 
-		//pre-process
+		//initial root object transformations
 		obj.title = title;
 		obj.$schema = 'http://json-schema.org/schema#'; //for latest, or 'http://json-schema.org/draft-04/schema#' for v4
 		if (id) {
@@ -313,7 +329,7 @@ module.exports = {
 		obj.dummy["json:required"].push(rootElementName);
 		obj.properties = {};
 		hoik(obj["xs:schema"],obj.properties,'xs:element',rootElementName)
-
+		
 		recurse(obj,{},function(obj,parent,key) {
 			elements(obj,parent,key);
 		});
