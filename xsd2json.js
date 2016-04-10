@@ -190,14 +190,28 @@ function elements(obj,parent,key) {
 
 		if (type == 'xs:integer') type = 'integer';
 		if (type == 'xs:string') type = 'string';
+		if (type == 'xs:NMTOKEN') type = 'string';
+		if (type == 'xs:NMTOKENS') type = 'string';
+		if (type == 'xs:ENTITY') type = 'string';
+		if (type == 'xs:ENTITIES') type = 'string';
+		if (type == 'xs:ID') type = 'string';
+		if (type == 'xs:IDREF') type = 'string';
+		if (type == 'xs:IDREFS') type = 'string';
+		if (type == 'xs:token') type = 'string';
+		if (type == 'xs:lamguage') type = 'string';
+		if (type == 'xs:Name') type = 'string';
+		if (type == 'xs:NCName') type = 'string';
+		if (type == 'xs:QName') type = 'string';
+		if (type == 'xs:normalizedString') type = 'string';
+		
 		if (type == 'xs:boolean') type = 'boolean';
 		if (type == 'xs:date') {
 			type = 'string';
-			parent[name].pattern = '^[1-9][0-9]{3}-[0-1][0-9]-[0-3][0-9].*';
+			parent[name].format = 'date-time';
 		}
 		if (type == 'xs:dateTime') {
 			type = 'string';
-			parent[name].pattern = '^[1-9][0-9]{3}-[0-1][0-9]-[0-3][0-9].*';
+			parent[name].format = 'date-time';
 		}
 		if (type == 'xs:positiveInteger') {
 			type = 'integer';
@@ -206,7 +220,7 @@ function elements(obj,parent,key) {
 		if (type == 'xs:decimal') type = 'number';
 		if (type == 'xs:anyURI') {
 			type = 'string';
-			parent[name].pattern = '@[a-z]*://(-\.)?([^\s/?\.#-]+\.?)+(/[^\s]*)?$@i';
+			parent[name].format = 'uri';
 		}
 
 		if (element['xs:simpleType'] && element['xs:simpleType']['xs:restriction'] && element['xs:simpleType']['xs:restriction']['xs:enumeration']) {
@@ -217,9 +231,15 @@ function elements(obj,parent,key) {
 			}
 		}
 		else {
-			parent[name].type = type;
+			if ((type == 'string') || (type == 'boolean') || (type == 'array') || (type == 'object') || (type == 'integer') 
+				|| (type == 'number') || (type == 'null')) {
+				parent[name].type = type;
+			}
+			else {
+				parent[name]['$ref'] = '#/definitions/'+type;
+			}
 		}
-		// TODO process restrictions, patterns
+		// TODO process restrictions, patterns, simple types
 
 		if (!isAttribute) parent['json:additionalProperties'] = false;
 		if (minOccurs >= 1) {
@@ -227,7 +247,7 @@ function elements(obj,parent,key) {
 				parent['json:required'] = [];
 			}
 			parent['json:required'].push(orgName);
-	}
+		}
 
 		if (maxOccurs > 1) {
 			var items = clone(parent[name]);
@@ -288,10 +308,7 @@ function recurse(obj,parent,callback) {
 
 		var array = Array.isArray(obj);
 
-		if (typeof obj[key] !== 'object') {
-			// simple types
-		}
-		else {
+		if (typeof obj[key] === 'object') {
 			if (array) {
 				for (var i in obj[key]) {
 					recurse(obj[key][i],obj[key],callback);
