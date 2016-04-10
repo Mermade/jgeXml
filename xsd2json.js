@@ -31,7 +31,7 @@ function clone(obj) {
 }
 
 function hoik(obj,target,key,newKey) {
-	if (target && obj && obj[key]) {
+	if (target && obj && (typeof obj[key] != 'undefined')) {
 		if (!newKey) {
 			newKey = key;
 		}
@@ -60,7 +60,7 @@ function clean(obj,parent,key) {
 
 	if (key == 'xs:sequence') {
 		rename(obj,key,'properties');
-		hoik(obj,parent,'properties'); //leaves empty complexType etc to be cleaned up later
+		hoik(obj,parent,'properties'); //may leave empty complexType etc to be cleaned up later
 	}
 
 	if (key == '@minOccurs') {
@@ -79,14 +79,11 @@ function clean(obj,parent,key) {
 }
 
 function postProcess(obj,parent,key) {
-	if ((key == 'properties') && (typeof obj[key] === 'object')) {
-		obj["additionalProperties"] = false;
-	}
-	//if (key == 'json:additionalProperties') {
-	//	hoik(obj,parent,key,'additionalProperties'); // as we put it one level too far down, in the properties
-	//}
 	if (key == 'json:required') {
 		hoik(obj,parent,key,'required'); // as we put it one level too far down, in the properties
+	}
+	if (key == 'json:additionalProperties') {
+		hoik(obj,parent,key,'additionalProperties'); // as we put it one level too far down, in the properties
 	}
 	if (key == 'ref') {
 		obj[key] = '#/definitions/'+obj[key];
@@ -131,9 +128,19 @@ function removeEmpties(obj,parent,key) {
 function elements(obj,parent,key) {
 	var element = obj[key];
 
+	if (!element) {
+		console.log(key);
+		return false;
+	}
+
 	var name = '';
-	var type = '';
+	var type = 'object';
 	var isAttribute = (key == 'xs:attribute');
+	// TODO required and additionalProperties for attributes are being placed wrongly one level too low
+
+	if (element['@name']) {
+		name = element['@name'];
+	}
 
 	if ((element['@name']) && (element['@type'])) {
 		name = element['@name'];
@@ -146,25 +153,28 @@ function elements(obj,parent,key) {
 
 	if (name && type) {
 		var orgName = name;
-		var occurs = 1;
-		if (element['@minOccurs']) occurs = element['@minOccurs'];
+		var minOccurs = 1;
+		var maxOccurs = 1;
+		if (element['@minOccurs']) minOccurs = element['@minOccurs'];
+		if (element['@maxOccurs']) maxOccurs = element['@maxOccurs'];
+		if (maxOccurs == 'unbounded') maxOccurs = 2;
 		if (isAttribute) {
 			name = '@' + name;
 			orgName = name;
 			name = '@' + name;
-			if ((!element['@use']) || (element['@use'] != 'required')) occurs = 0;
+			if ((!element['@use']) || (element['@use'] != 'required')) minOccurs = 0;
 		}
 
-/*
-		JSON Schema defines seven primitive types for JSON values:
+		/*
+			JSON Schema defines seven primitive types for JSON values:
 
-array   A JSON array.
-boolean A JSON boolean.
-integer A JSON number without a fraction or exponent part.
-number  Any JSON number. Number includes integer.
-null    The JSON null value.
-object  A JSON object.
-string  A JSON string.
+			array   A JSON array.
+			boolean A JSON boolean.
+			integer A JSON number without a fraction or exponent part.
+			number  Any JSON number. Number includes integer.
+			null    The JSON null value.
+			object  A JSON object.
+			string  A JSON string.
 		*/
 		parent[name] = {};
 
@@ -195,8 +205,10 @@ string  A JSON string.
 		else {
 			parent[name].type = type;
 		}
+		// TODO process restrictions, patterns
 
-		if (occurs >= 1) {
+		parent['json:additionalProperties'] = false;
+		if (minOccurs >= 1) {
 			if (!parent['json:required']) {
 				parent['json:required'] = [];
 			}
@@ -204,9 +216,52 @@ string  A JSON string.
 			//mandate(obj,parent,name);
 		}
 
-		// TODO process arrays, restrictions and enumerations
+		if (maxOccurs > 1) {
+			var items = clone(parent[name]);
+			parent[name] = {};
+			parent[name].type = 'array';
+			parent[name].items = items; // like a hoik downwards
+		}
 
-		delete obj[key];
+		if (type != 'object') delete obj[key];
+	}
+}
+
+function extractDefinitions(obj,parent,top) {
+	if (Array.isArray(obj.properties)) {
+		var start = 0;
+		if (isEmpty(parent)) start = 1;
+		if (!top.definitions) top.definitions = {};
+		for (var i=start;i<obj.properties.length;i++) {
+			var o = obj.properties[i];
+			if (o) {
+				top.definitions[o.name] = {};
+				top.definitions[o.name].type = 'object';
+				top.definitions[o.name].properties = o.properties;
+				if (o.required) {
+					top.definitions[o.name].required = o.required;
+				}
+				var isArray = false;
+				if ((parent.properties[o.name]) && (parent.properties[o.name].type)) {
+					if (parent.properties[o.name].type == 'array') isArray = true;
+				}
+				parent.properties[o.name] = {};
+				if (isArray) {
+					parent.properties[o.name].type = 'array';
+					parent.properties[o.name].items = {};
+					parent.properties[o.name].items['$ref'] = '#/definitions/'+o.name;
+				}
+				else {
+					parent.properties[o.name]['$ref'] = '#/definitions/'+o.name;
+				}
+			}
+		}
+		if (start > 0) {
+			obj.properties = obj.properties[0];
+		}
+		else {
+			delete obj.properties;
+		}
 	}
 }
 
@@ -234,38 +289,10 @@ function recurse(obj,parent,callback) {
 	return obj;
 }
 
-function extractDefinitions(obj,parent,top) {
-	if (Array.isArray(obj.properties)) {
-		var start = 0;
-		if (isEmpty(parent)) start = 1;
-		if (!top.definitions) top.definitions = {};
-		console.log(start);
-		for (var i=start;i<obj.properties.length;i++) {
-			var o = obj.properties[i];
-			if (o) {
-				top.definitions[o.name] = {};
-				top.definitions[o.name].type = 'object';
-				top.definitions[o.name].properties = o.properties;
-				if (o.required) {
-					top.definitions[o.name].required = o.required;
-				}
-				parent.properties[o.name] = {};
-				parent.properties[o.name]['$ref'] = '#/definitions/'+o.name;
-			}
-		}
-		if (start > 0) {
-			obj.properties = obj.properties[0];
-		}
-		else {
-			delete obj.properties;
-		}
-	}
-}
-
 module.exports = {
 	getJsonSchema : function getJsonSchema(src,title) {
 		var obj = clone(src);
-		
+
 		var id = src["xs:schema"]["@targetNamespace"];
 		if (!id) {
 			id = src["xs:schema"]["@xmlns"];
@@ -278,7 +305,7 @@ module.exports = {
 			obj.id = id;
 		}
 		obj.type = 'object';
-		
+
 		var rootElementName = obj["xs:schema"]["xs:element"]["@name"];
 		delete obj["xs:schema"]["xs:element"]["@name"]; // as it doesn't have a type it gets left hanging around
 		obj.dummy = {};
