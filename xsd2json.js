@@ -136,8 +136,6 @@ function doElement(src,parent,key) {
 	if (name && type) {
 		//console.log(name+' '+type);
 
-		//var isAttribute = (name.startsWith('@'));
-		//var isAttribute = (key == 'xs:attribute'); // could be in an array
 		var isAttribute = (element["@isAttr"] == true);
 
 		if (!target) target = parent;
@@ -156,23 +154,22 @@ function doElement(src,parent,key) {
 		var typeData = mapType(type);
 		if (typeData.type == 'object') {
 			typeData.properties = {};
-			//console.log('created properties for /'+name);
 			newTarget = typeData;
 		}
+		
+		var enumSource;
 
 		if (element["xs:simpleType"] && element["xs:simpleType"]["xs:restriction"] && element["xs:simpleType"]["xs:restriction"]["xs:enumeration"]) {
-			var source = element["xs:simpleType"]["xs:restriction"]["xs:enumeration"];
-			typeData["enum"] = [];
-			for (var i=0;i<source.length;i++) {
-				typeData["enum"].push(source[i]);
-			}
-			delete typeData.type; // assert it was a stringish type?
+			var enumSource = element["xs:simpleType"]["xs:restriction"]["xs:enumeration"];
 		}
 		else if (element["xs:restriction"] && element["xs:restriction"]["xs:enumeration"]) {
-			var source = element["xs:restriction"]["xs:enumeration"];
+			var enumSource = element["xs:restriction"]["xs:enumeration"];
+		}
+
+		if (enumSource) {
 			typeData["enum"] = [];
-			for (var i=0;i<source.length;i++) {
-				typeData["enum"].push(source[i]);
+			for (var i=0;i<enumSource.length;i++) {
+				typeData["enum"].push(enumSource[i]);
 			}
 			delete typeData.type; // assert it was a stringish type?
 		}
@@ -232,18 +229,20 @@ function moveAttributes(obj,parent,key) {
 			target = obj["xs:choice"]["xs:element"];
 		}
 		
-		if (target) {
-			target = toArray(target);
-			for (var i=0;i<obj[key].length;i++) {
-				var attr = clone(obj[key][i]);
-				if (attributePrefix) {
-					attr["@name"] = attributePrefix+attr["@name"];
-				}
-				attr["@isAttr"] = true;
-				target.push(attr);
+		if (target) target = toArray(target);
+		
+		for (var i=0;i<obj[key].length;i++) {
+			var attr = clone(obj[key][i]);
+			if (attributePrefix) {
+				attr["@name"] = attributePrefix+attr["@name"];
 			}
-			delete obj[key];
+			if (typeof attr == 'object') {
+				attr["@isAttr"] = true;
+			}
+			if (target) target.push(attr)
+			else obj[key][i] = attr;
 		}
+		if (target) delete obj[key];
 	}
 }
 
