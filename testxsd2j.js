@@ -22,7 +22,7 @@ catch (err) {
 
 console.log(JSON.stringify(obj,null,2));
 
-var json = xsd.getJsonSchema(obj,filename);
+var json = xsd.getJsonSchema(obj,filename,'');
 console.log();
 //console.log(JSON.stringify(json,null,2));
 //console.log();

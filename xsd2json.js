@@ -1,9 +1,11 @@
 'use strict';
 
 var target; // for new properties
+var attributePrefix = '@';
 
-function reset() {
+function reset(attrPrefix) {
 	target = null;
+	attributePrefix = attrPrefix;
 }
 
 function clone(obj) {
@@ -35,6 +37,19 @@ function isEmpty(obj) {
  	return true;
 }
 
+function toArray(item) {
+	if (!(item instanceof Array)) {
+		var newitem = [];
+		if (item) {
+			newitem.push(item);
+		}
+		return newitem;
+	}
+	else {
+		return item;
+	}
+}
+
 function mandate(target,name) {
 	if (!target.required) target.required = [];
 	if (target.required.indexOf(name) < 0) {
@@ -47,6 +62,7 @@ function mapType(type) {
 	var result = {};
 
 	if (type == 'xs:integer') type = 'integer';
+	
 	if (type == 'xs:string') type = 'string';
 	if (type == 'xs:NMTOKEN') type = 'string';
 	if (type == 'xs:NMTOKENS') type = 'string';
@@ -61,7 +77,10 @@ function mapType(type) {
 	if (type == 'xs:NCName') type = 'string';
 	if (type == 'xs:QName') type = 'string';
 	if (type == 'xs:normalizedString') type = 'string';
-
+	if (type == 'xs:base64Binary') type = 'string';
+	if (type == 'xs:hexBinary') type = 'string';
+	if (type == 'xs:NOTATION') type = 'string';
+	
 	if (type == 'xs:boolean') type = 'boolean';
 	if (type == 'xs:date') {
 		type = 'string';
@@ -76,9 +95,11 @@ function mapType(type) {
 		result.minimum = 0;
 	}
 	if (type == 'xs:decimal') type = 'number';
+	if (type == 'xs:double') type = 'number';
+	if (type == 'xs:float') type = 'number';
 	if (type == 'xs:anyURI') {
 		type = 'string';
-		result.format = 'uri';
+		//result.format = 'uri'; //XSD allows relative URIs, it seems JSON schema uri format may not?
 	}
 
 	result.type = type;
@@ -89,6 +110,8 @@ function doElement(src,parent,key) {
 	var type = 'object';
 	var name;
 
+	var simpleType;
+
 	var element = src[key];
 	if ((typeof element == 'undefined') || (null === element)) {
 		console.log('bailing out '+key+' = '+src[key]);
@@ -96,13 +119,14 @@ function doElement(src,parent,key) {
 	}
 
 	if (element["@name"]) {
-		name = element['@name'];
+		name = element["@name"];
 	}
 	if (element["@type"]) {
 		type = element["@type"];
 	}
 	else if ((element["@name"]) && (element["xs:simpleType"])) {
 		type = element["xs:simpleType"]["xs:restriction"]["@base"];
+		simpleType = element["xs:simpleType"]["xs:restriction"];
 	}
 	else if (element["@ref"]) {
 		name = element["@ref"];
@@ -112,7 +136,9 @@ function doElement(src,parent,key) {
 	if (name && type) {
 		//console.log(name+' '+type);
 
-		var isAttribute = (name.startsWith('@'));
+		//var isAttribute = (name.startsWith('@'));
+		//var isAttribute = (key == 'xs:attribute'); // could be in an array
+		var isAttribute = (element["@isAttr"] == true);
 
 		if (!target) target = parent;
 		if (!target.properties) target.properties = {};
@@ -120,11 +146,11 @@ function doElement(src,parent,key) {
 
 		var minOccurs = 1;
 		var maxOccurs = 1;
-		if (element['@minOccurs']) minOccurs = element['@minOccurs'];
-		if (element['@maxOccurs']) maxOccurs = element['@maxOccurs'];
+		if (element["@minOccurs"]) minOccurs = element["@minOccurs"];
+		if (element["@maxOccurs"]) maxOccurs = element["@maxOccurs"];
 		if (maxOccurs == 'unbounded') maxOccurs = 2;
 		if (isAttribute) {
-			if ((!element['@use']) || (element['@use'] != 'required')) minOccurs = 0;
+			if ((!element["@use"]) || (element["@use"] != 'required')) minOccurs = 0;
 		}
 
 		var typeData = mapType(type);
@@ -134,13 +160,21 @@ function doElement(src,parent,key) {
 			newTarget = typeData;
 		}
 
-		if (element['xs:simpleType'] && element['xs:simpleType']['xs:restriction'] && element['xs:simpleType']['xs:restriction']['xs:enumeration']) {
-			var source = element['xs:simpleType']['xs:restriction']['xs:enumeration'];
+		if (element["xs:simpleType"] && element["xs:simpleType"]["xs:restriction"] && element["xs:simpleType"]["xs:restriction"]["xs:enumeration"]) {
+			var source = element["xs:simpleType"]["xs:restriction"]["xs:enumeration"];
 			typeData["enum"] = [];
 			for (var i=0;i<source.length;i++) {
 				typeData["enum"].push(source[i]);
 			}
-			delete typeData.type; // assert it was a string?
+			delete typeData.type; // assert it was a stringish type?
+		}
+		else if (element["xs:restriction"] && element["xs:restriction"]["xs:enumeration"]) {
+			var source = element["xs:restriction"]["xs:enumeration"];
+			typeData["enum"] = [];
+			for (var i=0;i<source.length;i++) {
+				typeData["enum"].push(source[i]);
+			}
+			delete typeData.type; // assert it was a stringish type?
 		}
 		else {
 			if ((typeData.type == 'string') || (typeData.type == 'boolean') || (typeData.type == 'array') || (typeData.type == 'object')
@@ -148,7 +182,7 @@ function doElement(src,parent,key) {
 				//typeData.type = typeData.type;
 			}
 			else {
-				typeData['$ref'] = '#/definitions/'+typeData.type;
+				typeData["$ref"] = '#/definitions/'+typeData.type;
 				delete typeData.type;
 			}
 		}
@@ -161,6 +195,11 @@ function doElement(src,parent,key) {
 		}
 		if (minOccurs > 0) {
 			mandate(target,name);
+		}
+
+		if (simpleType) {
+			if (simpleType["xs:minLength"]) typeData.minLength = simpleType["xs:minLength"];
+			if (simpleType["xs:maxLength"]) typeData.maxLength = simpleType["xs:maxLength"];
 		}
 
 		if (isAttribute) {
@@ -177,15 +216,32 @@ function doElement(src,parent,key) {
 	}
 }
 
-function moveAttributes(obj,parent,key) {
+function moveAttributes(obj,parent,key) {	
 	if (key == 'xs:attribute') {
+		
+		obj[key] = toArray(obj[key]);
+		
+		var target;
+		
 		if (obj["xs:sequence"] && obj["xs:sequence"]["xs:element"]) {
-			if (Array.isArray(obj["xs:sequence"]["xs:element"])) {
-				var attr = clone(obj[key]);
-				attr["@name"] = '@'+attr["@name"];
-				obj["xs:sequence"]["xs:element"].push(attr);
+			obj["xs:sequence"]["xs:element"] = toArray(obj["xs:sequence"]["xs:element"]);
+			target = obj["xs:sequence"]["xs:element"];
+		}
+		if (obj["xs:choice"] && obj["xs:choice"]["xs:element"]) {
+			obj["xs:choice"]["xs:element"] = toArray(obj["xs:choice"]["xs:element"]);
+			target = obj["xs:choice"]["xs:element"];
+		}
+		
+		if (target) {
+			target = toArray(target);
+			for (var i=0;i<obj[key].length;i++) {
+				var attr = clone(obj[key][i]);
+				if (attributePrefix) {
+					attr["@name"] = attributePrefix+attr["@name"];
+				}
+				attr["@isAttr"] = true;
+				target.push(attr);
 			}
-			else console.log('Not an array');
 			delete obj[key];
 		}
 	}
@@ -281,8 +337,12 @@ function recurse(obj,parent,callback,depthFirst) {
 }
 
 module.exports = {
-	getJsonSchema : function getJsonSchema(src,title) {
-		reset();
+	getJsonSchema : function getJsonSchema(src,title,attrPrefix) {
+		reset(attrPrefix);
+
+		recurse(src,{},function(src,parent,key) {
+			moveAttributes(src,parent,key);
+		});
 
 		var obj = {};
 
@@ -314,7 +374,7 @@ module.exports = {
 			moveAttributes(src,parent,key);
 		});
 		recurse(obj,{},function(obj,parent,key) {
-			renameObjects(obj,parent,key); // need to loop this
+			renameObjects(obj,parent,key);
 		});
 
 		recurse(obj.properties,{},function(src,parent,key) {

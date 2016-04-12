@@ -136,7 +136,7 @@ function runXsdTest(filename,components) {
 		console.log('  Convert and compare to JSON');
 		var xml = fs.readFileSync(testdir+'/'+filename,encoding);
 		var j1 = x2j.xml2json(xml,{"attributePrefix": "@", "valueProperty": valueProperty, "coerceTypes": coerceTypes});
-		var obj = xsd2j.getJsonSchema(j1,testdir+'/'+filename);
+		var obj = xsd2j.getJsonSchema(j1,testdir+'/'+filename,'@');
 		var json = JSON.stringify(obj,null,2);
 		var compare = fs.readFileSync('out/'+stem+'.json',encoding);
 		compare = compare.replaceAll('\r\n','\n');
