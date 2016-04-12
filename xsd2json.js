@@ -1,29 +1,9 @@
 'use strict';
 
-/*{}
-*/
-
-/*{
-	"title": "Example Schema",
-	"type": "object",
-	"properties": {
-		"firstName": {
-			"type": "string"
-		},
-		"lastName": {
-			"type": "string"
-		},
-		"age": {
-			"description": "Age in years",
-			"type": "integer",
-			"minimum": 0
-		}
-	},
-	"required": ["firstName", "lastName"]
-}
- */
+var target; // for new properties
 
 function reset() {
+	target = null;
 }
 
 function clone(obj) {
@@ -45,65 +25,6 @@ function rename(obj,key,newName) {
 	delete obj[key];
 }
 
-function mandate(obj,parent,key) {
-	if (!parent.required) parent.required = [];
-	parent.required.push(obj[key]);
-}
-
-function clean(obj,parent,key) {
-	if (key == 'xs:element') rename(obj,key,'properties');
-	if (key == '@elementFormDefault') delete obj[key];
-	if (key == '@targetNamespace') delete obj[key];
-	if (key == '@attributeFormDefault') delete obj[key];
-	if (key == '@xmlns:xs') delete obj[key];
-	if (key == '@xmlns') delete obj[key];
-
-	if (key == 'xs:sequence') {
-		hoik(obj,parent,'xs:sequence','properties'); //may leave empty complexType etc to be cleaned up later
-	}
-
-	if (key == '@minOccurs') {
-		if (obj[key] > 0) mandate(obj,parent,key);
-		delete obj[key];
-	}
-	if (key == '@maxOccurs') {
-		delete obj[key];
-	}
-	//if (key.startsWith('xs:')) delete obj[key];
-	if (key.startsWith('xs:')) rename(obj,key,key.replace('xs:','json:')); //temp
-	if (key.startsWith('xmlns:')) rename(obj,key,key.replace('xmlns:','json:')); //temp
-	if (key.startsWith('@xmlns:')) rename(obj,key,key.replace('@xmlns:','json:')); //temp
-	//if (key.startsWith('@')) delete obj[key];
-	if (key.startsWith('@')) rename(obj,key,key.replace('@','')); //temp
-}
-
-function postProcess(obj,parent,key) {
-	if (key == 'json:required') {
-		hoik(obj,parent,key,'required'); // as we put it one level too far down, in the properties
-	}
-	if (key == 'json:additionalProperties') {
-		hoik(obj,parent,key,'additionalProperties'); // as we put it one level too far down, in the properties
-	}
-	if (key.startsWith('@')) {
-		hoik(obj,obj.properties,key); // as we put it one level too far up, outside the properties
-		if (obj.required) {
-			if (!parent.required) {
-				hoik(obj,parent,'required'); //?
-			}
-			else {
-				obj.required = obj.required.concat(parent.required);
-				delete parent.required;
-			}
-		}
-	}
-	if (key == 'ref') {
-		obj[key] = '#/definitions/'+obj[key];
-		rename(obj,key,'$ref');
-	}
-
-	if (key.startsWith('json:')) rename(obj,key,key.replace('json:',''));
-}
-
 function isEmpty(obj) {
 	if (typeof obj !== 'object') return false;
     for (var prop in obj) {
@@ -114,9 +35,199 @@ function isEmpty(obj) {
  	return true;
 }
 
+function mandate(target,name) {
+	if (!target.required) target.required = [];
+	if (target.required.indexOf(name) < 0) {
+		target.required.push(name);
+	}
+}
+
+function mapType(type) {
+
+	var result = {};
+
+	if (type == 'xs:integer') type = 'integer';
+	if (type == 'xs:string') type = 'string';
+	if (type == 'xs:NMTOKEN') type = 'string';
+	if (type == 'xs:NMTOKENS') type = 'string';
+	if (type == 'xs:ENTITY') type = 'string';
+	if (type == 'xs:ENTITIES') type = 'string';
+	if (type == 'xs:ID') type = 'string';
+	if (type == 'xs:IDREF') type = 'string';
+	if (type == 'xs:IDREFS') type = 'string';
+	if (type == 'xs:token') type = 'string';
+	if (type == 'xs:lamguage') type = 'string';
+	if (type == 'xs:Name') type = 'string';
+	if (type == 'xs:NCName') type = 'string';
+	if (type == 'xs:QName') type = 'string';
+	if (type == 'xs:normalizedString') type = 'string';
+
+	if (type == 'xs:boolean') type = 'boolean';
+	if (type == 'xs:date') {
+		type = 'string';
+		result.format = 'date-time';
+	}
+	if (type == 'xs:dateTime') {
+		type = 'string';
+		result.format = 'date-time';
+	}
+	if (type == 'xs:positiveInteger') {
+		type = 'integer';
+		result.minimum = 0;
+	}
+	if (type == 'xs:decimal') type = 'number';
+	if (type == 'xs:anyURI') {
+		type = 'string';
+		result.format = 'uri';
+	}
+
+	result.type = type;
+	return result;
+}
+
+function doElement(src,parent,key) {
+	var type = 'object';
+	var name;
+
+	var element = src[key];
+	if ((typeof element == 'undefined') || (null === element)) {
+		console.log('bailing out '+key+' = '+src[key]);
+		return false;
+	}
+
+	if (element["@name"]) {
+		name = element['@name'];
+	}
+	if (element["@type"]) {
+		type = element["@type"];
+	}
+	else if ((element["@name"]) && (element["xs:simpleType"])) {
+		type = element["xs:simpleType"]["xs:restriction"]["@base"];
+	}
+	else if (element["@ref"]) {
+		name = element["@ref"];
+		type = element["@ref"];
+	}
+
+	if (name && type) {
+		//console.log(name+' '+type);
+
+		var isAttribute = (name.startsWith('@'));
+
+		if (!target) target = parent;
+		if (!target.properties) target.properties = {};
+		var newTarget = target;
+
+		var minOccurs = 1;
+		var maxOccurs = 1;
+		if (element['@minOccurs']) minOccurs = element['@minOccurs'];
+		if (element['@maxOccurs']) maxOccurs = element['@maxOccurs'];
+		if (maxOccurs == 'unbounded') maxOccurs = 2;
+		if (isAttribute) {
+			if ((!element['@use']) || (element['@use'] != 'required')) minOccurs = 0;
+		}
+
+		var typeData = mapType(type);
+		if (typeData.type == 'object') {
+			typeData.properties = {};
+			//console.log('created properties for /'+name);
+			newTarget = typeData;
+		}
+
+		if (element['xs:simpleType'] && element['xs:simpleType']['xs:restriction'] && element['xs:simpleType']['xs:restriction']['xs:enumeration']) {
+			var source = element['xs:simpleType']['xs:restriction']['xs:enumeration'];
+			typeData["enum"] = [];
+			for (var i=0;i<source.length;i++) {
+				typeData["enum"].push(source[i]);
+			}
+			delete typeData.type; // assert it was a string?
+		}
+		else {
+			if ((typeData.type == 'string') || (typeData.type == 'boolean') || (typeData.type == 'array') || (typeData.type == 'object')
+				|| (typeData.type == 'integer') || (typeData.type == 'number') || (typeData.type == 'null')) {
+				//typeData.type = typeData.type;
+			}
+			else {
+				typeData['$ref'] = '#/definitions/'+typeData.type;
+				delete typeData.type;
+			}
+		}
+		
+		if (maxOccurs > 1) {
+			var newTD = {};
+			newTD.type = 'array';
+			newTD.items = typeData;
+			typeData = newTD;
+		}
+		if (minOccurs > 0) {
+			mandate(target,name);
+		}
+
+		if (isAttribute) {
+			var newProp = {};
+			newProp[name] = typeData;
+			target.properties = Object.assign(newProp,target.properties); // force attributes to top
+		}
+		else {
+			target.properties[name] = typeData;
+		}
+		target.additionalProperties = false;
+
+		target = newTarget;
+	}
+}
+
+function moveAttributes(obj,parent,key) {
+	if (key == 'xs:attribute') {
+		if (obj["xs:sequence"] && obj["xs:sequence"]["xs:element"]) {
+			if (Array.isArray(obj["xs:sequence"]["xs:element"])) {
+				var attr = clone(obj[key]);
+				attr["@name"] = '@'+attr["@name"];
+				obj["xs:sequence"]["xs:element"].push(attr);
+			}
+			else console.log('Not an array');
+			delete obj[key];
+		}
+	}
+}
+
+function renameObjects(obj,parent,key) {
+	if (key == 'xs:complexType') {
+		var name = obj["@name"];
+		if (name) {
+			//console.log('Rename '+key+' to '+name);
+			rename(obj,key,name);
+			//delete obj["@name"];
+		}
+		else console.log('no name');
+	}
+}
+
+function moveProperties(obj,parent,key) {
+	if (key == 'xs:sequence') {
+		if (obj[key].properties) {
+			obj.properties = obj[key].properties;
+			obj.required = obj[key].required;
+			obj.additionalProperties = false;
+			delete obj[key];
+		}
+	}
+}
+
+function clean(obj,parent,key) {
+	if (key == '@minOccurs') delete obj[key];
+	if (key == '@maxOccurs') delete obj[key];
+	if (key == '@name') delete obj[key];
+	if (key == '@type') delete obj[key];
+	if (key == 'xs:simpleType') delete obj[key];
+	if (key == '@use') delete obj[key];
+}
+
 function removeEmpties(obj,parent,key) {
+	var count = 0;
 	if (isEmpty(obj[key])) {
 		delete obj[key];
+		count++;
 	}
 	else {
 		if (Array.isArray(obj[key])) {
@@ -125,186 +236,32 @@ function removeEmpties(obj,parent,key) {
 				if (typeof obj[key][i] !== 'undefined') {
 					newArray.push(obj[key][i]);
 				}
+				else {
+					count++;
+				}
 			}
 			if (newArray.length == 0) {
 				delete obj[key];
+				count++;
 			}
 			else {
 				obj[key] = newArray;
 			}
 		}
 	}
+	return count;
 }
 
-function elements(obj,parent,key) {
-	var element = obj[key];
+function recurse(obj,parent,callback,depthFirst) {
 
-	if (typeof element == 'undefined') {
-		console.log(key); // TODO what triggers this?
-		return false;
-	}
+	var oTarget = target;
 
-	var name = '';
-	var type = 'object';
-	var isAttribute = (key == 'xs:attribute');
-
-	if (element['@name']) {
-		name = element['@name'];
-	}
-
-	if ((element['@name']) && (element['@type'])) {
-		name = element['@name'];
-		type = element['@type'];
-	}
-	else if ((element['@name']) && (element['xs:simpleType'])) {
-		name = element['@name'];
-		type = element['xs:simpleType']['xs:restriction']['@base'];
-	}
-
-	if (name && type) {
-		var orgName = name;
-		var minOccurs = 1;
-		var maxOccurs = 1;
-		if (element['@minOccurs']) minOccurs = element['@minOccurs'];
-		if (element['@maxOccurs']) maxOccurs = element['@maxOccurs'];
-		if (maxOccurs == 'unbounded') maxOccurs = 2;
-		if (isAttribute) {
-			name = '@' + name;
-			orgName = name;
-			name = '@' + name;
-			if ((!element['@use']) || (element['@use'] != 'required')) minOccurs = 0;
-		}
-
-		/*
-			JSON Schema defines seven primitive types for JSON values:
-
-			array   A JSON array.
-			boolean A JSON boolean.
-			integer A JSON number without a fraction or exponent part.
-			number  Any JSON number. Number includes integer.
-			null    The JSON null value.
-			object  A JSON object.
-			string  A JSON string.
-		*/
-		parent[name] = {};
-
-		if (type == 'xs:integer') type = 'integer';
-		if (type == 'xs:string') type = 'string';
-		if (type == 'xs:NMTOKEN') type = 'string';
-		if (type == 'xs:NMTOKENS') type = 'string';
-		if (type == 'xs:ENTITY') type = 'string';
-		if (type == 'xs:ENTITIES') type = 'string';
-		if (type == 'xs:ID') type = 'string';
-		if (type == 'xs:IDREF') type = 'string';
-		if (type == 'xs:IDREFS') type = 'string';
-		if (type == 'xs:token') type = 'string';
-		if (type == 'xs:lamguage') type = 'string';
-		if (type == 'xs:Name') type = 'string';
-		if (type == 'xs:NCName') type = 'string';
-		if (type == 'xs:QName') type = 'string';
-		if (type == 'xs:normalizedString') type = 'string';
-		
-		if (type == 'xs:boolean') type = 'boolean';
-		if (type == 'xs:date') {
-			type = 'string';
-			parent[name].format = 'date-time';
-		}
-		if (type == 'xs:dateTime') {
-			type = 'string';
-			parent[name].format = 'date-time';
-		}
-		if (type == 'xs:positiveInteger') {
-			type = 'integer';
-			parent[name]["json:minimum"] = 0;
-		}
-		if (type == 'xs:decimal') type = 'number';
-		if (type == 'xs:anyURI') {
-			type = 'string';
-			parent[name].format = 'uri';
-		}
-
-		if (element['xs:simpleType'] && element['xs:simpleType']['xs:restriction'] && element['xs:simpleType']['xs:restriction']['xs:enumeration']) {
-			var source = element['xs:simpleType']['xs:restriction']['xs:enumeration'];
-			parent[name]["enum"] = [];
-			for (var i=0;i<source.length;i++) {
-				parent[name]["enum"].push(source[i]);
-			}
-		}
-		else {
-			if ((type == 'string') || (type == 'boolean') || (type == 'array') || (type == 'object') || (type == 'integer') 
-				|| (type == 'number') || (type == 'null')) {
-				parent[name].type = type;
-			}
-			else {
-				parent[name]['$ref'] = '#/definitions/'+type;
-			}
-		}
-		// TODO process restrictions, patterns, simple types
-
-		if (!isAttribute) parent['json:additionalProperties'] = false;
-		if (minOccurs >= 1) {
-			if (!parent['json:required']) {
-				parent['json:required'] = [];
-			}
-			parent['json:required'].push(orgName);
-		}
-
-		if (maxOccurs > 1) {
-			var items = clone(parent[name]);
-			parent[name] = {};
-			parent[name].type = 'array';
-			parent[name].items = items; // like a hoik downwards
-		}
-
-		if (type != 'object') delete obj[key];
-	}
-}
-
-function extractDefinitions(obj,parent,top) {
-	if (Array.isArray(obj.properties)) {
-		var start = 0;
-		if (isEmpty(parent)) start = 1;
-		if (!top.definitions) top.definitions = {};
-		for (var i=start;i<obj.properties.length;i++) {
-			var o = obj.properties[i];
-			if (o) {
-				top.definitions[o.name] = {};
-				top.definitions[o.name].type = 'object';
-				top.definitions[o.name].properties = o.properties;
-				if (o.required) {
-					top.definitions[o.name].required = o.required;
-				}
-				var isArray = false;
-				if (!parent.properties) {
-					parent.properties = {};
-				}
-				if (parent.properties[o.name] && parent.properties[o.name].type) {
-					if (parent.properties[o.name].type == 'array') isArray = true;
-				}
-				parent.properties[o.name] = {};
-				if (isArray) {
-					parent.properties[o.name].type = 'array';
-					parent.properties[o.name].items = {};
-					parent.properties[o.name].items['$ref'] = '#/definitions/'+o.name;
-				}
-				else {
-					parent.properties[o.name]['$ref'] = '#/definitions/'+o.name;
-				}
-			}
-		}
-		if (start > 0) {
-			obj.properties = obj.properties[0];
-		}
-		else {
-			delete obj.properties;
-		}
-	}
-}
-
-function recurse(obj,parent,callback) {
 	for (var key in obj) {
+		target = oTarget;
 		// skip loop if the property is from prototype
 		if (!obj.hasOwnProperty(key)) continue;
+
+		if (!depthFirst) callback(obj,parent,key);
 
 		var array = Array.isArray(obj);
 
@@ -316,15 +273,18 @@ function recurse(obj,parent,callback) {
 			}
 			recurse(obj[key],obj,callback);
 		}
-		callback(obj,parent,key);
 
+		if (depthFirst) callback(obj,parent,key);
 	}
+
 	return obj;
 }
 
 module.exports = {
 	getJsonSchema : function getJsonSchema(src,title) {
-		var obj = clone(src);
+		reset();
+
+		var obj = {};
 
 		var id = src["xs:schema"]["@targetNamespace"];
 		if (!id) {
@@ -337,41 +297,67 @@ module.exports = {
 		if (id) {
 			obj.id = id;
 		}
-		obj.type = 'object';
 
-		var rootElementName = obj["xs:schema"]["xs:element"]["@name"];
-		delete obj["xs:schema"]["xs:element"]["@name"]; // as it doesn't have a type it gets left hanging around
-		obj.dummy = {};
-		obj.dummy["json:required"] = [];
-		obj.dummy["json:required"].push(rootElementName);
-		obj.properties = {};
-		hoik(obj["xs:schema"],obj.properties,'xs:element',rootElementName)
-		
-		recurse(obj,{},function(obj,parent,key) {
-			elements(obj,parent,key);
+		var rootElement = src["xs:schema"]["xs:element"];
+		if (Array.isArray(rootElement)) {
+			rootElement = rootElement[0];
+		}
+		var rootElementName = rootElement["@name"];
+
+		obj.type = 'object';
+		obj.properties = clone(rootElement);
+		obj.required = [];
+		obj.required.push(rootElementName);
+		obj.additionalProperties = false;
+
+		recurse(obj.properties,{},function(src,parent,key) {
+			moveAttributes(src,parent,key);
 		});
+		recurse(obj,{},function(obj,parent,key) {
+			renameObjects(obj,parent,key); // need to loop this
+		});
+
+		recurse(obj.properties,{},function(src,parent,key) {
+			doElement(src,parent,key);
+		});
+
+		recurse(obj,{},function(obj,parent,key) {
+			moveProperties(obj,parent,key);
+		});
+
+		// remove rootElement to leave ref'd definitions
+		if (Array.isArray(src["xs:schema"]["xs:element"])) {
+			delete src["xs:schema"]["xs:element"][0];
+		}
+		else {
+			delete src["xs:schema"]["xs:element"];
+		}
+
+		obj.definitions = clone(src);
+		obj.definitions.properties = {};
+		target = obj.definitions;
+
+		recurse(obj.definitions,{},function(src,parent,key) {
+			doElement(src,parent,key);
+		});
+		
+		// correct for /definitions/properties
+		obj.definitions = obj.definitions.properties;
 
 		recurse(obj,{},function(obj,parent,key) {
 			clean(obj,parent,key);
 		});
 
-		hoik(obj['json:schema'],obj,'object');
+		delete(obj.definitions["xs:schema"]);
 
-		recurse(obj,{},function(obj,parent,key) {
-			removeEmpties(obj,parent,key); // first pass
-		});
-		recurse(obj,{},function(obj,parent,key) {
-			postProcess(obj,parent,key);
-		});
-		recurse(obj,{},function(obj,parent,key) {
-			removeEmpties(obj,parent,key); // second pass to clean up anything emptied by first pass
-		});
+		var count = 1;
+		while (count>0) {
+			count = 0;
+			recurse(obj,{},function(obj,parent,key) {
+				count += removeEmpties(obj,parent,key); // first pass
+			});
+		}
 
-		recurse(obj,{},function(sub,parent,key) {
-			extractDefinitions(sub,parent,obj);
-		});
-
-		obj.additionalProperties = false;
 		return obj;
 	}
 };

@@ -33,14 +33,14 @@
           ]
         }
       },
-      "additionalProperties": false,
       "required": [
         "Recipient",
         "House",
         "Street",
         "Town",
         "PostCode"
-      ]
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
