@@ -182,6 +182,10 @@ function doElement(src,parent,key) {
 		type = element["xs:simpleType"]["xs:restriction"]["@base"];
 		simpleType = element["xs:simpleType"]["xs:restriction"];
 	}
+	else if ((element["@name"]) && (element["xs:restriction"])) {
+		type = element["xs:restriction"]["@base"];
+		simpleType = element["xs:restriction"];
+	}
 	else if (element["@ref"]) {
 		name = element["@ref"];
 		type = element["@ref"];
@@ -205,6 +209,10 @@ function doElement(src,parent,key) {
 		if (element["@isChoice"]) minOccurs = 0;
 
 		var typeData = mapType(type);
+		if (isAttribute && (typeData.type == 'object')) {
+			typeData.type = 'string'; // handle case where attribute has no defined type
+		}
+
 		if (typeData.type == 'object') {
 			typeData.properties = {};
 			newTarget = typeData;
@@ -250,12 +258,13 @@ function doElement(src,parent,key) {
 		if (simpleType) {
 			if (simpleType["xs:minLength"]) typeData.minLength = parseInt(simpleType["xs:minLength"]["@value"],10);
 			if (simpleType["xs:maxLength"]) typeData.maxLength = parseInt(simpleType["xs:maxLength"]["@value"],10);
+			if (simpleType["xs:pattern"]) typeData.pattern = simpleType["xs:pattern"]["@value"];
 		}
 
 		if (isAttribute) {
 			var newProp = {};
 			newProp[name] = typeData;
-			target.properties = Object.assign(newProp,target.properties); // force attributes to top
+			target.properties = Object.assign({},newProp,target.properties); // force attributes to top
 		}
 		else {
 			target.properties[name] = typeData;
@@ -453,7 +462,8 @@ module.exports = {
 
 		// remove rootElement to leave ref'd definitions
 		if (Array.isArray(src["xs:schema"]["xs:element"])) {
-			src["xs:schema"]["xs:element"] = src["xs:schema"]["xs:element"].splice(0,1);
+			//src["xs:schema"]["xs:element"] = src["xs:schema"]["xs:element"].splice(0,1);
+			delete src["xs:schema"]["xs:element"][0];
 		}
 		else {
 			delete src["xs:schema"]["xs:element"];
