@@ -37,8 +37,8 @@ function diff(s1,s2) {
 			for (var c=cs;c<l;c++) {
 				console.log('  '+l1[c]);
 			}
-			console.log('- '+red+l1[l]+normal);
-			console.log('+ '+green+l2[l]+normal);
+			console.log('- '+red+l2[l]+normal);
+			console.log('+ '+green+l1[l]+normal);
 			cs = Math.min(top,l+4);
 			for (c=l+1;c<cs;c++) {
 				console.log('  '+((l1[c] == l2[c]) ? green : red)+l1[c]+normal);
@@ -136,7 +136,7 @@ function runXsdTest(filename,components) {
 		console.log('  Convert and compare to JSON');
 		var xml = fs.readFileSync(testdir+'/'+filename,encoding);
 		var j1 = x2j.xml2json(xml,{"attributePrefix": "@", "valueProperty": valueProperty, "coerceTypes": coerceTypes});
-		var obj = xsd2j.getJsonSchema(j1,testdir+'/'+filename,'@');
+		var obj = xsd2j.getJsonSchema(j1,testdir+'/'+filename,'');
 		var json = JSON.stringify(obj,null,2);
 		var compare = fs.readFileSync('out/'+stem+'.json',encoding);
 		compare = compare.replaceAll('\r\n','\n');

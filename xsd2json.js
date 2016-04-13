@@ -5,10 +5,12 @@ var debuglog = util.debuglog('jgexml');
 
 var target; // for new properties
 var attributePrefix = '@';
+var laxURIs = false;
 
-function reset(attrPrefix) {
+function reset(attrPrefix,laxURIprocessing) {
 	target = null;
 	attributePrefix = attrPrefix;
+	laxURIs = laxURIprocessing;
 }
 
 function clone(obj) {
@@ -147,14 +149,22 @@ function mapType(type) {
 		result.pattern = '[0-9]{4}\-[0-9]{2}';
 	}
 
+	if (type == 'xs:language') {
+		type = 'string';
+		result.pattern = '[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*';
+	}
+
 	if (type == 'xs:decimal') type = 'number';
 	if (type == 'xs:double') type = 'number';
 	if (type == 'xs:float') type = 'number';
 
 	if (type == 'xs:anyURI') {
 		type = 'string';
-		result.format = 'uri'; //XSD allows relative URIs, it seems JSON schema uri format may not?
-		//result.pattern = '^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?';
+		if (!laxURIs) {
+			result.format = 'uri'; //XSD allows relative URIs, it seems JSON schema uri format may not?
+			// this regex breaks swagger validators
+			//result.pattern = '^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?';
+		}
 	}
 
 	result.type = type;
@@ -192,6 +202,7 @@ function doElement(src,parent,key) {
 	}
 
 	if (name && type) {
+		//console.log(name+' = '+type);
 		var isAttribute = (element["@isAttr"] == true);
 
 		if (!target) target = parent;
@@ -240,7 +251,12 @@ function doElement(src,parent,key) {
 				//typeData.type = typeData.type;
 			}
 			else {
-				typeData["$ref"] = '#/definitions/'+typeData.type;
+				if (typeData.type.indexOf(':')>=0) {
+					typeData["$ref"] = '/'+typeData.type.replace(':','/');
+				}
+				else {
+					typeData["$ref"] = '#/definitions/'+typeData.type;
+				}
 				delete typeData.type;
 			}
 		}
@@ -261,14 +277,7 @@ function doElement(src,parent,key) {
 			if (simpleType["xs:pattern"]) typeData.pattern = simpleType["xs:pattern"]["@value"];
 		}
 
-		if (isAttribute) {
-			var newProp = {};
-			newProp[name] = typeData;
-			target.properties = Object.assign({},newProp,target.properties); // force attributes to top
-		}
-		else {
-			target.properties[name] = typeData;
-		}
+		target.properties[name] = typeData; // Object.assign 'corrupts' property ordering
 		target.additionalProperties = false;
 
 		target = newTarget;
@@ -350,6 +359,7 @@ function moveProperties(obj,parent,key) {
 
 function clean(obj,parent,key) {
 	if (key == '@name') delete obj[key];
+	if (key == '@type') delete obj[key];
 }
 
 function removeEmpties(obj,parent,key) {
@@ -412,8 +422,8 @@ function recurse(obj,parent,callback,depthFirst) {
 }
 
 module.exports = {
-	getJsonSchema : function getJsonSchema(src,title,attrPrefix) {
-		reset(attrPrefix);
+	getJsonSchema : function getJsonSchema(src,title,attrPrefix,laxURIs) { // TODO convert to options parameter
+		reset(attrPrefix,laxURIs);
 
 		recurse(src,{},function(src,parent,key) {
 			moveAttributes(src,parent,key);
@@ -444,6 +454,7 @@ module.exports = {
 
 		obj.type = 'object';
 		obj.properties = clone(rootElement);
+
 		obj.required = [];
 		obj.required.push(rootElementName);
 		obj.additionalProperties = false;
@@ -452,7 +463,15 @@ module.exports = {
 			renameObjects(obj,parent,key);
 		});
 
-		recurse(obj.properties,{},function(src,parent,key) {
+		// support for schemas with just a top-level name and type (no complexType/sequence etc)
+		if (obj.properties["@type"]) {
+			target = obj; // tell it where to put the properties
+		}
+		else {
+			delete obj.properties["@name"]; // to prevent root-element being picked up twice
+		}
+
+		recurse(obj,{},function(src,parent,key) { // was obj.properties
 			doElement(src,parent,key);
 		});
 

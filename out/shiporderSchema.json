@@ -5,12 +5,6 @@
   "properties": {
     "shiporder": {
       "properties": {
-        "@invoiceid": {
-          "type": "string"
-        },
-        "@orderid": {
-          "type": "string"
-        },
         "orderperson": {
           "type": "string"
         },
@@ -67,13 +61,19 @@
             ],
             "additionalProperties": false
           }
+        },
+        "orderid": {
+          "type": "string"
+        },
+        "invoiceid": {
+          "type": "string"
         }
       },
       "required": [
         "orderperson",
         "shipto",
         "item",
-        "@orderid"
+        "orderid"
       ],
       "additionalProperties": false
     }

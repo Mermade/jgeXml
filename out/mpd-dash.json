@@ -1,0 +1,820 @@
+{
+  "title": "test/mpd-dash.xsd",
+  "$schema": "http://json-schema.org/schema#",
+  "id": "urn:mpeg:dash:schema:mpd:2011",
+  "type": "object",
+  "properties": {
+    "MPD": {
+      "$ref": "#/definitions/MPDtype"
+    }
+  },
+  "required": [
+    "MPD"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "MPDtype": {
+      "type": "object",
+      "properties": {
+        "ProgramInformation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ProgramInformationType"
+          }
+        },
+        "BaseURL": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BaseURLType"
+          }
+        },
+        "Location": {
+          "type": "array",
+          "items": {
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "Period": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PeriodType"
+          }
+        },
+        "Metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MetricsType"
+          }
+        },
+        "id": {
+          "type": "string"
+        },
+        "profiles": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/PresentationType"
+        },
+        "availabilityStartTime": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "availabilityEndTime": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "publishTime": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "mediaPresentationDuration": {
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
+          "type": "string"
+        },
+        "minimumUpdatePeriod": {
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
+          "type": "string"
+        },
+        "minBufferTime": {
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
+          "type": "string"
+        },
+        "timeShiftBufferDepth": {
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
+          "type": "string"
+        },
+        "suggestedPresentationDelay": {
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
+          "type": "string"
+        },
+        "maxSegmentDuration": {
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
+          "type": "string"
+        },
+        "maxSubsegmentDuration": {
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "Period",
+        "profiles",
+        "minBufferTime"
+      ]
+    },
+    "PeriodType": {
+      "type": "object",
+      "properties": {
+        "BaseURL": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BaseURLType"
+          }
+        },
+        "SegmentBase": {
+          "$ref": "#/definitions/SegmentBaseType"
+        },
+        "SegmentList": {
+          "$ref": "#/definitions/SegmentListType"
+        },
+        "SegmentTemplate": {
+          "$ref": "#/definitions/SegmentTemplateType"
+        },
+        "AssetIdentifier": {
+          "$ref": "#/definitions/DescriptorType"
+        },
+        "EventStream": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EventStreamType"
+          }
+        },
+        "AdaptationSet": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AdaptationSetType"
+          }
+        },
+        "Subset": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SubsetType"
+          }
+        },
+        "xlink:href": {
+          "$ref": "/xlink/href"
+        },
+        "xlink:actuate": {
+          "$ref": "/xlink/actuate"
+        },
+        "id": {
+          "type": "string"
+        },
+        "start": {
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
+          "type": "string"
+        },
+        "duration": {
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
+          "type": "string"
+        },
+        "bitstreamSwitching": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "EventStreamType": {
+      "type": "object",
+      "properties": {
+        "Event": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EventType"
+          }
+        },
+        "xlink:href": {
+          "$ref": "/xlink/href"
+        },
+        "xlink:actuate": {
+          "$ref": "/xlink/actuate"
+        },
+        "schemeIdUri": {
+          "format": "uri",
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "timescale": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "schemeIdUri"
+      ]
+    },
+    "EventType": {
+      "type": "object",
+      "properties": {
+        "presentationTime": {
+          "type": "integer"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "id": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AdaptationSetType": {
+      "type": "object",
+      "properties": {
+        "Accessibility": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DescriptorType"
+          }
+        },
+        "Role": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DescriptorType"
+          }
+        },
+        "Rating": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DescriptorType"
+          }
+        },
+        "Viewpoint": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DescriptorType"
+          }
+        },
+        "ContentComponent": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ContentComponentType"
+          }
+        },
+        "BaseURL": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BaseURLType"
+          }
+        },
+        "SegmentBase": {
+          "$ref": "#/definitions/SegmentBaseType"
+        },
+        "SegmentList": {
+          "$ref": "#/definitions/SegmentListType"
+        },
+        "SegmentTemplate": {
+          "$ref": "#/definitions/SegmentTemplateType"
+        },
+        "Representation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RepresentationType"
+          }
+        },
+        "xlink:href": {
+          "$ref": "/xlink/href"
+        },
+        "xlink:actuate": {
+          "$ref": "/xlink/actuate"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "group": {
+          "type": "integer"
+        },
+        "lang": {
+          "pattern": "[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*",
+          "type": "string"
+        },
+        "contentType": {
+          "type": "string"
+        },
+        "par": {
+          "$ref": "#/definitions/RatioType"
+        },
+        "minBandwidth": {
+          "type": "integer"
+        },
+        "maxBandwidth": {
+          "type": "integer"
+        },
+        "minWidth": {
+          "type": "integer"
+        },
+        "maxWidth": {
+          "type": "integer"
+        },
+        "minHeight": {
+          "type": "integer"
+        },
+        "maxHeight": {
+          "type": "integer"
+        },
+        "minFrameRate": {
+          "$ref": "#/definitions/FrameRateType"
+        },
+        "maxFrameRate": {
+          "$ref": "#/definitions/FrameRateType"
+        },
+        "segmentAlignment": {
+          "$ref": "#/definitions/ConditionalUintType"
+        },
+        "subsegmentAlignment": {
+          "$ref": "#/definitions/ConditionalUintType"
+        },
+        "subsegmentStartsWithSAP": {
+          "$ref": "#/definitions/SAPType"
+        },
+        "bitstreamSwitching": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ContentComponentType": {
+      "type": "object",
+      "properties": {
+        "Accessibility": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DescriptorType"
+          }
+        },
+        "Role": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DescriptorType"
+          }
+        },
+        "Rating": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DescriptorType"
+          }
+        },
+        "Viewpoint": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DescriptorType"
+          }
+        },
+        "id": {
+          "type": "integer"
+        },
+        "lang": {
+          "pattern": "[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*",
+          "type": "string"
+        },
+        "contentType": {
+          "type": "string"
+        },
+        "par": {
+          "$ref": "#/definitions/RatioType"
+        }
+      },
+      "additionalProperties": false
+    },
+    "RepresentationType": {
+      "type": "object",
+      "properties": {
+        "BaseURL": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BaseURLType"
+          }
+        },
+        "SubRepresentation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SubRepresentationType"
+          }
+        },
+        "SegmentBase": {
+          "$ref": "#/definitions/SegmentBaseType"
+        },
+        "SegmentList": {
+          "$ref": "#/definitions/SegmentListType"
+        },
+        "SegmentTemplate": {
+          "$ref": "#/definitions/SegmentTemplateType"
+        },
+        "id": {
+          "$ref": "#/definitions/StringNoWhitespaceType"
+        },
+        "bandwidth": {
+          "type": "integer"
+        },
+        "qualityRanking": {
+          "type": "integer"
+        },
+        "dependencyId": {
+          "$ref": "#/definitions/StringVectorType"
+        },
+        "mediaStreamStructureId": {
+          "$ref": "#/definitions/StringVectorType"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "bandwidth"
+      ]
+    },
+    "SubRepresentationType": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "integer"
+        },
+        "dependencyLevel": {
+          "$ref": "#/definitions/UIntVectorType"
+        },
+        "bandwidth": {
+          "type": "integer"
+        },
+        "contentComponent": {
+          "$ref": "#/definitions/StringVectorType"
+        }
+      },
+      "additionalProperties": false
+    },
+    "RepresentationBaseType": {
+      "type": "object",
+      "properties": {
+        "FramePacking": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DescriptorType"
+          }
+        },
+        "AudioChannelConfiguration": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DescriptorType"
+          }
+        },
+        "ContentProtection": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DescriptorType"
+          }
+        },
+        "EssentialProperty": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DescriptorType"
+          }
+        },
+        "SupplementalProperty": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DescriptorType"
+          }
+        },
+        "InbandEventStream": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DescriptorType"
+          }
+        },
+        "profiles": {
+          "type": "string"
+        },
+        "width": {
+          "type": "integer"
+        },
+        "height": {
+          "type": "integer"
+        },
+        "sar": {
+          "$ref": "#/definitions/RatioType"
+        },
+        "frameRate": {
+          "$ref": "#/definitions/FrameRateType"
+        },
+        "audioSamplingRate": {
+          "type": "string"
+        },
+        "mimeType": {
+          "type": "string"
+        },
+        "segmentProfiles": {
+          "type": "string"
+        },
+        "codecs": {
+          "type": "string"
+        },
+        "maximumSAPPeriod": {
+          "type": "number"
+        },
+        "startWithSAP": {
+          "$ref": "#/definitions/SAPType"
+        },
+        "maxPlayoutRate": {
+          "type": "number"
+        },
+        "codingDependency": {
+          "type": "boolean"
+        },
+        "scanType": {
+          "$ref": "#/definitions/VideoScanType"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SubsetType": {
+      "type": "object",
+      "properties": {
+        "contains": {
+          "$ref": "#/definitions/UIntVectorType"
+        },
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "contains"
+      ],
+      "additionalProperties": false
+    },
+    "SegmentBaseType": {
+      "type": "object",
+      "properties": {
+        "Initialization": {
+          "$ref": "#/definitions/URLType"
+        },
+        "RepresentationIndex": {
+          "$ref": "#/definitions/URLType"
+        },
+        "timescale": {
+          "type": "integer"
+        },
+        "presentationTimeOffset": {
+          "type": "integer"
+        },
+        "indexRange": {
+          "type": "string"
+        },
+        "indexRangeExact": {
+          "type": "boolean"
+        },
+        "availabilityTimeOffset": {
+          "type": "number"
+        },
+        "availabilityTimeComplete": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "MultipleSegmentBaseType": {
+      "type": "object",
+      "properties": {
+        "SegmentTimeline": {
+          "$ref": "#/definitions/SegmentTimelineType"
+        },
+        "BitstreamSwitching": {
+          "$ref": "#/definitions/URLType"
+        },
+        "duration": {
+          "type": "integer"
+        },
+        "startNumber": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false
+    },
+    "URLType": {
+      "type": "object",
+      "properties": {
+        "sourceURL": {
+          "format": "uri",
+          "type": "string"
+        },
+        "range": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SegmentListType": {
+      "type": "object",
+      "properties": {
+        "SegmentURL": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SegmentURLType"
+          }
+        },
+        "xlink:href": {
+          "$ref": "/xlink/href"
+        },
+        "xlink:actuate": {
+          "$ref": "/xlink/actuate"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SegmentURLType": {
+      "type": "object",
+      "properties": {
+        "media": {
+          "format": "uri",
+          "type": "string"
+        },
+        "mediaRange": {
+          "type": "string"
+        },
+        "index": {
+          "format": "uri",
+          "type": "string"
+        },
+        "indexRange": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SegmentTemplateType": {
+      "type": "object",
+      "properties": {
+        "media": {
+          "type": "string"
+        },
+        "index": {
+          "type": "string"
+        },
+        "initialization": {
+          "type": "string"
+        },
+        "bitstreamSwitching": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SegmentTimelineType": {
+      "type": "object",
+      "properties": {
+        "S": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "t": {
+                "type": "integer"
+              },
+              "d": {
+                "type": "integer"
+              },
+              "r": {
+                "type": "integer"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "d"
+            ]
+          }
+        }
+      },
+      "required": [
+        "S"
+      ],
+      "additionalProperties": false
+    },
+    "BaseURLType": {
+      "type": "object",
+      "properties": {
+        "serviceLocation": {
+          "type": "string"
+        },
+        "byteRange": {
+          "type": "string"
+        },
+        "availabilityTimeOffset": {
+          "type": "number"
+        },
+        "availabilityTimeComplete": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ProgramInformationType": {
+      "type": "object",
+      "properties": {
+        "Title": {
+          "type": "string"
+        },
+        "Source": {
+          "type": "string"
+        },
+        "Copyright": {
+          "type": "string"
+        },
+        "lang": {
+          "pattern": "[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*",
+          "type": "string"
+        },
+        "moreInformationURL": {
+          "format": "uri",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "DescriptorType": {
+      "type": "object",
+      "properties": {
+        "schemeIdUri": {
+          "format": "uri",
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "schemeIdUri"
+      ],
+      "additionalProperties": false
+    },
+    "MetricsType": {
+      "type": "object",
+      "properties": {
+        "Reporting": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DescriptorType"
+          }
+        },
+        "Range": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RangeType"
+          }
+        },
+        "metrics": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "Reporting",
+        "metrics"
+      ],
+      "additionalProperties": false
+    },
+    "RangeType": {
+      "type": "object",
+      "properties": {
+        "starttime": {
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
+          "type": "string"
+        },
+        "duration": {
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "PresentationType": {
+      "enum": [
+        "static",
+        "dynamic"
+      ]
+    },
+    "RatioType": {
+      "type": "string",
+      "pattern": "[0-9]*:[0-9]*"
+    },
+    "FrameRateType": {
+      "type": "string",
+      "pattern": "[0-9]*[0-9](/[0-9]*[0-9])?"
+    },
+    "ConditionalUintType": {
+      "type": "object"
+    },
+    "StringNoWhitespaceType": {
+      "type": "string",
+      "pattern": "[^\\r\\n\\t \\p{Z}]*"
+    },
+    "SAPType": {
+      "type": "integer"
+    },
+    "VideoScanType": {
+      "enum": [
+        "progressive",
+        "interlaced",
+        "unknown"
+      ]
+    },
+    "StringVectorType": {
+      "type": "object"
+    },
+    "UIntVectorType": {
+      "type": "object"
+    }
+  }
+}
