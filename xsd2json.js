@@ -153,8 +153,8 @@ function mapType(type) {
 
 	if (type == 'xs:anyURI') {
 		type = 'string';
-		//result.format = 'uri'; //XSD allows relative URIs, it seems JSON schema uri format may not?
-		result.pattern = '^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?';
+		result.format = 'uri'; //XSD allows relative URIs, it seems JSON schema uri format may not?
+		//result.pattern = '^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?';
 	}
 
 	result.type = type;
