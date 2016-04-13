@@ -1,10 +1,13 @@
 'use strict';
 
+// TODO JSON Patch http://tools.ietf.org/html/rfc6902
+
 String.prototype.replaceAll = function(search, replacement) {
     var target = this;
     return target.split(search).join(replacement);
 };
 
+// replace [n] with /n syntax and we are close to JSON Pointer http://tools.ietf.org/html/rfc6901 specification
 function fetchFromObject(obj, prop) {
     //property not found
     if (typeof obj === 'undefined') return false;
