@@ -109,7 +109,7 @@ function mapType(type) {
 
 	if (type == 'xs:date') {
 		type = 'string';
-		result.pattern = '^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$';
+		result.pattern = '^[0-9]{4}\-[0-9]{2}\-[0-9]{2}.*$'; //timezones
 	}
 	if (type == 'xs:dateTime') {
 		type = 'string';
@@ -117,31 +117,31 @@ function mapType(type) {
 	}
 	if (type == 'xs:time') {
 		type = 'string';
-		//result.pattern = '';
+		result.pattern = '^[0-9]{2}\:[0-9]{2}:[0-9]{2}.*$'; // timezones
 	}
 	if (type == 'xs:duration') {
 		type = 'string';
-		//result.pattern = '';
+		result.pattern = '^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$';
 	}
 	if (type == 'xs:gDay') {
 		type = 'string';
-		//result.pattern = '';
+		result.pattern = '[0-9]{2}';
 	}
 	if (type == 'xs:gMonth') {
 		type = 'string';
-		//result.pattern = '';
+		result.pattern = '[0-9]{2}';
 	}
 	if (type == 'xs:gMonthDay') {
 		type = 'string';
-		//result.pattern = '';
+		result.pattern = '[0-9]{2}\-[0-9]{2}';
 	}
 	if (type == 'xs:gYear') {
 		type = 'string';
-		//result.pattern = '';
+		result.pattern = '[0-9]{4}';
 	}
 	if (type == 'xs:gYearMonth') {
 		type = 'string';
-		//result.pattern = '';
+		result.pattern = '[0-9]{4}\-[0-9]{2}';
 	}
 
 	if (type == 'xs:decimal') type = 'number';

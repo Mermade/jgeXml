@@ -58,7 +58,9 @@
         "@type": "http://www.w3.org/ns/wsdl/soap",
         "@wsoap:protocol": "http://www.w3.org/2003/05/soap/bindings/HTTP/",
         "@wsoap:mepDefault": "http://www.w3.org/2003/05/soap/mep/request-response",
-        "operation": "tns:Get"
+        "operation": {
+          "@ref": "tns:Get"
+        }
       }
     ],
     "service": {

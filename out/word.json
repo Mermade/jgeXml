@@ -28,7 +28,9 @@
           "@w:id": "0",
           "@w:name": "_GoBack"
         },
-        "w:bookmarkEnd": "0"
+        "w:bookmarkEnd": {
+          "@w:id": "0"
+        }
       },
       "w:sectPr": {
         "@w:rsidR": "00656562",
@@ -45,8 +47,12 @@
           "@w:footer": "708",
           "@w:gutter": "0"
         },
-        "w:cols": "708",
-        "w:docGrid": "360"
+        "w:cols": {
+          "@w:space": "708"
+        },
+        "w:docGrid": {
+          "@w:linePitch": "360"
+        }
       }
     }
   }
