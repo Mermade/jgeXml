@@ -1,5 +1,8 @@
 'use strict';
 
+var util = require('util');
+var debuglog = util.debuglog('jgexml');
+
 var target; // for new properties
 var attributePrefix = '@';
 
@@ -166,10 +169,8 @@ function doElement(src,parent,key) {
 
 	var element = src[key];
 	if ((typeof element == 'undefined') || (null === element)) {
-		console.log('bailing out '+key+' = '+src[key]);
 		return false;
 	}
-	if (key == 'xs:choice') console.log(JSON.stringify(src[key],null,2));
 
 	if (element["@name"]) {
 		name = element["@name"];
@@ -187,8 +188,6 @@ function doElement(src,parent,key) {
 	}
 
 	if (name && type) {
-		//console.log(name+' '+type);
-
 		var isAttribute = (element["@isAttr"] == true);
 
 		if (!target) target = parent;
@@ -323,11 +322,9 @@ function renameObjects(obj,parent,key) {
 	if (key == 'xs:complexType') {
 		var name = obj["@name"];
 		if (name) {
-			//console.log('Rename '+key+' to '+name);
 			rename(obj,key,name);
-			//delete obj["@name"];
 		}
-		else console.log('no name');
+		else debuglog('complexType with no name');
 	}
 }
 
@@ -442,9 +439,6 @@ module.exports = {
 		obj.required.push(rootElementName);
 		obj.additionalProperties = false;
 
-		//recurse(obj.properties,{},function(src,parent,key) {
-		//	moveAttributes(src,parent,key);
-		//});
 		recurse(obj,{},function(obj,parent,key) {
 			renameObjects(obj,parent,key);
 		});
@@ -459,7 +453,7 @@ module.exports = {
 
 		// remove rootElement to leave ref'd definitions
 		if (Array.isArray(src["xs:schema"]["xs:element"])) {
-			delete src["xs:schema"]["xs:element"][0];
+			src["xs:schema"]["xs:element"] = src["xs:schema"]["xs:element"].splice(0,1);
 		}
 		else {
 			delete src["xs:schema"]["xs:element"];
