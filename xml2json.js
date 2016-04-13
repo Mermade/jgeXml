@@ -25,7 +25,7 @@ function getString() {
 	return '';
 }
 
-function postProcess(obj,parent) {
+function postProcess(obj,parent,options) {
 
 	for (var key in obj) {
 		// skip loop if the property is from prototype
@@ -37,15 +37,15 @@ function postProcess(obj,parent) {
 		}
 		if ((typeof obj[key] == 'object') && (parent !== '')) {
 			var firstKey = Object.keys(obj[key])[0];
-			if ((Object.keys(obj[key]).length == 1) && (typeof obj[key][firstKey] != 'object')) {
-				obj[key] = obj[key][firstKey];
+			if ((firstKey == options.textName) || (firstKey == options.valName)) {
+				if ((Object.keys(obj[key]).length == 1) && (typeof obj[key][firstKey] != 'object')) {
+					obj[key] = obj[key][firstKey];
+				}
 			}
 		}
 
-		if (typeof obj[key] !== 'object') {
-		}
-		else {
-			postProcess(obj[key],key);
+		if (typeof obj[key] == 'object') {
+			postProcess(obj[key],key,options);
 		}
 	}
 	return obj;
@@ -60,7 +60,7 @@ function parseString(xml,options) {
 	var defaults = {
 		attributePrefix: "@",
 		textName: '#text',
-		valName: 'value',
+		valName: '#value',
 		valueProperty: false,
 		coerceTypes: false
 	};
@@ -132,8 +132,8 @@ function parseString(xml,options) {
 	});
 
 	if (!options.valueProperty) {
-		obj = postProcess(obj,''); // first pass
-		obj = postProcess(obj,''); // second pass
+		obj = postProcess(obj,'',options); // first pass
+		obj = postProcess(obj,'',options); // second pass
 	}
 
 	return obj;

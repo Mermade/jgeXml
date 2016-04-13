@@ -62,7 +62,31 @@ function mapType(type) {
 	var result = {};
 
 	if (type == 'xs:integer') type = 'integer';
-	
+	if (type == 'xs:positiveInteger') {
+		type = 'integer';
+		result.minimum = 1;
+	}
+	if (type == 'xs:nonPositiveInteger') {
+		type = 'integer';
+		result.maximum = 0;
+	}
+	if (type == 'xs:negativeInteger') {
+		type = 'integer';
+		result.maximum = -1;
+	}
+	if (type == 'xs:nonNegativeInteger') {
+		type = 'integer';
+		result.minimum = 0;
+	}
+	if (type == 'xs:byte') type = 'integer';
+	if (type == 'xs:int') type = 'integer';
+	if (type == 'xs:long') type = 'integer';
+	if (type == 'xs:short') type = 'integer';
+	if (type == 'xs:unsignedLong') type = 'integer';
+	if (type == 'xs:unsignedInt') type = 'integer';
+	if (type == 'xs:unsignedShort') type = 'integer';
+	if (type == 'xs:unsignedByte') type = 'integer';
+
 	if (type == 'xs:string') type = 'string';
 	if (type == 'xs:NMTOKEN') type = 'string';
 	if (type == 'xs:NMTOKENS') type = 'string';
@@ -80,26 +104,54 @@ function mapType(type) {
 	if (type == 'xs:base64Binary') type = 'string';
 	if (type == 'xs:hexBinary') type = 'string';
 	if (type == 'xs:NOTATION') type = 'string';
-	
+
 	if (type == 'xs:boolean') type = 'boolean';
+
 	if (type == 'xs:date') {
 		type = 'string';
-		result.format = 'date-time';
+		result.pattern = '^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$';
 	}
 	if (type == 'xs:dateTime') {
 		type = 'string';
 		result.format = 'date-time';
 	}
-	if (type == 'xs:positiveInteger') {
-		type = 'integer';
-		result.minimum = 0;
+	if (type == 'xs:time') {
+		type = 'string';
+		//result.pattern = '';
 	}
+	if (type == 'xs:duration') {
+		type = 'string';
+		//result.pattern = '';
+	}
+	if (type == 'xs:gDay') {
+		type = 'string';
+		//result.pattern = '';
+	}
+	if (type == 'xs:gMonth') {
+		type = 'string';
+		//result.pattern = '';
+	}
+	if (type == 'xs:gMonthDay') {
+		type = 'string';
+		//result.pattern = '';
+	}
+	if (type == 'xs:gYear') {
+		type = 'string';
+		//result.pattern = '';
+	}
+	if (type == 'xs:gYearMonth') {
+		type = 'string';
+		//result.pattern = '';
+	}
+
 	if (type == 'xs:decimal') type = 'number';
 	if (type == 'xs:double') type = 'number';
 	if (type == 'xs:float') type = 'number';
+
 	if (type == 'xs:anyURI') {
 		type = 'string';
 		//result.format = 'uri'; //XSD allows relative URIs, it seems JSON schema uri format may not?
+		result.pattern = '^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?';
 	}
 
 	result.type = type;
@@ -117,6 +169,7 @@ function doElement(src,parent,key) {
 		console.log('bailing out '+key+' = '+src[key]);
 		return false;
 	}
+	if (key == 'xs:choice') console.log(JSON.stringify(src[key],null,2));
 
 	if (element["@name"]) {
 		name = element["@name"];
@@ -144,19 +197,20 @@ function doElement(src,parent,key) {
 
 		var minOccurs = 1;
 		var maxOccurs = 1;
-		if (element["@minOccurs"]) minOccurs = element["@minOccurs"];
+		if (element["@minOccurs"]) minOccurs = parseInt(element["@minOccurs"],10);
 		if (element["@maxOccurs"]) maxOccurs = element["@maxOccurs"];
 		if (maxOccurs == 'unbounded') maxOccurs = 2;
 		if (isAttribute) {
 			if ((!element["@use"]) || (element["@use"] != 'required')) minOccurs = 0;
 		}
+		if (element["@isChoice"]) minOccurs = 0;
 
 		var typeData = mapType(type);
 		if (typeData.type == 'object') {
 			typeData.properties = {};
 			newTarget = typeData;
 		}
-		
+
 		var enumSource;
 
 		if (element["xs:simpleType"] && element["xs:simpleType"]["xs:restriction"] && element["xs:simpleType"]["xs:restriction"]["xs:enumeration"]) {
@@ -169,7 +223,7 @@ function doElement(src,parent,key) {
 		if (enumSource) {
 			typeData["enum"] = [];
 			for (var i=0;i<enumSource.length;i++) {
-				typeData["enum"].push(enumSource[i]);
+				typeData["enum"].push(enumSource[i]["@value"]);
 			}
 			delete typeData.type; // assert it was a stringish type?
 		}
@@ -183,7 +237,7 @@ function doElement(src,parent,key) {
 				delete typeData.type;
 			}
 		}
-		
+
 		if (maxOccurs > 1) {
 			var newTD = {};
 			newTD.type = 'array';
@@ -195,8 +249,8 @@ function doElement(src,parent,key) {
 		}
 
 		if (simpleType) {
-			if (simpleType["xs:minLength"]) typeData.minLength = simpleType["xs:minLength"];
-			if (simpleType["xs:maxLength"]) typeData.maxLength = simpleType["xs:maxLength"];
+			if (simpleType["xs:minLength"]) typeData.minLength = parseInt(simpleType["xs:minLength"]["@value"],10);
+			if (simpleType["xs:maxLength"]) typeData.maxLength = parseInt(simpleType["xs:maxLength"]["@value"],10);
 		}
 
 		if (isAttribute) {
@@ -213,13 +267,13 @@ function doElement(src,parent,key) {
 	}
 }
 
-function moveAttributes(obj,parent,key) {	
+function moveAttributes(obj,parent,key) {
 	if (key == 'xs:attribute') {
-		
+
 		obj[key] = toArray(obj[key]);
-		
+
 		var target;
-		
+
 		if (obj["xs:sequence"] && obj["xs:sequence"]["xs:element"]) {
 			obj["xs:sequence"]["xs:element"] = toArray(obj["xs:sequence"]["xs:element"]);
 			target = obj["xs:sequence"]["xs:element"];
@@ -228,9 +282,9 @@ function moveAttributes(obj,parent,key) {
 			obj["xs:choice"]["xs:element"] = toArray(obj["xs:choice"]["xs:element"]);
 			target = obj["xs:choice"]["xs:element"];
 		}
-		
+
 		if (target) target = toArray(target);
-		
+
 		for (var i=0;i<obj[key].length;i++) {
 			var attr = clone(obj[key][i]);
 			if (attributePrefix) {
@@ -243,6 +297,25 @@ function moveAttributes(obj,parent,key) {
 			else obj[key][i] = attr;
 		}
 		if (target) delete obj[key];
+	}
+}
+
+function processChoice(obj,parent,key) {
+	if (key == 'xs:choice') {
+		var e = obj[key]["xs:element"] = toArray(obj[key]["xs:element"]);
+		for (var i=0;i<e.length;i++) {
+			if (!e[i]["@isAttr"]) {
+				e[i]["@isChoice"] = true;
+			}
+		}
+		if (obj[key]["xs:group"]) {
+			var g = obj[key]["xs:group"] = toArray(obj[key]["xs:group"]);
+			for (var i=0;i<g.length;i++) {
+				if (!g[i]["@isAttr"]) {
+					g[i]["@isChoice"] = true;
+				}
+			}
+		}
 	}
 }
 
@@ -270,12 +343,7 @@ function moveProperties(obj,parent,key) {
 }
 
 function clean(obj,parent,key) {
-	if (key == '@minOccurs') delete obj[key];
-	if (key == '@maxOccurs') delete obj[key];
 	if (key == '@name') delete obj[key];
-	if (key == '@type') delete obj[key];
-	if (key == 'xs:simpleType') delete obj[key];
-	if (key == '@use') delete obj[key];
 }
 
 function removeEmpties(obj,parent,key) {
@@ -311,25 +379,27 @@ function recurse(obj,parent,callback,depthFirst) {
 
 	var oTarget = target;
 
-	for (var key in obj) {
-		target = oTarget;
-		// skip loop if the property is from prototype
-		if (!obj.hasOwnProperty(key)) continue;
+	if (typeof obj != 'string') {
+		for (var key in obj) {
+			target = oTarget;
+			// skip loop if the property is from prototype
+			if (!obj.hasOwnProperty(key)) continue;
 
-		if (!depthFirst) callback(obj,parent,key);
+			if (!depthFirst) callback(obj,parent,key);
 
-		var array = Array.isArray(obj);
+			var array = Array.isArray(obj);
 
-		if (typeof obj[key] === 'object') {
-			if (array) {
-				for (var i in obj[key]) {
-					recurse(obj[key][i],obj[key],callback);
+			if (typeof obj[key] === 'object') {
+				if (array) {
+					for (var i in obj[key]) {
+						recurse(obj[key][i],obj[key],callback);
+					}
 				}
+				recurse(obj[key],obj,callback);
 			}
-			recurse(obj[key],obj,callback);
-		}
 
-		if (depthFirst) callback(obj,parent,key);
+			if (depthFirst) callback(obj,parent,key);
+		}
 	}
 
 	return obj;
@@ -341,6 +411,9 @@ module.exports = {
 
 		recurse(src,{},function(src,parent,key) {
 			moveAttributes(src,parent,key);
+		});
+		recurse(src,{},function(src,parent,key) {
+			processChoice(src,parent,key);
 		});
 
 		var obj = {};
@@ -369,9 +442,9 @@ module.exports = {
 		obj.required.push(rootElementName);
 		obj.additionalProperties = false;
 
-		recurse(obj.properties,{},function(src,parent,key) {
-			moveAttributes(src,parent,key);
-		});
+		//recurse(obj.properties,{},function(src,parent,key) {
+		//	moveAttributes(src,parent,key);
+		//});
 		recurse(obj,{},function(obj,parent,key) {
 			renameObjects(obj,parent,key);
 		});
@@ -399,7 +472,7 @@ module.exports = {
 		recurse(obj.definitions,{},function(src,parent,key) {
 			doElement(src,parent,key);
 		});
-		
+
 		// correct for /definitions/properties
 		obj.definitions = obj.definitions.properties;
 
@@ -410,10 +483,10 @@ module.exports = {
 		delete(obj.definitions["xs:schema"]);
 
 		var count = 1;
-		while (count>0) {
+		while (count>0) { // loop until we haven't removed any empties
 			count = 0;
 			recurse(obj,{},function(obj,parent,key) {
-				count += removeEmpties(obj,parent,key); // first pass
+				count += removeEmpties(obj,parent,key);
 			});
 		}
 

@@ -9,7 +9,7 @@
               "@name": "child1",
               "#text": [
                 {
-                  "value": "sibling1"
+                  "#value": "sibling1"
                 }
               ]
             },
@@ -17,7 +17,7 @@
               "@name": "child2",
               "#text": [
                 {
-                  "value": "sibling2"
+                  "#value": "sibling2"
                 }
               ]
             }
@@ -30,7 +30,7 @@
               "@name": "child1",
               "#text": [
                 {
-                  "value": "sibling3"
+                  "#value": "sibling3"
                 }
               ]
             },
@@ -38,7 +38,7 @@
               "@name": "child2",
               "#text": [
                 {
-                  "value": "sibling4"
+                  "#value": "sibling4"
                 }
               ]
             }
