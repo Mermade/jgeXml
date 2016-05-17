@@ -65,101 +65,127 @@ function mandate(target,name) {
 function mapType(type) {
 
 	var result = {};
+	result.type = type;
 
-	if (type == 'xs:integer') type = 'integer';
-	if (type == 'xs:positiveInteger') {
-		type = 'integer';
+	if (type == 'xs:integer') {
+		result.type = 'integer';
+	}
+	else if (type == 'xs:positiveInteger') {
+		result.type = 'integer';
 		result.minimum = 1;
 	}
-	if (type == 'xs:nonPositiveInteger') {
-		type = 'integer';
+	else if (type == 'xs:nonPositiveInteger') {
+		result.type = 'integer';
 		result.maximum = 0;
 	}
-	if (type == 'xs:negativeInteger') {
-		type = 'integer';
+	else if (type == 'xs:negativeInteger') {
+		result.type = 'integer';
 		result.maximum = -1;
 	}
-	if (type == 'xs:nonNegativeInteger') {
-		type = 'integer';
+	else if (type == 'xs:nonNegativeInteger') {
+		result.type = 'integer';
 		result.minimum = 0;
 	}
-	if (type == 'xs:byte') type = 'integer';
-	if (type == 'xs:int') type = 'integer';
-	if (type == 'xs:long') type = 'integer';
-	if (type == 'xs:short') type = 'integer';
-	if (type == 'xs:unsignedLong') type = 'integer';
-	if (type == 'xs:unsignedInt') type = 'integer';
-	if (type == 'xs:unsignedShort') type = 'integer';
-	if (type == 'xs:unsignedByte') type = 'integer';
+	else if ((type == 'xs:unsignedInt') || (type == 'xs:unsignedShort') || (type == 'xs:unsignedByte')) {
+		result.type = 'integer';
+		result.format = 'int32';
+		result.minimum = 0;
+	}
+	else if ((type == 'xs:int') || (type == 'xs:short') || (type == 'xs:byte')) {
+		result.type = 'integer';
+		result.format = 'int32';
+	}
+	else if (type == 'xs:long') {
+		result.type = 'integer';
+		result.format = 'int64';
+	}
+	else if (type == 'xs:unsignedLong') {
+		result.type = 'integer';
+		result.format = 'int64';
+		result.minimum = 0;
+	}
 
-	if (type == 'xs:string') type = 'string';
-	if (type == 'xs:NMTOKEN') type = 'string';
-	if (type == 'xs:NMTOKENS') type = 'string';
-	if (type == 'xs:ENTITY') type = 'string';
-	if (type == 'xs:ENTITIES') type = 'string';
-	if (type == 'xs:ID') type = 'string';
-	if (type == 'xs:IDREF') type = 'string';
-	if (type == 'xs:IDREFS') type = 'string';
-	if (type == 'xs:token') type = 'string';
-	if (type == 'xs:lamguage') type = 'string';
-	if (type == 'xs:Name') type = 'string';
-	if (type == 'xs:NCName') type = 'string';
-	if (type == 'xs:QName') type = 'string';
-	if (type == 'xs:normalizedString') type = 'string';
-	if (type == 'xs:base64Binary') type = 'string';
-	if (type == 'xs:hexBinary') type = 'string';
-	if (type == 'xs:NOTATION') type = 'string';
+	if (type == 'xs:string') result.type = 'string';
+	if (type == 'xs:NMTOKEN') result.type = 'string';
+	if (type == 'xs:NMTOKENS') result.type = 'string';
+	if (type == 'xs:ENTITY') result.type = 'string';
+	if (type == 'xs:ENTITIES') result.type = 'string';
+	if (type == 'xs:ID') result.type = 'string';
+	if (type == 'xs:IDREF') result.type = 'string';
+	if (type == 'xs:IDREFS') result.type = 'string';
+	if (type == 'xs:NOTATION') result.type = 'string';
+	if (type == 'xs:token') result.type = 'string';
+	if (type == 'xs:Name') result.type = 'string';
+	if (type == 'xs:NCName') result.type = 'string';
+	if (type == 'xs:QName') result.type = 'string';
+	if (type == 'xs:normalizedString') result.type = 'string';
+	if (type == 'xs:base64Binary') {
+		result.type = 'string';
+		result.format = 'byte';
+	}
+	if (type == 'xs:hexBinary') {
+		result.type = 'string';
+		result.format = '^[0-9,a-f,A-F]*';
+	}
 
-	if (type == 'xs:boolean') type = 'boolean';
+	if (type == 'xs:boolean') result.type = 'boolean';
 
 	if (type == 'xs:date') {
-		type = 'string';
+		result.type = 'string';
 		result.pattern = '^[0-9]{4}\-[0-9]{2}\-[0-9]{2}.*$'; //timezones
 	}
-	if (type == 'xs:dateTime') {
-		type = 'string';
+	else if (type == 'xs:dateTime') {
+		result.type = 'string';
 		result.format = 'date-time';
 	}
-	if (type == 'xs:time') {
-		type = 'string';
+	else if (type == 'xs:time') {
+		result.type = 'string';
 		result.pattern = '^[0-9]{2}\:[0-9]{2}:[0-9]{2}.*$'; // timezones
 	}
-	if (type == 'xs:duration') {
-		type = 'string';
+	else if (type == 'xs:duration') {
+		result.type = 'string';
 		result.pattern = '^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$';
 	}
-	if (type == 'xs:gDay') {
-		type = 'string';
+	else if (type == 'xs:gDay') {
+		result.type = 'string';
 		result.pattern = '[0-9]{2}';
 	}
-	if (type == 'xs:gMonth') {
-		type = 'string';
+	else if (type == 'xs:gMonth') {
+		result.type = 'string';
 		result.pattern = '[0-9]{2}';
 	}
-	if (type == 'xs:gMonthDay') {
-		type = 'string';
+	else if (type == 'xs:gMonthDay') {
+		result.type = 'string';
 		result.pattern = '[0-9]{2}\-[0-9]{2}';
 	}
-	if (type == 'xs:gYear') {
-		type = 'string';
+	else if (type == 'xs:gYear') {
+		result.type = 'string';
 		result.pattern = '[0-9]{4}';
 	}
-	if (type == 'xs:gYearMonth') {
-		type = 'string';
+	else if (type == 'xs:gYearMonth') {
+		result.type = 'string';
 		result.pattern = '[0-9]{4}\-[0-9]{2}';
 	}
 
 	if (type == 'xs:language') {
-		type = 'string';
+		result.type = 'string';
 		result.pattern = '[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*';
 	}
 
-	if (type == 'xs:decimal') type = 'number';
-	if (type == 'xs:double') type = 'number';
-	if (type == 'xs:float') type = 'number';
+	if (type == 'xs:decimal') {
+		result.type = 'number';
+	}
+	else if (type == 'xs:double') {
+		result.type = 'number';
+		result.format = 'double';
+	}
+	else if (type == 'xs:float') {
+		result.type = 'number';
+		result.format = 'float';
+	}
 
 	if (type == 'xs:anyURI') {
-		type = 'string';
+		result.type = 'string';
 		if (!laxURIs) {
 			result.format = 'uri'; //XSD allows relative URIs, it seems JSON schema uri format may not?
 			// this regex breaks swagger validators
@@ -167,7 +193,6 @@ function mapType(type) {
 		}
 	}
 
-	result.type = type;
 	return result;
 }
 
@@ -213,7 +238,7 @@ function doElement(src,parent,key) {
 		var maxOccurs = 1;
 		if (element["@minOccurs"]) minOccurs = parseInt(element["@minOccurs"],10);
 		if (element["@maxOccurs"]) maxOccurs = element["@maxOccurs"];
-		if (maxOccurs == 'unbounded') maxOccurs = 2;
+		if (maxOccurs == 'unbounded') maxOccurs = Number.MAX_SAFE_INTEGER;
 		if (isAttribute) {
 			if ((!element["@use"]) || (element["@use"] != 'required')) minOccurs = 0;
 		}
@@ -264,6 +289,8 @@ function doElement(src,parent,key) {
 		if (maxOccurs > 1) {
 			var newTD = {};
 			newTD.type = 'array';
+			if (minOccurs > 0) newTD.minItems = parseInt(minOccurs,10);
+			if (maxOccurs < Number.MAX_SAFE_INTEGER) newTD.maxItems = parseInt(maxOccurs,10);
 			newTD.items = typeData;
 			typeData = newTD;
 		}

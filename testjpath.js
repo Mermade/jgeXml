@@ -17,7 +17,7 @@ function dumpResults(tree,query) {
 function testBookStore(tree) {
 	console.log();
 	console.log('That looks like a bookstore!');
-	
+
 	dumpResults(tree,'$..*');
 	dumpResults(tree,'*');
 	dumpResults(tree,'$.store.book[*].author');
@@ -34,9 +34,16 @@ function propTest(obj,path) {
 	console.log(path+' = '+jpath.fetchFromObject(obj,path))
 }
 
+function ptrTest(obj,path) {
+	console.log(path+' = '+jpath.jptr(obj,path))
+}
+
 function testProperties(obj) {
 	console.log();
-	propTest(obj,'store.book[2].price');	
+	propTest(obj,'store.book[2].price');
+	ptrTest(obj,'/store/book/2/price');
+	jpath.jptr(obj,'/store/book/2/price',10.99);
+	ptrTest(obj,'/store/book/2/price');
 }
 
 var filename = process.argv[2];

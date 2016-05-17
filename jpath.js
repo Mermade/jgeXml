@@ -1,17 +1,89 @@
 'use strict';
 
-// TODO JSON Patch http://tools.ietf.org/html/rfc6902
-
 String.prototype.replaceAll = function(search, replacement) {
     var target = this;
     return target.split(search).join(replacement);
 };
 
-// replace [n] with /n syntax and we are close to JSON Pointer http://tools.ietf.org/html/rfc6901 specification
-function fetchFromObject(obj, prop) {
+// JSON Pointer specification: http://tools.ietf.org/html/rfc6901
+function jptr(obj, prop, newValue) {
     //property not found
     if (typeof obj === 'undefined') return false;
 	if (!prop) return obj;
+
+	if (prop.startsWith('/')) prop = prop.slice(1);
+	var props = prop.split('/');
+
+	var current = props[0];
+	current = current.replaceAll('~1','/');
+	current = current.replaceAll('~0','~');
+
+	var index = -1;
+	if ((props.length>1) && (Array.isArray(obj[current]))) {
+		var next = props[1];
+		var value = parseInt(next,10);
+		if (next == '-') {
+			index = obj[current].length;
+		}
+		else {
+			if (!isNaN(value)) index = value;
+		}
+		if (index>=0) {
+			props.splice(1,1);
+			prop = props.join('/');
+		}
+	}
+
+    //property split found; recursive call
+    if (props.length>1) {
+		var pos = prop.indexOf('/');
+        //get object at property (before split), pass on remainder
+		if (index>=0) {
+			return jptr(obj[current][index], prop.substr(pos+1),newValue); //was props
+		}
+		else {
+			return jptr(obj[current], prop.substr(pos+1),newValue);
+		}
+	}
+	//no split; get property[index] or property
+	var source = obj;
+	if (prop[0]) source = obj[prop];
+	if (index>=0) {
+		if (index>=source.length) {
+			if (typeof newValue != 'undefined') {
+				source.push(newValue);
+				return newValue;
+			}
+			else {
+				return null;
+			}
+		}
+		else {
+			if (typeof newValue != 'undefined') {
+				source[index] = newValue;
+			}
+			return source[index];
+		}
+	}
+    else {
+		if (typeof newValue != 'undefined') {
+			obj[prop] = newValue;
+			source = obj[prop];
+		}
+		return source;
+	}
+}
+
+// simple object accessor using dotted notation and [] for array indices
+function fetchFromObject(obj, prop, newValue) {
+    //property not found
+    if (typeof obj === 'undefined') return false;
+	if (!prop) {
+		if (typeof newValue != 'undefined') {
+			obj = newValue;
+		}
+		return obj;
+	}
 
 	var props = prop.split('.');
 	var arr = props[0].split(/[\[\]]+/);
@@ -25,20 +97,22 @@ function fetchFromObject(obj, prop) {
 		var pos = prop.indexOf('.');
         //get object at property (before split), pass on remainder
 		if (index>=0) {
-			return fetchFromObject(obj[arr[0]][index], prop.substr(pos+1)); //was props
+			return fetchFromObject(obj[arr[0]][index], prop.substr(pos+1), newValue); //was props
 		}
 		else {
-			return fetchFromObject(obj[arr[0]], prop.substr(pos+1));
+			return fetchFromObject(obj[arr[0]], prop.substr(pos+1), newValue);
 		}
 	}
 	//no split; get property[index] or property
 	var source = obj;
 	if (arr[0]) source = obj[prop];
 	if (index>=0) {
+		if (typeof newValue != 'undefined') source[index] = newValue;
 		return source[index];
 	}
     else {
-		return source;
+		if (typeof newValue != 'undefined') obj[prop] = newValue;
+		return obj[prop];
 	}
 }
 
@@ -160,5 +234,6 @@ module.exports = {
 	select : select,
 	selectRegex : selectRegex,
 	path : path,
-	fetchFromObject : fetchFromObject
+	fetchFromObject : fetchFromObject,
+	jptr : jptr
 };

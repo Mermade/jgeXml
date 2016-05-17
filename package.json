@@ -24,7 +24,9 @@
     "pushparser",
     "pushparsing",
     "sax",
-    "stax"
+    "stax",
+	"schema",
+	"xsd"
   ],
   "author": "Mike Ralphson",
   "license": "BSD-3-Clause",

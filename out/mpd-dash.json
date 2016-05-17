@@ -31,12 +31,13 @@
         "Location": {
           "type": "array",
           "items": {
-            "format": "uri",
-            "type": "string"
+            "type": "string",
+            "format": "uri"
           }
         },
         "Period": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "$ref": "#/definitions/PeriodType"
           }
@@ -57,44 +58,44 @@
           "$ref": "#/definitions/PresentationType"
         },
         "availabilityStartTime": {
-          "format": "date-time",
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "availabilityEndTime": {
-          "format": "date-time",
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "publishTime": {
-          "format": "date-time",
-          "type": "string"
+          "type": "string",
+          "format": "date-time"
         },
         "mediaPresentationDuration": {
-          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$"
         },
         "minimumUpdatePeriod": {
-          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$"
         },
         "minBufferTime": {
-          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$"
         },
         "timeShiftBufferDepth": {
-          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$"
         },
         "suggestedPresentationDelay": {
-          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$"
         },
         "maxSegmentDuration": {
-          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$"
         },
         "maxSubsegmentDuration": {
-          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$"
         }
       },
       "additionalProperties": false,
@@ -153,12 +154,12 @@
           "type": "string"
         },
         "start": {
-          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$"
         },
         "duration": {
-          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$"
         },
         "bitstreamSwitching": {
           "type": "boolean"
@@ -182,14 +183,16 @@
           "$ref": "/xlink/actuate"
         },
         "schemeIdUri": {
-          "format": "uri",
-          "type": "string"
+          "type": "string",
+          "format": "uri"
         },
         "value": {
           "type": "string"
         },
         "timescale": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         }
       },
       "additionalProperties": false,
@@ -201,13 +204,19 @@
       "type": "object",
       "properties": {
         "presentationTime": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0
         },
         "duration": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0
         },
         "id": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         }
       },
       "additionalProperties": false
@@ -273,14 +282,18 @@
           "$ref": "/xlink/actuate"
         },
         "id": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "group": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "lang": {
-          "pattern": "[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*",
-          "type": "string"
+          "type": "string",
+          "pattern": "[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*"
         },
         "contentType": {
           "type": "string"
@@ -289,22 +302,34 @@
           "$ref": "#/definitions/RatioType"
         },
         "minBandwidth": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "maxBandwidth": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "minWidth": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "maxWidth": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "minHeight": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "maxHeight": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "minFrameRate": {
           "$ref": "#/definitions/FrameRateType"
@@ -355,11 +380,13 @@
           }
         },
         "id": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "lang": {
-          "pattern": "[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*",
-          "type": "string"
+          "type": "string",
+          "pattern": "[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*"
         },
         "contentType": {
           "type": "string"
@@ -398,10 +425,14 @@
           "$ref": "#/definitions/StringNoWhitespaceType"
         },
         "bandwidth": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "qualityRanking": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "dependencyId": {
           "$ref": "#/definitions/StringVectorType"
@@ -420,13 +451,17 @@
       "type": "object",
       "properties": {
         "level": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "dependencyLevel": {
           "$ref": "#/definitions/UIntVectorType"
         },
         "bandwidth": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "contentComponent": {
           "$ref": "#/definitions/StringVectorType"
@@ -477,10 +512,14 @@
           "type": "string"
         },
         "width": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "height": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "sar": {
           "$ref": "#/definitions/RatioType"
@@ -501,13 +540,15 @@
           "type": "string"
         },
         "maximumSAPPeriod": {
-          "type": "number"
+          "type": "number",
+          "format": "double"
         },
         "startWithSAP": {
           "$ref": "#/definitions/SAPType"
         },
         "maxPlayoutRate": {
-          "type": "number"
+          "type": "number",
+          "format": "double"
         },
         "codingDependency": {
           "type": "boolean"
@@ -543,10 +584,14 @@
           "$ref": "#/definitions/URLType"
         },
         "timescale": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "presentationTimeOffset": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0
         },
         "indexRange": {
           "type": "string"
@@ -555,7 +600,8 @@
           "type": "boolean"
         },
         "availabilityTimeOffset": {
-          "type": "number"
+          "type": "number",
+          "format": "double"
         },
         "availabilityTimeComplete": {
           "type": "boolean"
@@ -573,10 +619,14 @@
           "$ref": "#/definitions/URLType"
         },
         "duration": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         },
         "startNumber": {
-          "type": "integer"
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
         }
       },
       "additionalProperties": false
@@ -585,8 +635,8 @@
       "type": "object",
       "properties": {
         "sourceURL": {
-          "format": "uri",
-          "type": "string"
+          "type": "string",
+          "format": "uri"
         },
         "range": {
           "type": "string"
@@ -616,15 +666,15 @@
       "type": "object",
       "properties": {
         "media": {
-          "format": "uri",
-          "type": "string"
+          "type": "string",
+          "format": "uri"
         },
         "mediaRange": {
           "type": "string"
         },
         "index": {
-          "format": "uri",
-          "type": "string"
+          "type": "string",
+          "format": "uri"
         },
         "indexRange": {
           "type": "string"
@@ -655,14 +705,19 @@
       "properties": {
         "S": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "type": "object",
             "properties": {
               "t": {
-                "type": "integer"
+                "type": "integer",
+                "format": "int64",
+                "minimum": 0
               },
               "d": {
-                "type": "integer"
+                "type": "integer",
+                "format": "int64",
+                "minimum": 0
               },
               "r": {
                 "type": "integer"
@@ -690,7 +745,8 @@
           "type": "string"
         },
         "availabilityTimeOffset": {
-          "type": "number"
+          "type": "number",
+          "format": "double"
         },
         "availabilityTimeComplete": {
           "type": "boolean"
@@ -711,12 +767,12 @@
           "type": "string"
         },
         "lang": {
-          "pattern": "[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*",
-          "type": "string"
+          "type": "string",
+          "pattern": "[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*"
         },
         "moreInformationURL": {
-          "format": "uri",
-          "type": "string"
+          "type": "string",
+          "format": "uri"
         }
       },
       "additionalProperties": false
@@ -725,8 +781,8 @@
       "type": "object",
       "properties": {
         "schemeIdUri": {
-          "format": "uri",
-          "type": "string"
+          "type": "string",
+          "format": "uri"
         },
         "value": {
           "type": "string"
@@ -745,6 +801,7 @@
       "properties": {
         "Reporting": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "$ref": "#/definitions/DescriptorType"
           }
@@ -769,12 +826,12 @@
       "type": "object",
       "properties": {
         "starttime": {
-          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$"
         },
         "duration": {
-          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$",
-          "type": "string"
+          "type": "string",
+          "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$"
         }
       },
       "additionalProperties": false
@@ -801,7 +858,9 @@
       "pattern": "[^\\r\\n\\t \\p{Z}]*"
     },
     "SAPType": {
-      "type": "integer"
+      "type": "integer",
+      "format": "int32",
+      "minimum": 0
     },
     "VideoScanType": {
       "enum": [

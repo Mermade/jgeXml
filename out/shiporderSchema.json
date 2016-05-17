@@ -34,6 +34,7 @@
         },
         "item": {
           "type": "array",
+          "minItems": 1,
           "items": {
             "type": "object",
             "properties": {
@@ -47,8 +48,8 @@
                 }
               },
               "quantity": {
-                "minimum": 1,
-                "type": "integer"
+                "type": "integer",
+                "minimum": 1
               },
               "price": {
                 "type": "number"
