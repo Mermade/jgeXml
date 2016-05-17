@@ -1,6 +1,6 @@
 {
   "name": "jgexml",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "The Just-Good-Enough XML Parser",
   "main": "jgeXml.js",
   "scripts": {
@@ -25,8 +25,8 @@
     "pushparsing",
     "sax",
     "stax",
-	"schema",
-	"xsd"
+    "schema",
+    "xsd"
   ],
   "author": "Mike Ralphson",
   "license": "BSD-3-Clause",
