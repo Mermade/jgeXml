@@ -1,4 +1,4 @@
-# jgeXml - The Just-Good-Enough XML Parser
+# jgeXml - The Just-Good-Enough XML Toolkit
 
 [![Build status](https://travis-ci.org/MikeRalphson/jgeXml.svg?branch=master)](https://travis-ci.org/MikeRalphson/jgeXml)
 [![Join the chat at https://gitter.im/MikeRalphson/jgeXml](https://badges.gitter.im/MikeRalphson/jgeXml.svg)](https://gitter.im/MikeRalphson/jgeXml?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -6,7 +6,7 @@
 [![Share on Twitter][twitter-image]][twitter-link]
 [![Follow on Twitter][twitterFollow-image]][twitterFollow-link]
 
-jgeXml provides event-driven routines to parse XML 1.0 / 1.1. Both pull and push modes are supported. Tools are included for writing XML (documents or fragments) and to convert between XML and JSON (one way JSON to YAML conversion is also supported).
+jgeXml provides an event-driven parser to process XML 1.0 / 1.1. Both pull and push modes are supported. Tools are included for writing XML (documents or fragments) and to convert between XML and JSON (one way JSON to YAML conversion is also supported).
 
 The code has no dependencies on other modules or native libraries.
 
@@ -23,6 +23,8 @@ Setting up a push-parser is as simple as:
 
 ```
 sDeclaration
+sDocType
+sDTD
 sElement
 sAttribute
 sValue
@@ -31,8 +33,6 @@ sContent
 sComment
 sProcessingInstruction
 sCData
-sDocType
-sDTD
 sError
 sEndDocument
 ```
@@ -55,8 +55,6 @@ to primitive numbers or null values.
 Experimental JSONPath and JSONT utilities are under development.
 
 ## Limitations
-
-XML/YAML *generation* is probably not thread safe.
 
 jgeXml is currently schema agnostic and staunchly atheist when it comes to DTDs. It can parse XML documents with schema information, but it is up to the
 consumer to interpret the namespace portions of element names. It can parse internal DTDs, but does nothing with them.
