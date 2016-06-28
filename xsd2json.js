@@ -6,11 +6,13 @@ var debuglog = util.debuglog('jgexml');
 var target; // for new properties
 var attributePrefix = '@';
 var laxURIs = false;
+var defaultNameSpace = '';
 
 function reset(attrPrefix,laxURIprocessing) {
 	target = null;
 	attributePrefix = attrPrefix;
 	laxURIs = laxURIprocessing;
+	defaultNameSpace = '';
 }
 
 function clone(obj) {
@@ -276,13 +278,23 @@ function doElement(src,parent,key) {
 				//typeData.type = typeData.type;
 			}
 			else {
-				if (typeData.type.indexOf(':')>=0) {
-					typeData["$ref"] = '/'+typeData.type.replace(':','/');
+				if (typeData.type.startsWith('xml:')) {
+						typeData.type = 'string';
 				}
 				else {
-					typeData["$ref"] = '#/definitions/'+typeData.type;
+					var tempType = typeData.type;
+					if (defaultNameSpace) {
+						tempType = tempType.replace(defaultNameSpace+':','');
+					}
+					if (tempType.indexOf(':')>=0) {
+						var tempComp = tempType.split(':');
+						typeData["$ref"] = tempComp[0]+'.json#/definitions/'+tempComp[1]; //'/'+typeData.type.replace(':','/');
+					}
+					else {
+						typeData["$ref"] = '#/definitions/'+tempType;
+					}
+					delete typeData.type;
 				}
-				delete typeData.type;
 			}
 		}
 
@@ -304,8 +316,12 @@ function doElement(src,parent,key) {
 			if (simpleType["xs:pattern"]) typeData.pattern = simpleType["xs:pattern"]["@value"];
 		}
 
+		if ((parent["xs:annotation"]) && ((parent["xs:annotation"]["xs:documentation"]))) {
+			target.description = parent["xs:annotation"]["xs:documentation"];
+		}
+
 		target.properties[name] = typeData; // Object.assign 'corrupts' property ordering
-		target.additionalProperties = false;
+		target.additionalProperties = ((typeof parent["xs:anyAttribute"] !== 'undefined') || (typeof parent["xs:any"] !== 'undefined'));
 
 		target = newTarget;
 	}
@@ -449,8 +465,8 @@ function recurse(obj,parent,callback,depthFirst) {
 }
 
 module.exports = {
-	getJsonSchema : function getJsonSchema(src,title,attrPrefix,laxURIs) { // TODO convert to options parameter
-		reset(attrPrefix,laxURIs);
+	getJsonSchema : function getJsonSchema(src,title,outputAttrPrefix,laxURIs) { // TODO convert to options parameter
+		reset(outputAttrPrefix,laxURIs);
 
 		recurse(src,{},function(src,parent,key) {
 			moveAttributes(src,parent,key);
@@ -466,11 +482,23 @@ module.exports = {
 			id = src["xs:schema"]["@xmlns"];
 		}
 
+		for (var a in src["xs:schema"]) {
+			if (a.startsWith('@xmlns:')) {
+				if (src["xs:schema"][a] == id) {
+					defaultNameSpace = a.replace('@xmlns:','');
+				}
+			}
+		}
+
 		//initial root object transformations
 		obj.title = title;
 		obj.$schema = 'http://json-schema.org/schema#'; //for latest, or 'http://json-schema.org/draft-04/schema#' for v4
 		if (id) {
 			obj.id = id;
+		}
+		if ((src["xs:schema"]["xs:annotation"]) && (src["xs:schema"]["xs:annotation"]["xs:documentation"])) {
+			obj.description = src["xs:schema"]["xs:annotation"]["xs:documentation"];
+			if (obj.description["#text"]) obj.description = obj.description["#text"]; // could be an array?
 		}
 
 		var rootElement = src["xs:schema"]["xs:element"];

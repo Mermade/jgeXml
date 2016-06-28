@@ -1,0 +1,442 @@
+{
+  "title": "test/atomSchema.xsd",
+  "$schema": "http://json-schema.org/schema#",
+  "id": "http://www.w3.org/2005/Atom",
+  "type": "object",
+  "properties": {
+    "feed": {
+      "$ref": "#/definitions/feedType"
+    }
+  },
+  "required": [
+    "feed"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "entry": {
+      "$ref": "#/definitions/entryType"
+    },
+    "textTypeType": {
+      "enum": [
+        "text",
+        "html",
+        "xhtml"
+      ]
+    },
+    "MimeType": {
+      "type": "string",
+      "pattern": "(application|audio|image|text|video|message|multipart|model)/.+(;\\s*.+=.+)*"
+    },
+    "ContentTypeType": {
+      "type": "object"
+    },
+    "emailType": {
+      "type": "string",
+      "pattern": "\\w+@(\\w+\\.)+\\w+"
+    },
+    "KnownRelCodeType": {
+      "enum": [
+        "alternate",
+        "related",
+        "self",
+        "enclosure",
+        "via"
+      ]
+    },
+    "RelCodeType": {
+      "type": "object"
+    },
+    "textType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/textTypeType"
+        },
+        "atom:commonAttributes": {
+          "$ref": "#/definitions/commonAttributes"
+        }
+      },
+      "description": "The Atom text construct is defined in section 3.1 of the format spec.",
+      "additionalProperties": false,
+      "required": [
+        "atom:commonAttributes"
+      ]
+    },
+    "personType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "uri": {
+          "$ref": "#/definitions/uriType"
+        },
+        "email": {
+          "$ref": "#/definitions/emailType"
+        },
+        "atom:commonAttributes": {
+          "$ref": "#/definitions/commonAttributes"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "atom:commonAttributes"
+      ]
+    },
+    "feedType": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/personType"
+          }
+        },
+        "category": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/categoryType"
+          }
+        },
+        "contributor": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/personType"
+          }
+        },
+        "generator": {
+          "$ref": "#/definitions/generatorType"
+        },
+        "icon": {
+          "$ref": "#/definitions/iconType"
+        },
+        "id": {
+          "$ref": "#/definitions/idType"
+        },
+        "link": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/linkType"
+          }
+        },
+        "logo": {
+          "$ref": "#/definitions/logoType"
+        },
+        "rights": {
+          "$ref": "#/definitions/textType"
+        },
+        "subtitle": {
+          "$ref": "#/definitions/textType"
+        },
+        "title": {
+          "$ref": "#/definitions/textType"
+        },
+        "updated": {
+          "$ref": "#/definitions/dateTimeType"
+        },
+        "entry": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/entryType"
+          }
+        },
+        "atom:commonAttributes": {
+          "$ref": "#/definitions/commonAttributes"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "atom:commonAttributes"
+      ]
+    },
+    "entryType": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/personType"
+          }
+        },
+        "category": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/categoryType"
+          }
+        },
+        "content": {
+          "$ref": "#/definitions/contentType"
+        },
+        "contributor": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/personType"
+          }
+        },
+        "id": {
+          "$ref": "#/definitions/idType"
+        },
+        "link": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/linkType"
+          }
+        },
+        "published": {
+          "$ref": "#/definitions/dateTimeType"
+        },
+        "rights": {
+          "$ref": "#/definitions/textType"
+        },
+        "source": {
+          "$ref": "#/definitions/textType"
+        },
+        "summary": {
+          "$ref": "#/definitions/textType"
+        },
+        "title": {
+          "$ref": "#/definitions/textType"
+        },
+        "updated": {
+          "$ref": "#/definitions/dateTimeType"
+        },
+        "atom:commonAttributes": {
+          "$ref": "#/definitions/commonAttributes"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "atom:commonAttributes"
+      ]
+    },
+    "contentType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/ContentTypeType"
+        },
+        "src": {
+          "type": "string",
+          "format": "uri"
+        },
+        "atom:commonAttributes": {
+          "$ref": "#/definitions/commonAttributes"
+        }
+      },
+      "description": "The Atom content construct is defined in section 4.1.3 of the format spec.",
+      "additionalProperties": false,
+      "required": [
+        "atom:commonAttributes"
+      ]
+    },
+    "categoryType": {
+      "type": "object",
+      "properties": {
+        "term": {
+          "type": "string"
+        },
+        "scheme": {
+          "type": "string",
+          "format": "uri"
+        },
+        "label": {
+          "type": "string"
+        },
+        "atom:commonAttributes": {
+          "$ref": "#/definitions/commonAttributes"
+        }
+      },
+      "required": [
+        "term",
+        "atom:commonAttributes"
+      ],
+      "description": "The Atom category construct is defined in section 4.2.2 of the format spec.",
+      "additionalProperties": false
+    },
+    "generatorType": {
+      "type": "object",
+      "properties": {
+        "uri": {
+          "type": "string",
+          "format": "uri"
+        },
+        "version": {
+          "type": "string"
+        },
+        "atom:commonAttributes": {
+          "$ref": "#/definitions/commonAttributes"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "atom:commonAttributes"
+      ]
+    },
+    "iconType": {
+      "type": "object",
+      "properties": {
+        "atom:commonAttributes": {
+          "$ref": "#/definitions/commonAttributes"
+        }
+      },
+      "required": [
+        "atom:commonAttributes"
+      ],
+      "additionalProperties": false
+    },
+    "idType": {
+      "type": "object",
+      "properties": {
+        "atom:commonAttributes": {
+          "$ref": "#/definitions/commonAttributes"
+        }
+      },
+      "required": [
+        "atom:commonAttributes"
+      ],
+      "additionalProperties": false
+    },
+    "linkType": {
+      "type": "object",
+      "properties": {
+        "href": {
+          "type": "string",
+          "format": "uri"
+        },
+        "rel": {
+          "$ref": "#/definitions/RelCodeType"
+        },
+        "type": {
+          "type": "string"
+        },
+        "hreflang": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "length": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "atom:commonAttributes": {
+          "$ref": "#/definitions/commonAttributes"
+        }
+      },
+      "required": [
+        "href",
+        "atom:commonAttributes"
+      ],
+      "description": "The Atom link construct is defined in section 3.4 of the format spec.",
+      "additionalProperties": false
+    },
+    "logoType": {
+      "type": "object",
+      "properties": {
+        "atom:commonAttributes": {
+          "$ref": "#/definitions/commonAttributes"
+        }
+      },
+      "required": [
+        "atom:commonAttributes"
+      ],
+      "additionalProperties": false
+    },
+    "sourceType": {
+      "type": "object",
+      "properties": {
+        "author": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/personType"
+          }
+        },
+        "category": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/categoryType"
+          }
+        },
+        "contributor": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/personType"
+          }
+        },
+        "generator": {
+          "$ref": "#/definitions/generatorType"
+        },
+        "icon": {
+          "$ref": "#/definitions/iconType"
+        },
+        "id": {
+          "$ref": "#/definitions/idType"
+        },
+        "link": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/linkType"
+          }
+        },
+        "logo": {
+          "$ref": "#/definitions/logoType"
+        },
+        "rights": {
+          "$ref": "#/definitions/textType"
+        },
+        "subtitle": {
+          "$ref": "#/definitions/textType"
+        },
+        "title": {
+          "$ref": "#/definitions/textType"
+        },
+        "updated": {
+          "$ref": "#/definitions/dateTimeType"
+        },
+        "atom:commonAttributes": {
+          "$ref": "#/definitions/commonAttributes"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "atom:commonAttributes"
+      ]
+    },
+    "uriType": {
+      "type": "object",
+      "properties": {
+        "atom:commonAttributes": {
+          "$ref": "#/definitions/commonAttributes"
+        }
+      },
+      "required": [
+        "atom:commonAttributes"
+      ],
+      "additionalProperties": false
+    },
+    "dateTimeType": {
+      "type": "object",
+      "properties": {
+        "atom:commonAttributes": {
+          "$ref": "#/definitions/commonAttributes"
+        }
+      },
+      "required": [
+        "atom:commonAttributes"
+      ],
+      "additionalProperties": false
+    },
+    "commonAttributes": {
+      "type": "object",
+      "properties": {
+        "xml:base": {
+          "type": "string"
+        },
+        "xml:lang": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

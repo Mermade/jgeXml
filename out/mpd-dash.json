@@ -2,6 +2,7 @@
   "title": "test/mpd-dash.xsd",
   "$schema": "http://json-schema.org/schema#",
   "id": "urn:mpeg:dash:schema:mpd:2011",
+  "description": "This Schema defines the Media Presentation Description for MPEG-DASH.",
   "type": "object",
   "properties": {
     "MPD": {
@@ -98,7 +99,7 @@
           "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$"
         }
       },
-      "additionalProperties": false,
+      "additionalProperties": true,
       "required": [
         "Period",
         "profiles",
@@ -145,10 +146,10 @@
           }
         },
         "xlink:href": {
-          "$ref": "/xlink/href"
+          "$ref": "xlink.json#/definitions/href"
         },
         "xlink:actuate": {
-          "$ref": "/xlink/actuate"
+          "$ref": "xlink.json#/definitions/actuate"
         },
         "id": {
           "type": "string"
@@ -165,7 +166,7 @@
           "type": "boolean"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "EventStreamType": {
       "type": "object",
@@ -177,10 +178,10 @@
           }
         },
         "xlink:href": {
-          "$ref": "/xlink/href"
+          "$ref": "xlink.json#/definitions/href"
         },
         "xlink:actuate": {
-          "$ref": "/xlink/actuate"
+          "$ref": "xlink.json#/definitions/actuate"
         },
         "schemeIdUri": {
           "type": "string",
@@ -195,7 +196,7 @@
           "minimum": 0
         }
       },
-      "additionalProperties": false,
+      "additionalProperties": true,
       "required": [
         "schemeIdUri"
       ]
@@ -219,7 +220,7 @@
           "minimum": 0
         }
       },
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "AdaptationSetType": {
       "type": "object",
@@ -276,10 +277,10 @@
           }
         },
         "xlink:href": {
-          "$ref": "/xlink/href"
+          "$ref": "xlink.json#/definitions/href"
         },
         "xlink:actuate": {
-          "$ref": "/xlink/actuate"
+          "$ref": "xlink.json#/definitions/actuate"
         },
         "id": {
           "type": "integer",
@@ -395,7 +396,7 @@
           "$ref": "#/definitions/RatioType"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "RepresentationType": {
       "type": "object",
@@ -557,7 +558,7 @@
           "$ref": "#/definitions/VideoScanType"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "SubsetType": {
       "type": "object",
@@ -572,7 +573,7 @@
       "required": [
         "contains"
       ],
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "SegmentBaseType": {
       "type": "object",
@@ -607,7 +608,7 @@
           "type": "boolean"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "MultipleSegmentBaseType": {
       "type": "object",
@@ -642,7 +643,7 @@
           "type": "string"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "SegmentListType": {
       "type": "object",
@@ -654,10 +655,10 @@
           }
         },
         "xlink:href": {
-          "$ref": "/xlink/href"
+          "$ref": "xlink.json#/definitions/href"
         },
         "xlink:actuate": {
-          "$ref": "/xlink/actuate"
+          "$ref": "xlink.json#/definitions/actuate"
         }
       },
       "additionalProperties": false
@@ -680,7 +681,7 @@
           "type": "string"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "SegmentTemplateType": {
       "type": "object",
@@ -723,7 +724,7 @@
                 "type": "integer"
               }
             },
-            "additionalProperties": false,
+            "additionalProperties": true,
             "required": [
               "d"
             ]
@@ -733,7 +734,7 @@
       "required": [
         "S"
       ],
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "BaseURLType": {
       "type": "object",
@@ -752,7 +753,7 @@
           "type": "boolean"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "ProgramInformationType": {
       "type": "object",
@@ -775,7 +776,7 @@
           "format": "uri"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "DescriptorType": {
       "type": "object",
@@ -794,7 +795,7 @@
       "required": [
         "schemeIdUri"
       ],
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "MetricsType": {
       "type": "object",
@@ -820,7 +821,7 @@
         "Reporting",
         "metrics"
       ],
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "RangeType": {
       "type": "object",
