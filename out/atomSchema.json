@@ -25,16 +25,19 @@
     },
     "MimeType": {
       "type": "string",
-      "pattern": "(application|audio|image|text|video|message|multipart|model)/.+(;\\s*.+=.+)*"
+      "pattern": "(application|audio|image|text|video|message|multipart|model)/.+(;\\s*.+=.+)*",
+      "description": "XML encoded identifier of a standard MIME type, possibly a parameterized MIME type. Copied from ows 2.0.1"
     },
     "ContentTypeType": {
       "type": "object"
     },
     "emailType": {
       "type": "string",
-      "pattern": "\\w+@(\\w+\\.)+\\w+"
+      "pattern": "\\w+@(\\w+\\.)+\\w+",
+      "description": "Schema definition for an email address."
     },
     "KnownRelCodeType": {
+      "description": "alternate: The value \"alternate\" signifies that the IRI in the value of the href attribute identifies an alternate version of the resource described by the containing element.related: The value \"related\" signifies that the IRI in the value of the href attribute identifies a resource related to the resource described by the containing element. For example, the feed for a site that discusses the performance of the search engine at \"http://search.example.com\" might contain, as a child of atom:feed. An identical link might appear as a child of any atom:entry whose content contains a discussion of that same search engine.self: The value \"self\" signifies that the IRI in the value of the href attribute identifies a resource equivalent to the containing element.enclosure: The value \"enclosure\" signifies that the IRI in the value of the href attribute identifies a related resource that is potentially large in size and might require special handling. For atom:link elements with rel=\"enclosure\", the length attribute SHOULD be provided.via: The value \"via\" signifies that the IRI in the value of the href attribute identifies a resource that is the source of the information provided in the containing element.",
       "enum": [
         "alternate",
         "related",
@@ -246,11 +249,11 @@
           "$ref": "#/definitions/commonAttributes"
         }
       },
+      "description": "The Atom category construct is defined in section 4.2.2 of the format spec.",
       "required": [
         "term",
         "atom:commonAttributes"
       ],
-      "description": "The Atom category construct is defined in section 4.2.2 of the format spec.",
       "additionalProperties": false
     },
     "generatorType": {
@@ -323,11 +326,11 @@
           "$ref": "#/definitions/commonAttributes"
         }
       },
+      "description": "The Atom link construct is defined in section 3.4 of the format spec.",
       "required": [
         "href",
         "atom:commonAttributes"
       ],
-      "description": "The Atom link construct is defined in section 3.4 of the format spec.",
       "additionalProperties": false
     },
     "logoType": {

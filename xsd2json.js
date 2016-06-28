@@ -218,10 +218,16 @@ function doElement(src,parent,key) {
 	else if ((element["@name"]) && (element["xs:simpleType"])) {
 		type = element["xs:simpleType"]["xs:restriction"]["@base"];
 		simpleType = element["xs:simpleType"]["xs:restriction"];
+		if (element["xs:simpleType"]["xs:annotation"]) {
+			simpleType["xs:annotation"] = element["xs:simpleType"]["xs:annotation"];
+		}
 	}
 	else if ((element["@name"]) && (element["xs:restriction"])) {
 		type = element["xs:restriction"]["@base"];
 		simpleType = element["xs:restriction"];
+		if (element["xs:annotation"]) {
+			simpleType["xs:annotation"] = element["xs:annotation"];
+		}
 	}
 	else if (element["@ref"]) {
 		name = element["@ref"];
@@ -229,7 +235,6 @@ function doElement(src,parent,key) {
 	}
 
 	if (name && type) {
-		//console.log(name+' = '+type);
 		var isAttribute = (element["@isAttr"] == true);
 
 		if (!target) target = parent;
@@ -256,6 +261,10 @@ function doElement(src,parent,key) {
 			newTarget = typeData;
 		}
 
+		if ((parent["xs:annotation"]) && ((parent["xs:annotation"]["xs:documentation"]))) {
+			target.description = parent["xs:annotation"]["xs:documentation"];
+		}
+
 		var enumSource;
 
 		if (element["xs:simpleType"] && element["xs:simpleType"]["xs:restriction"] && element["xs:simpleType"]["xs:restriction"]["xs:enumeration"]) {
@@ -266,10 +275,18 @@ function doElement(src,parent,key) {
 		}
 
 		if (enumSource) {
+			typeData.description = '';
 			typeData["enum"] = [];
 			for (var i=0;i<enumSource.length;i++) {
 				typeData["enum"].push(enumSource[i]["@value"]);
+				if ((enumSource[i]["xs:annotation"]) && (enumSource[i]["xs:annotation"]["xs:documentation"])) {
+					if (typeData.description) {
+						typeData.description += '';
+					}
+					typeData.description += enumSource[i]["@value"]+': '+enumSource[i]["xs:annotation"]["xs:documentation"];
+				}
 			}
+			if (!typeData.description) delete typeData.description;
 			delete typeData.type; // assert it was a stringish type?
 		}
 		else {
@@ -314,10 +331,9 @@ function doElement(src,parent,key) {
 			if (simpleType["xs:minLength"]) typeData.minLength = parseInt(simpleType["xs:minLength"]["@value"],10);
 			if (simpleType["xs:maxLength"]) typeData.maxLength = parseInt(simpleType["xs:maxLength"]["@value"],10);
 			if (simpleType["xs:pattern"]) typeData.pattern = simpleType["xs:pattern"]["@value"];
-		}
-
-		if ((parent["xs:annotation"]) && ((parent["xs:annotation"]["xs:documentation"]))) {
-			target.description = parent["xs:annotation"]["xs:documentation"];
+			if ((simpleType["xs:annotation"]) && (simpleType["xs:annotation"]["xs:documentation"])) {
+				typeData.description = simpleType["xs:annotation"]["xs:documentation"];
+			}
 		}
 
 		target.properties[name] = typeData; // Object.assign 'corrupts' property ordering
