@@ -2,6 +2,7 @@
   "title": "test/atomSchema.xsd",
   "$schema": "http://json-schema.org/schema#",
   "id": "http://www.w3.org/2005/Atom",
+  "description": "This version of the Atom schema is based on version 1.0 of the format specifications, found here http://www.atomenabled.org/developers/syndication/atom-format-spec.php. The original namespace was http://www.w3.org/2005/Atom but we changed it to http://www.opengis.net/atom/2005 to avoid conflicting definitions of the same namespace in the future. NOT DONE YET. There is no XSD official schema for atom but this one seems to be the most known: http://www.kbcafe.com/rss/atom.xsd.xml (The Atom Publishing Protocol was issued as a Proposed Standard in IETF RFC 5023 in October 2007 http://tools.ietf.org/html/rfc5023)\nAn Atom document may have two root elements, feed and entry, as defined in section 2.",
   "type": "object",
   "properties": {
     "feed": {
@@ -25,16 +26,16 @@
     },
     "MimeType": {
       "type": "string",
-      "pattern": "(application|audio|image|text|video|message|multipart|model)/.+(;\\s*.+=.+)*",
-      "description": "XML encoded identifier of a standard MIME type, possibly a parameterized MIME type. Copied from ows 2.0.1"
+      "description": "XML encoded identifier of a standard MIME type, possibly a parameterized MIME type. Copied from ows 2.0.1",
+      "pattern": "(application|audio|image|text|video|message|multipart|model)/.+(;\\s*.+=.+)*"
     },
     "ContentTypeType": {
       "type": "object"
     },
     "emailType": {
       "type": "string",
-      "pattern": "\\w+@(\\w+\\.)+\\w+",
-      "description": "Schema definition for an email address."
+      "description": "Schema definition for an email address.",
+      "pattern": "\\w+@(\\w+\\.)+\\w+"
     },
     "KnownRelCodeType": {
       "description": "alternate: The value \"alternate\" signifies that the IRI in the value of the href attribute identifies an alternate version of the resource described by the containing element.related: The value \"related\" signifies that the IRI in the value of the href attribute identifies a resource related to the resource described by the containing element. For example, the feed for a site that discusses the performance of the search engine at \"http://search.example.com\" might contain, as a child of atom:feed. An identical link might appear as a child of any atom:entry whose content contains a discussion of that same search engine.self: The value \"self\" signifies that the IRI in the value of the href attribute identifies a resource equivalent to the containing element.enclosure: The value \"enclosure\" signifies that the IRI in the value of the href attribute identifies a related resource that is potentially large in size and might require special handling. For atom:link elements with rel=\"enclosure\", the length attribute SHOULD be provided.via: The value \"via\" signifies that the IRI in the value of the href attribute identifies a resource that is the source of the information provided in the containing element.",
@@ -51,6 +52,7 @@
     },
     "textType": {
       "type": "object",
+      "description": "The Atom text construct is defined in section 3.1 of the format spec.",
       "properties": {
         "type": {
           "$ref": "#/definitions/textTypeType"
@@ -59,7 +61,6 @@
           "$ref": "#/definitions/commonAttributes"
         }
       },
-      "description": "The Atom text construct is defined in section 3.1 of the format spec.",
       "additionalProperties": false,
       "required": [
         "atom:commonAttributes"
@@ -67,6 +68,7 @@
     },
     "personType": {
       "type": "object",
+      "description": "The Atom person construct is defined in section 3.2 of the format spec.",
       "properties": {
         "name": {
           "type": "string"
@@ -88,6 +90,7 @@
     },
     "feedType": {
       "type": "object",
+      "description": "The Atom feed construct is defined in section 4.1.1 of the format spec.",
       "properties": {
         "author": {
           "type": "array",
@@ -154,6 +157,7 @@
     },
     "entryType": {
       "type": "object",
+      "description": "The Atom entry construct is defined in section 4.1.2 of the format spec.",
       "properties": {
         "author": {
           "type": "array",
@@ -214,6 +218,7 @@
     },
     "contentType": {
       "type": "object",
+      "description": "The Atom content construct is defined in section 4.1.3 of the format spec.",
       "properties": {
         "type": {
           "$ref": "#/definitions/ContentTypeType"
@@ -226,7 +231,6 @@
           "$ref": "#/definitions/commonAttributes"
         }
       },
-      "description": "The Atom content construct is defined in section 4.1.3 of the format spec.",
       "additionalProperties": false,
       "required": [
         "atom:commonAttributes"
@@ -234,6 +238,7 @@
     },
     "categoryType": {
       "type": "object",
+      "description": "The Atom category construct is defined in section 4.2.2 of the format spec.",
       "properties": {
         "term": {
           "type": "string"
@@ -249,7 +254,6 @@
           "$ref": "#/definitions/commonAttributes"
         }
       },
-      "description": "The Atom category construct is defined in section 4.2.2 of the format spec.",
       "required": [
         "term",
         "atom:commonAttributes"
@@ -258,6 +262,7 @@
     },
     "generatorType": {
       "type": "object",
+      "description": "The Atom generator element is defined in section 4.2.4 of the format spec.",
       "properties": {
         "uri": {
           "type": "string",
@@ -268,39 +273,56 @@
         },
         "atom:commonAttributes": {
           "$ref": "#/definitions/commonAttributes"
+        },
+        "#text": {
+          "type": "string"
         }
       },
       "additionalProperties": false,
       "required": [
-        "atom:commonAttributes"
+        "atom:commonAttributes",
+        "#text"
       ]
     },
     "iconType": {
       "type": "object",
+      "description": "The Atom icon construct is defined in section 4.2.5 of the format spec.",
       "properties": {
         "atom:commonAttributes": {
           "$ref": "#/definitions/commonAttributes"
+        },
+        "#text": {
+          "type": "string",
+          "format": "uri"
         }
       },
       "required": [
-        "atom:commonAttributes"
+        "atom:commonAttributes",
+        "#text"
       ],
       "additionalProperties": false
     },
     "idType": {
       "type": "object",
+      "description": "The Atom id construct is defined in section 4.2.6 of the format spec.",
       "properties": {
         "atom:commonAttributes": {
           "$ref": "#/definitions/commonAttributes"
+        },
+        "#text": {
+          "type": "string",
+          "format": "uri"
         }
       },
       "required": [
-        "atom:commonAttributes"
+        "atom:commonAttributes",
+        "#text"
       ],
       "additionalProperties": false
     },
     "linkType": {
       "type": "object",
+      "description": "The Atom link construct is defined in section 3.4 of the format spec.",
       "properties": {
         "href": {
           "type": "string",
@@ -326,7 +348,6 @@
           "$ref": "#/definitions/commonAttributes"
         }
       },
-      "description": "The Atom link construct is defined in section 3.4 of the format spec.",
       "required": [
         "href",
         "atom:commonAttributes"
@@ -335,18 +356,25 @@
     },
     "logoType": {
       "type": "object",
+      "description": "The Atom logo construct is defined in section 4.2.8 of the format spec.",
       "properties": {
         "atom:commonAttributes": {
           "$ref": "#/definitions/commonAttributes"
+        },
+        "#text": {
+          "type": "string",
+          "format": "uri"
         }
       },
       "required": [
-        "atom:commonAttributes"
+        "atom:commonAttributes",
+        "#text"
       ],
       "additionalProperties": false
     },
     "sourceType": {
       "type": "object",
+      "description": "The Atom source construct is defined in section 4.2.11 of the format spec.",
       "properties": {
         "author": {
           "type": "array",
@@ -410,10 +438,15 @@
       "properties": {
         "atom:commonAttributes": {
           "$ref": "#/definitions/commonAttributes"
+        },
+        "#text": {
+          "type": "string",
+          "format": "uri"
         }
       },
       "required": [
-        "atom:commonAttributes"
+        "atom:commonAttributes",
+        "#text"
       ],
       "additionalProperties": false
     },
@@ -422,10 +455,15 @@
       "properties": {
         "atom:commonAttributes": {
           "$ref": "#/definitions/commonAttributes"
+        },
+        "#text": {
+          "type": "string",
+          "format": "date-time"
         }
       },
       "required": [
-        "atom:commonAttributes"
+        "atom:commonAttributes",
+        "#text"
       ],
       "additionalProperties": false
     },

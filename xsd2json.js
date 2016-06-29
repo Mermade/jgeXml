@@ -203,10 +203,14 @@ function doElement(src,parent,key) {
 	var name;
 
 	var simpleType;
+	var doc;
 
 	var element = src[key];
 	if ((typeof element == 'undefined') || (null === element)) {
 		return false;
+	}
+	if (element["xs:annotation"]) {
+		doc = element["xs:annotation"]["xs:documentation"];
 	}
 
 	if (element["@name"]) {
@@ -228,6 +232,10 @@ function doElement(src,parent,key) {
 		if (element["xs:annotation"]) {
 			simpleType["xs:annotation"] = element["xs:annotation"];
 		}
+	}
+	else if ((element["xs:extension"]) && (element["xs:extension"]["@base"])) {
+		type = element["xs:extension"]["@base"];
+		if (!name) name = "#text";
 	}
 	else if (element["@ref"]) {
 		name = element["@ref"];
@@ -256,6 +264,10 @@ function doElement(src,parent,key) {
 			typeData.type = 'string'; // handle case where attribute has no defined type
 		}
 
+		if (doc) {
+			typeData.description = doc;
+		}
+
 		if (typeData.type == 'object') {
 			typeData.properties = {};
 			newTarget = typeData;
@@ -263,6 +275,9 @@ function doElement(src,parent,key) {
 
 		if ((parent["xs:annotation"]) && ((parent["xs:annotation"]["xs:documentation"]))) {
 			target.description = parent["xs:annotation"]["xs:documentation"];
+		}
+		if ((element["xs:annotation"]) && ((element["xs:annotation"]["xs:documentation"]))) {
+			target.description = (target.description ? target.decription + '\n' : '') + element["xs:annotation"]["xs:documentation"];
 		}
 
 		var enumSource;
@@ -295,8 +310,8 @@ function doElement(src,parent,key) {
 				//typeData.type = typeData.type;
 			}
 			else {
-				if (typeData.type.startsWith('xml:')) {
-						typeData.type = 'string';
+				if (typeData.type.startsWith('xml:')) { // id, lang, space, base, Father
+					typeData.type = 'string';
 				}
 				else {
 					var tempType = typeData.type;
@@ -512,9 +527,18 @@ module.exports = {
 		if (id) {
 			obj.id = id;
 		}
-		if ((src["xs:schema"]["xs:annotation"]) && (src["xs:schema"]["xs:annotation"]["xs:documentation"])) {
-			obj.description = src["xs:schema"]["xs:annotation"]["xs:documentation"];
-			if (obj.description["#text"]) obj.description = obj.description["#text"]; // could be an array?
+		if (src["xs:schema"]["xs:annotation"]) {
+			obj.description = '';
+			src["xs:schema"]["xs:annotation"] = toArray(src["xs:schema"]["xs:annotation"]);
+			for (var a in src["xs:schema"]["xs:annotation"]) {
+				var annotation = src["xs:schema"]["xs:annotation"][a];
+				if ((annotation["xs:documentation"]) && (annotation["xs:documentation"]["#text"])) {
+					obj.description += (obj.description ? '\n' : '') + annotation["xs:documentation"]["#text"];
+				}
+				else {
+					if (annotation["xs:documentation"]) obj.description += (obj.description ? '\n' : '') + annotation["xs:documentation"];
+				}
+			}
 		}
 
 		var rootElement = src["xs:schema"]["xs:element"];
@@ -542,6 +566,7 @@ module.exports = {
 			delete obj.properties["@name"]; // to prevent root-element being picked up twice
 		}
 
+		// main processing of the root element
 		recurse(obj,{},function(src,parent,key) { // was obj.properties
 			doElement(src,parent,key);
 		});
@@ -563,6 +588,8 @@ module.exports = {
 		obj.definitions.properties = {};
 		target = obj.definitions;
 
+		//console.log(JSON.stringify(src,null,2));
+		// main processing of the ref'd elements
 		recurse(obj.definitions,{},function(src,parent,key) {
 			doElement(src,parent,key);
 		});

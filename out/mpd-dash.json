@@ -218,9 +218,15 @@
           "type": "integer",
           "format": "int32",
           "minimum": 0
+        },
+        "#text": {
+          "type": "string"
         }
       },
-      "additionalProperties": true
+      "additionalProperties": true,
+      "required": [
+        "#text"
+      ]
     },
     "AdaptationSetType": {
       "type": "object",
@@ -349,9 +355,15 @@
         },
         "bitstreamSwitching": {
           "type": "boolean"
+        },
+        "#text": {
+          "$ref": "#/definitions/RepresentationBaseType"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "#text"
+      ]
     },
     "ContentComponentType": {
       "type": "object",
@@ -440,12 +452,16 @@
         },
         "mediaStreamStructureId": {
           "$ref": "#/definitions/StringVectorType"
+        },
+        "#text": {
+          "$ref": "#/definitions/RepresentationBaseType"
         }
       },
       "additionalProperties": false,
       "required": [
         "id",
-        "bandwidth"
+        "bandwidth",
+        "#text"
       ]
     },
     "SubRepresentationType": {
@@ -466,9 +482,15 @@
         },
         "contentComponent": {
           "$ref": "#/definitions/StringVectorType"
+        },
+        "#text": {
+          "$ref": "#/definitions/RepresentationBaseType"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "#text"
+      ]
     },
     "RepresentationBaseType": {
       "type": "object",
@@ -628,9 +650,15 @@
           "type": "integer",
           "format": "int32",
           "minimum": 0
+        },
+        "#text": {
+          "$ref": "#/definitions/SegmentBaseType"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "#text"
+      ]
     },
     "URLType": {
       "type": "object",
@@ -659,9 +687,15 @@
         },
         "xlink:actuate": {
           "$ref": "xlink.json#/definitions/actuate"
+        },
+        "#text": {
+          "$ref": "#/definitions/MultipleSegmentBaseType"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "#text"
+      ]
     },
     "SegmentURLType": {
       "type": "object",
@@ -697,9 +731,15 @@
         },
         "bitstreamSwitching": {
           "type": "string"
+        },
+        "#text": {
+          "$ref": "#/definitions/MultipleSegmentBaseType"
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "#text"
+      ]
     },
     "SegmentTimelineType": {
       "type": "object",
@@ -751,9 +791,16 @@
         },
         "availabilityTimeComplete": {
           "type": "boolean"
+        },
+        "#text": {
+          "type": "string",
+          "format": "uri"
         }
       },
-      "additionalProperties": true
+      "additionalProperties": true,
+      "required": [
+        "#text"
+      ]
     },
     "ProgramInformationType": {
       "type": "object",
