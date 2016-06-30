@@ -99,12 +99,12 @@
           "pattern": "^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$"
         }
       },
-      "additionalProperties": true,
       "required": [
         "Period",
         "profiles",
         "minBufferTime"
-      ]
+      ],
+      "additionalProperties": true
     },
     "PeriodType": {
       "type": "object",
@@ -196,10 +196,10 @@
           "minimum": 0
         }
       },
-      "additionalProperties": true,
       "required": [
         "schemeIdUri"
-      ]
+      ],
+      "additionalProperties": true
     },
     "EventType": {
       "type": "object",
@@ -223,10 +223,10 @@
           "type": "string"
         }
       },
-      "additionalProperties": true,
       "required": [
         "#text"
-      ]
+      ],
+      "additionalProperties": true
     },
     "AdaptationSetType": {
       "type": "object",
@@ -360,10 +360,10 @@
           "$ref": "#/definitions/RepresentationBaseType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "#text"
-      ]
+      ],
+      "additionalProperties": false
     },
     "ContentComponentType": {
       "type": "object",
@@ -457,12 +457,12 @@
           "$ref": "#/definitions/RepresentationBaseType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "id",
         "bandwidth",
         "#text"
-      ]
+      ],
+      "additionalProperties": false
     },
     "SubRepresentationType": {
       "type": "object",
@@ -487,10 +487,10 @@
           "$ref": "#/definitions/RepresentationBaseType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "#text"
-      ]
+      ],
+      "additionalProperties": false
     },
     "RepresentationBaseType": {
       "type": "object",
@@ -655,10 +655,10 @@
           "$ref": "#/definitions/SegmentBaseType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "#text"
-      ]
+      ],
+      "additionalProperties": false
     },
     "URLType": {
       "type": "object",
@@ -692,10 +692,10 @@
           "$ref": "#/definitions/MultipleSegmentBaseType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "#text"
-      ]
+      ],
+      "additionalProperties": false
     },
     "SegmentURLType": {
       "type": "object",
@@ -736,10 +736,10 @@
           "$ref": "#/definitions/MultipleSegmentBaseType"
         }
       },
-      "additionalProperties": false,
       "required": [
         "#text"
-      ]
+      ],
+      "additionalProperties": false
     },
     "SegmentTimelineType": {
       "type": "object",
@@ -764,10 +764,10 @@
                 "type": "integer"
               }
             },
-            "additionalProperties": true,
             "required": [
               "d"
-            ]
+            ],
+            "additionalProperties": true
           }
         }
       },
@@ -797,10 +797,10 @@
           "format": "uri"
         }
       },
-      "additionalProperties": true,
       "required": [
         "#text"
-      ]
+      ],
+      "additionalProperties": true
     },
     "ProgramInformationType": {
       "type": "object",
@@ -899,7 +899,18 @@
       "pattern": "[0-9]*[0-9](/[0-9]*[0-9])?"
     },
     "ConditionalUintType": {
-      "type": "object"
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
+        },
+        {
+          "type": "boolean"
+        }
+      ],
+      "additionalProperties": false
     },
     "StringNoWhitespaceType": {
       "type": "string",
@@ -918,10 +929,10 @@
       ]
     },
     "StringVectorType": {
-      "type": "object"
+      "type": "string"
     },
     "UIntVectorType": {
-      "type": "object"
+      "type": "string"
     }
   }
 }

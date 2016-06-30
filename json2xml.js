@@ -38,6 +38,7 @@ var result = [];
 }
 
 module.exports = {
+	// TODO convert this to an options object
 	getXml : function(obj,attrPrefix,standalone,indent,indentStr,fragment) {
 		var attributePrefix = (attrPrefix ? attrPrefix : '@');
 		if (fragment) {

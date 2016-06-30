@@ -30,7 +30,16 @@
       "pattern": "(application|audio|image|text|video|message|multipart|model)/.+(;\\s*.+=.+)*"
     },
     "ContentTypeType": {
-      "type": "object"
+      "type": "object",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/textTypeType"
+        },
+        {
+          "$ref": "#/definitions/MimeType"
+        }
+      ],
+      "additionalProperties": false
     },
     "emailType": {
       "type": "string",
@@ -48,7 +57,16 @@
       ]
     },
     "RelCodeType": {
-      "type": "object"
+      "type": "object",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/KnownRelCodeType"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "additionalProperties": false
     },
     "textType": {
       "type": "object",
@@ -61,10 +79,10 @@
           "$ref": "#/definitions/commonAttributes"
         }
       },
-      "additionalProperties": false,
       "required": [
         "atom:commonAttributes"
-      ]
+      ],
+      "additionalProperties": true
     },
     "personType": {
       "type": "object",
@@ -83,10 +101,10 @@
           "$ref": "#/definitions/commonAttributes"
         }
       },
-      "additionalProperties": false,
       "required": [
         "atom:commonAttributes"
-      ]
+      ],
+      "additionalProperties": true
     },
     "feedType": {
       "type": "object",
@@ -150,10 +168,10 @@
           "$ref": "#/definitions/commonAttributes"
         }
       },
-      "additionalProperties": false,
       "required": [
         "atom:commonAttributes"
-      ]
+      ],
+      "additionalProperties": true
     },
     "entryType": {
       "type": "object",
@@ -211,10 +229,10 @@
           "$ref": "#/definitions/commonAttributes"
         }
       },
-      "additionalProperties": false,
       "required": [
         "atom:commonAttributes"
-      ]
+      ],
+      "additionalProperties": true
     },
     "contentType": {
       "type": "object",
@@ -231,10 +249,10 @@
           "$ref": "#/definitions/commonAttributes"
         }
       },
-      "additionalProperties": false,
       "required": [
         "atom:commonAttributes"
-      ]
+      ],
+      "additionalProperties": true
     },
     "categoryType": {
       "type": "object",
@@ -278,11 +296,11 @@
           "type": "string"
         }
       },
-      "additionalProperties": false,
       "required": [
         "atom:commonAttributes",
         "#text"
-      ]
+      ],
+      "additionalProperties": false
     },
     "iconType": {
       "type": "object",
@@ -428,10 +446,10 @@
           "$ref": "#/definitions/commonAttributes"
         }
       },
-      "additionalProperties": false,
       "required": [
         "atom:commonAttributes"
-      ]
+      ],
+      "additionalProperties": true
     },
     "uriType": {
       "type": "object",

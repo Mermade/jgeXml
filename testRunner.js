@@ -64,7 +64,11 @@ function runXmlTest(filename,components) {
 	if (exists) {
 		console.log('  Convert and compare to JSON');
 		var xml = fs.readFileSync(testdir+'/'+filename,encoding);
-		var obj = x2j.xml2json(xml,{"attributePrefix": "@", "valueProperty": valueProperty, "coerceTypes": coerceTypes});
+		var attrPrefix = '@';
+		if (filename.indexOf('noap')>=0) {
+			attrPrefix = '';
+		}
+		var obj = x2j.xml2json(xml,{"attributePrefix": attrPrefix, "valueProperty": valueProperty, "coerceTypes": coerceTypes});
 		var json = JSON.stringify(obj,null,2);
 		var compare = fs.readFileSync('out/'+stem+'.json',encoding);
 		compare = compare.replaceAll('\r\n','\n');

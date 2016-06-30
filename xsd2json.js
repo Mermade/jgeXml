@@ -64,12 +64,46 @@ function mandate(target,name) {
 	}
 }
 
+function finaliseType(typeData) {
+	if ((typeData.type == 'string') || (typeData.type == 'boolean') || (typeData.type == 'array') || (typeData.type == 'object')
+		|| (typeData.type == 'integer') || (typeData.type == 'number') || (typeData.type == 'null')) {
+		//typeData.type = typeData.type;
+	}
+	else {
+		if (typeData.type.startsWith('xml:')) { // id, lang, space, base, Father
+			typeData.type = 'string';
+		}
+		else {
+			var tempType = typeData.type;
+			if (defaultNameSpace) {
+				tempType = tempType.replace(defaultNameSpace+':','');
+			}
+			if (tempType.indexOf(':')>=0) {
+				var tempComp = tempType.split(':');
+				typeData["$ref"] = tempComp[0]+'.json#/definitions/'+tempComp[1]; //'/'+typeData.type.replace(':','/');
+			}
+			else {
+				typeData["$ref"] = '#/definitions/'+tempType;
+			}
+			delete typeData.type;
+		}
+	}
+	return typeData;
+}
+
 function mapType(type) {
 
 	var result = {};
 	result.type = type;
 
-	if (type == 'xs:integer') {
+	if (Array.isArray(type)) {
+		result.type = 'object';
+		result.oneOf = [];
+		for (var t in type) {
+			result.oneOf.push(finaliseType(mapType(type[t])));
+		}
+	}
+    else if (type == 'xs:integer') {
 		result.type = 'integer';
 	}
 	else if (type == 'xs:positiveInteger') {
@@ -198,6 +232,15 @@ function mapType(type) {
 	return result;
 }
 
+function initTarget(parent) {
+	if (!target) target = parent;
+	if (!target.properties) {
+		target.properties = {};
+		target.required = [];
+		target.additionalProperties = false;
+	}
+}
+
 function doElement(src,parent,key) {
 	var type = 'object';
 	var name;
@@ -209,6 +252,11 @@ function doElement(src,parent,key) {
 	if ((typeof element == 'undefined') || (null === element)) {
 		return false;
 	}
+
+	if ((key == "xs:any") || (key == "xs:anyAttribute")) {
+		if (target) target.additionalProperties = true; // target should always be defined at this point
+	}
+
 	if (element["xs:annotation"]) {
 		doc = element["xs:annotation"]["xs:documentation"];
 	}
@@ -237,6 +285,16 @@ function doElement(src,parent,key) {
 		type = element["xs:extension"]["@base"];
 		if (!name) name = "#text";
 	}
+	else if (element["xs:union"]) {
+		var types = element["xs:union"]["@memberTypes"].split(' ');
+		type = [];
+		for (var t in types) {
+			type.push(types[t]);
+		}
+	}
+	else if (element["xs:list"]) {
+		type = 'string';
+	}
 	else if (element["@ref"]) {
 		name = element["@ref"];
 		type = element["@ref"];
@@ -245,8 +303,7 @@ function doElement(src,parent,key) {
 	if (name && type) {
 		var isAttribute = (element["@isAttr"] == true);
 
-		if (!target) target = parent;
-		if (!target.properties) target.properties = {};
+		initTarget(parent);
 		var newTarget = target;
 
 		var minOccurs = 1;
@@ -270,6 +327,8 @@ function doElement(src,parent,key) {
 
 		if (typeData.type == 'object') {
 			typeData.properties = {};
+			typeData.required = [];
+			typeData.additionalProperties = false;
 			newTarget = typeData;
 		}
 
@@ -305,29 +364,7 @@ function doElement(src,parent,key) {
 			delete typeData.type; // assert it was a stringish type?
 		}
 		else {
-			if ((typeData.type == 'string') || (typeData.type == 'boolean') || (typeData.type == 'array') || (typeData.type == 'object')
-				|| (typeData.type == 'integer') || (typeData.type == 'number') || (typeData.type == 'null')) {
-				//typeData.type = typeData.type;
-			}
-			else {
-				if (typeData.type.startsWith('xml:')) { // id, lang, space, base, Father
-					typeData.type = 'string';
-				}
-				else {
-					var tempType = typeData.type;
-					if (defaultNameSpace) {
-						tempType = tempType.replace(defaultNameSpace+':','');
-					}
-					if (tempType.indexOf(':')>=0) {
-						var tempComp = tempType.split(':');
-						typeData["$ref"] = tempComp[0]+'.json#/definitions/'+tempComp[1]; //'/'+typeData.type.replace(':','/');
-					}
-					else {
-						typeData["$ref"] = '#/definitions/'+tempType;
-					}
-					delete typeData.type;
-				}
-			}
+			typeData = finaliseType(typeData);
 		}
 
 		if (maxOccurs > 1) {
@@ -352,7 +389,6 @@ function doElement(src,parent,key) {
 		}
 
 		target.properties[name] = typeData; // Object.assign 'corrupts' property ordering
-		target.additionalProperties = ((typeof parent["xs:anyAttribute"] !== 'undefined') || (typeof parent["xs:any"] !== 'undefined'));
 
 		target = newTarget;
 	}
@@ -440,6 +476,12 @@ function removeEmpties(obj,parent,key) {
 	var count = 0;
 	if (isEmpty(obj[key])) {
 		delete obj[key];
+		if (key == 'properties') {
+			if (!obj.oneOf) {
+				obj.type = 'string';
+				delete obj.additionalProperties;
+			}
+		}
 		count++;
 	}
 	else {
@@ -588,7 +630,6 @@ module.exports = {
 		obj.definitions.properties = {};
 		target = obj.definitions;
 
-		//console.log(JSON.stringify(src,null,2));
 		// main processing of the ref'd elements
 		recurse(obj.definitions,{},function(src,parent,key) {
 			doElement(src,parent,key);
