@@ -247,6 +247,7 @@ function doElement(src,parent,key) {
 
 	var simpleType;
 	var doc;
+	var inAnyOf = -1;
 
 	var element = src[key];
 	if ((typeof element == 'undefined') || (null === element)) {
@@ -283,7 +284,7 @@ function doElement(src,parent,key) {
 	}
 	else if ((element["xs:extension"]) && (element["xs:extension"]["@base"])) {
 		type = element["xs:extension"]["@base"];
-		if (!name) name = "#text";
+		if (!name) name = "#text"; // see anonymous types
 	}
 	else if (element["xs:union"]) {
 		var types = element["xs:union"]["@memberTypes"].split(' ');
@@ -332,6 +333,17 @@ function doElement(src,parent,key) {
 			newTarget = typeData;
 		}
 
+		// handle @ref / attributeGroups
+		if ((key == "xs:attributeGroup") && (element["@ref"])) { // || (name == '$ref')) {
+			if (!target.anyOf) target.anyOf = [];
+			var newt = {};
+			newt.properties = {};
+			target.anyOf.push(newt);
+			inAnyOf = target.anyOf.length-1;
+			delete src[key];
+			minOccurs = 0;
+		}
+
 		if ((parent["xs:annotation"]) && ((parent["xs:annotation"]["xs:documentation"]))) {
 			target.description = parent["xs:annotation"]["xs:documentation"];
 		}
@@ -374,6 +386,7 @@ function doElement(src,parent,key) {
 			if (maxOccurs < Number.MAX_SAFE_INTEGER) newTD.maxItems = parseInt(maxOccurs,10);
 			newTD.items = typeData;
 			typeData = newTD;
+			// TODO add mode where if array minOccurs is 1, add oneOf allowing single object or array with object as item
 		}
 		if (minOccurs > 0) {
 			mandate(target,name);
@@ -388,7 +401,12 @@ function doElement(src,parent,key) {
 			}
 		}
 
-		target.properties[name] = typeData; // Object.assign 'corrupts' property ordering
+		if (inAnyOf>=0) {
+			target.anyOf[inAnyOf]["$ref"] = typeData["$ref"];
+		}
+		else {
+			target.properties[name] = typeData; // Object.assign 'corrupts' property ordering
+		}
 
 		target = newTarget;
 	}
@@ -470,6 +488,22 @@ function moveProperties(obj,parent,key) {
 function clean(obj,parent,key) {
 	if (key == '@name') delete obj[key];
 	if (key == '@type') delete obj[key];
+	if (obj.properties && (Object.keys(obj.properties).length == 1) && obj.properties["#text"] && obj.properties["#text"]["$ref"]) {
+		obj.properties["$ref"] = obj.properties["#text"]["$ref"];
+		delete obj.properties["#text"]; // anonymous types
+		if (obj.required) {
+			for (var r in obj.required) {
+				if (obj.required[r] == '#text') delete obj.required[r];
+			}
+		}
+	}
+	if (obj.properties && obj.anyOf) {
+		var newI = {};
+		//newI.type = 'object';
+		newI.properties = obj.properties;
+		obj.anyOf.push(newI);
+		obj.properties = {}; // gets removed later
+	}
 }
 
 function removeEmpties(obj,parent,key) {
@@ -477,8 +511,8 @@ function removeEmpties(obj,parent,key) {
 	if (isEmpty(obj[key])) {
 		delete obj[key];
 		if (key == 'properties') {
-			if (!obj.oneOf) {
-				obj.type = 'string';
+			if ((!obj.oneOf) && (!obj.anyOf)) {
+				if (obj.type == 'object') obj.type = 'string';
 				delete obj.additionalProperties;
 			}
 		}
