@@ -22,7 +22,8 @@ catch (err) {
 
 console.log(JSON.stringify(obj,null,2));
 
-var json = xsd.getJsonSchema(obj,filename,'');
+var laxUris = (filename.indexOf('.lax')>=0);
+var json = xsd.getJsonSchema(obj,filename,'',laxUris);
 console.log();
 //console.log(JSON.stringify(json,null,2));
 //console.log();
