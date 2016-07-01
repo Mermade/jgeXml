@@ -13,7 +13,7 @@ function emit(token,coerceTypes) {
 		if (!isNaN(num)) {
 			return num;
 		}
-		if (Object.keys(token).length === 0) {
+		if ((Object.keys(token).length === 0) || (token == 'xsi:nil')) {
 			return 'null';
 		}
 	}
