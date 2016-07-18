@@ -1,0 +1,316 @@
+{
+  "feed": {
+    "xmlns": "http://www.w3.org/2005/Atom",
+    "xmlns:dc": "http://purl.org/dc/elements/1.1/",
+    "xmlns:media": "http://search.yahoo.com/mrss/",
+    "xmlns:dcterms": "http://purl.org/dc/terms",
+    "xml:base": "http://www.channel4.com",
+    "id": "tag:www.channel4.com,2009:/coming-soon",
+    "title": {
+      "type": "text",
+      "#text": "Coming Soon to TV"
+    },
+    "updated": "2016-06-30T14:03:48.095Z",
+    "author": {
+      "name": "Channel 4 Television"
+    },
+    "logo": {
+      "imageSource": "default",
+      "#text": "http://ic.c4assets.com/c4_atom_small.gif?interpolation=none&resize=86px:63px"
+    },
+    "link": {
+      "rel": "self",
+      "href": "http://api.channel4.com/pmlsd/coming-soon.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+      "type": "application/atom+xml"
+    },
+    "dc:relation.platformClientVersion": 1.1,
+    "generator": {
+      "version": 2.14,
+      "#text": "PMLSD"
+    },
+    "entry": [
+      {
+        "id": "tag:www.channel4.com,2009:slot/29241908",
+        "title": {
+          "type": "text",
+          "#text": "Ramsay's Hotel Hell"
+        },
+        "summary": {
+          "type": "text",
+          "#text": "Gordon Ramsay returns to the USA to help Angler's Lodge in Idaho, a stunning venue whose owners have been struck by family tragedy. Can Gordon rescue the broken family's business?"
+        },
+        "updated": "2016-06-30T14:03:50.140Z",
+        "link": [
+          {
+            "rel": "alternate",
+            "href": "http://www.channel4.com/programmes/ramsays-hotel-hell",
+            "type": "text/html"
+          },
+          {
+            "rel": "self",
+            "href": "http://api.channel4.com/pmlsd/ramsays-hotel-hell.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml"
+          },
+          {
+            "rel": "related",
+            "href": "http://api.channel4.com/pmlsd/ramsays-hotel-hell/4od.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml",
+            "title": "4oD"
+          },
+          {
+            "rel": "related",
+            "href": "http://api.channel4.com/pmlsd/ramsays-hotel-hell/4od/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml",
+            "title": "4oD Episode Guide"
+          },
+          {
+            "rel": "related",
+            "href": "http://api.channel4.com/pmlsd/ramsays-hotel-hell/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml",
+            "title": "Episode Guide"
+          }
+        ],
+        "media:content": {
+          "media:thumbnail": {
+            "imageSource": "own",
+            "altText": "Ramsay's Hotel Hell",
+            "width": 200,
+            "url": "http://cache.channel4.com/assets/programmes/images/ramsays-hotel-hell/series-3/episode-1/9aab52d1-3208-4ed8-b2ad-a11239c484eb_200x113.jpg",
+            "height": 113
+          }
+        },
+        "dc:relation.BrandTitle": "Ramsay's Hotel Hell",
+        "dc:relation.SeriesNumber": 3,
+        "dc:relation.EpisodeNumber": 1,
+        "dc:date.TXDate": "2016-06-30T21:00:00.000Z",
+        "dc:relation.TXChannel": "C4",
+        "dc:relation.Subtitles": true,
+        "dc:relation.AudioDescription": true,
+        "dc:relation.Duration": "60:00",
+        "dc:relation.WideScreen": false,
+        "dc:relation.Signing": false,
+        "dc:relation.Repeat": false,
+        "dc:relation.programmeId": "64418/001",
+        "dc:relation.BrandWebSafeTitle": "ramsays-hotel-hell",
+        "dc:relation.Movie": false,
+        "dc:relation.ProgrammeType": "MST",
+        "dc:relation.SimulcastRights": true,
+        "dc:relation.hd": true,
+        "dc:relation.ShortSynopsis": "Gordon Ramsay helps hopeless hotels in the US"
+      },
+      {
+        "id": "tag:www.channel4.com,2009:slot/29243148",
+        "title": {
+          "type": "text",
+          "#text": "Gogglebox"
+        },
+        "summary": {
+          "type": "text",
+          "#text": "A special programme revisiting some of the best and funniest moments from the most recent series, from Britain's Got Talent to First Dates, Caravanner of the Year and Dogs Might Fly."
+        },
+        "updated": "2016-06-30T14:03:50.142Z",
+        "link": [
+          {
+            "rel": "alternate",
+            "href": "http://www.channel4.com/programmes/gogglebox",
+            "type": "text/html"
+          },
+          {
+            "rel": "self",
+            "href": "http://api.channel4.com/pmlsd/gogglebox.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml"
+          },
+          {
+            "rel": "related",
+            "href": "http://api.channel4.com/pmlsd/gogglebox/4od.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml",
+            "title": "4oD"
+          },
+          {
+            "rel": "related",
+            "href": "http://api.channel4.com/pmlsd/gogglebox/4od/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml",
+            "title": "4oD Episode Guide"
+          },
+          {
+            "rel": "related",
+            "href": "http://api.channel4.com/pmlsd/gogglebox/videos/all.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml",
+            "title": "Clips"
+          },
+          {
+            "rel": "related",
+            "href": "http://api.channel4.com/pmlsd/gogglebox/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml",
+            "title": "Episode Guide"
+          }
+        ],
+        "media:content": {
+          "media:thumbnail": {
+            "imageSource": "fallback",
+            "altText": "Gogglebox: The Best Bits",
+            "width": 200,
+            "url": "http://cache.channel4.com/assets/programmes/images/gogglebox/series-2016/b944a7f5-7d23-4c4e-825f-893a27d43640_200x113.jpg",
+            "height": 113
+          }
+        },
+        "dc:relation.BrandTitle": "Gogglebox",
+        "dc:relation.SeriesNumber": 2016,
+        "dc:relation.EpisodeNumber": 1,
+        "dc:date.TXDate": "2016-07-01T20:00:00.000Z",
+        "dc:relation.TXChannel": "C4",
+        "dc:relation.Subtitles": true,
+        "dc:relation.AudioDescription": true,
+        "dc:relation.Duration": "60:00",
+        "dc:relation.WideScreen": false,
+        "dc:relation.Signing": false,
+        "dc:relation.Repeat": false,
+        "dc:relation.programmeId": "64702/001",
+        "dc:relation.BrandWebSafeTitle": "gogglebox",
+        "dc:relation.Movie": false,
+        "dc:relation.ProgrammeType": "MSU",
+        "dc:relation.SimulcastRights": true,
+        "dc:relation.hd": true,
+        "dc:relation.ShortSynopsis": "What do Britain's favourite opinionated TV viewers think of our biggest programmes?"
+      },
+      {
+        "id": "tag:www.channel4.com,2009:slot/29243196",
+        "title": {
+          "type": "text",
+          "#text": "China's Forgotten Emperor"
+        },
+        "summary": {
+          "type": "text",
+          "#text": "For 1300 years Wu Zetian, China's only female Emperor, has been remembered as a callous tyrant who brought calamity to China. But new discoveries reveal a very different story of her reign."
+        },
+        "updated": "2016-06-30T14:03:50.143Z",
+        "link": [
+          {
+            "rel": "alternate",
+            "href": "http://www.channel4.com/programmes/chinas-forgotten-emperor",
+            "type": "text/html"
+          },
+          {
+            "rel": "self",
+            "href": "http://api.channel4.com/pmlsd/chinas-forgotten-emperor.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml"
+          },
+          {
+            "rel": "related",
+            "href": "http://api.channel4.com/pmlsd/chinas-forgotten-emperor/videos/all.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml",
+            "title": "Clips"
+          },
+          {
+            "rel": "related",
+            "href": "http://api.channel4.com/pmlsd/chinas-forgotten-emperor/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml",
+            "title": "Episode Guide"
+          }
+        ],
+        "media:content": {
+          "media:thumbnail": {
+            "imageSource": "fallback",
+            "altText": "China's Forgotten Emperor",
+            "width": 200,
+            "url": "http://cache.channel4.com/assets/programmes/images/chinas-forgotten-emperor/series-1/9fe59fef-180b-46ed-9a71-31ac09dc5d9d_200x113.jpg",
+            "height": 113
+          }
+        },
+        "dc:relation.BrandTitle": "China's Forgotten Emperor",
+        "dc:relation.SeriesNumber": 1,
+        "dc:relation.EpisodeNumber": 1,
+        "dc:date.TXDate": "2016-07-03T19:00:00.000Z",
+        "dc:relation.TXChannel": "C4",
+        "dc:relation.Subtitles": true,
+        "dc:relation.AudioDescription": true,
+        "dc:relation.Duration": "60:00",
+        "dc:relation.WideScreen": false,
+        "dc:relation.Signing": false,
+        "dc:relation.Repeat": false,
+        "dc:relation.programmeId": "62159/001",
+        "dc:relation.BrandWebSafeTitle": "chinas-forgotten-emperor",
+        "dc:relation.Movie": false,
+        "dc:relation.ProgrammeType": "OOS",
+        "dc:relation.SimulcastRights": true,
+        "dc:relation.hd": true,
+        "dc:relation.ShortSynopsis": "Recent discoveries are casting new light on the reign of China's only female Emperor"
+      },
+      {
+        "id": "tag:www.channel4.com,2009:slot/29243771",
+        "title": {
+          "type": "text",
+          "#text": "999: What's Your Emergency?"
+        },
+        "summary": {
+          "type": "text",
+          "#text": "The new series focuses on the work of Cheshire's emergency services. When a 20-year-old girl collapses at home after a night out, her life depends on Will, at the 999 call centre. (S3 Ep1)"
+        },
+        "updated": "2016-06-30T14:03:50.145Z",
+        "link": [
+          {
+            "rel": "alternate",
+            "href": "http://www.channel4.com/programmes/999-whats-your-emergency",
+            "type": "text/html"
+          },
+          {
+            "rel": "self",
+            "href": "http://api.channel4.com/pmlsd/999-whats-your-emergency.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml"
+          },
+          {
+            "rel": "related",
+            "href": "http://api.channel4.com/pmlsd/999-whats-your-emergency/4od.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml",
+            "title": "4oD"
+          },
+          {
+            "rel": "related",
+            "href": "http://api.channel4.com/pmlsd/999-whats-your-emergency/4od/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml",
+            "title": "4oD Episode Guide"
+          },
+          {
+            "rel": "related",
+            "href": "http://api.channel4.com/pmlsd/999-whats-your-emergency/videos/all.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml",
+            "title": "Clips"
+          },
+          {
+            "rel": "related",
+            "href": "http://api.channel4.com/pmlsd/999-whats-your-emergency/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "type": "application/atom+xml",
+            "title": "Episode Guide"
+          }
+        ],
+        "media:content": {
+          "media:thumbnail": {
+            "imageSource": "own",
+            "altText": "999: What's Your Emergency?",
+            "width": 200,
+            "url": "http://cache.channel4.com/assets/programmes/images/999-whats-your-emergency/series-3/episode-1/1bdb70dd-6934-41f2-9c80-620eb83e082b_200x113.jpg",
+            "height": 113
+          }
+        },
+        "dc:relation.BrandTitle": "999: What's Your Emergency?",
+        "dc:relation.SeriesNumber": 3,
+        "dc:relation.EpisodeNumber": 1,
+        "dc:date.TXDate": "2016-07-04T20:00:00.000Z",
+        "dc:relation.TXChannel": "C4",
+        "dc:relation.Subtitles": true,
+        "dc:relation.AudioDescription": false,
+        "dc:relation.Duration": "60:00",
+        "dc:relation.WideScreen": false,
+        "dc:relation.Signing": false,
+        "dc:relation.Repeat": false,
+        "dc:relation.programmeId": "59274/001",
+        "dc:relation.BrandWebSafeTitle": "999-whats-your-emergency",
+        "dc:relation.Movie": false,
+        "dc:relation.ProgrammeType": "MSU",
+        "dc:relation.SimulcastRights": true,
+        "dc:relation.hd": true,
+        "dc:relation.ShortSynopsis": "An intimate and frank look at modern Britain through the eyes of the emergency services"
+      }
+    ]
+  }
+}

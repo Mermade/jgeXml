@@ -192,8 +192,8 @@
         },
         "timescale": {
           "type": "integer",
-          "format": "int32",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 4294967295
         }
       },
       "required": [
@@ -206,164 +206,160 @@
       "properties": {
         "presentationTime": {
           "type": "integer",
-          "format": "int64",
           "minimum": 0
         },
         "duration": {
           "type": "integer",
-          "format": "int64",
           "minimum": 0
         },
         "id": {
           "type": "integer",
-          "format": "int32",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 4294967295
         },
         "#text": {
           "type": "string"
         }
       },
-      "required": [
-        "#text"
-      ],
       "additionalProperties": true
     },
     "AdaptationSetType": {
-      "type": "object",
-      "properties": {
-        "Accessibility": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/DescriptorType"
-          }
-        },
-        "Role": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/DescriptorType"
-          }
-        },
-        "Rating": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/DescriptorType"
-          }
-        },
-        "Viewpoint": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/DescriptorType"
-          }
-        },
-        "ContentComponent": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ContentComponentType"
-          }
-        },
-        "BaseURL": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/BaseURLType"
-          }
-        },
-        "SegmentBase": {
-          "$ref": "#/definitions/SegmentBaseType"
-        },
-        "SegmentList": {
-          "$ref": "#/definitions/SegmentListType"
-        },
-        "SegmentTemplate": {
-          "$ref": "#/definitions/SegmentTemplateType"
-        },
-        "Representation": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/RepresentationType"
-          }
-        },
-        "xlink:href": {
-          "$ref": "xlink.json#/definitions/href"
-        },
-        "xlink:actuate": {
-          "$ref": "xlink.json#/definitions/actuate"
-        },
-        "id": {
-          "type": "integer",
-          "format": "int32",
-          "minimum": 0
-        },
-        "group": {
-          "type": "integer",
-          "format": "int32",
-          "minimum": 0
-        },
-        "lang": {
-          "type": "string",
-          "pattern": "[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*"
-        },
-        "contentType": {
-          "type": "string"
-        },
-        "par": {
-          "$ref": "#/definitions/RatioType"
-        },
-        "minBandwidth": {
-          "type": "integer",
-          "format": "int32",
-          "minimum": 0
-        },
-        "maxBandwidth": {
-          "type": "integer",
-          "format": "int32",
-          "minimum": 0
-        },
-        "minWidth": {
-          "type": "integer",
-          "format": "int32",
-          "minimum": 0
-        },
-        "maxWidth": {
-          "type": "integer",
-          "format": "int32",
-          "minimum": 0
-        },
-        "minHeight": {
-          "type": "integer",
-          "format": "int32",
-          "minimum": 0
-        },
-        "maxHeight": {
-          "type": "integer",
-          "format": "int32",
-          "minimum": 0
-        },
-        "minFrameRate": {
-          "$ref": "#/definitions/FrameRateType"
-        },
-        "maxFrameRate": {
-          "$ref": "#/definitions/FrameRateType"
-        },
-        "segmentAlignment": {
-          "$ref": "#/definitions/ConditionalUintType"
-        },
-        "subsegmentAlignment": {
-          "$ref": "#/definitions/ConditionalUintType"
-        },
-        "subsegmentStartsWithSAP": {
-          "$ref": "#/definitions/SAPType"
-        },
-        "bitstreamSwitching": {
-          "type": "boolean"
-        },
-        "#text": {
+      "allOf": [
+        {
           "$ref": "#/definitions/RepresentationBaseType"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Accessibility": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/DescriptorType"
+              }
+            },
+            "Role": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/DescriptorType"
+              }
+            },
+            "Rating": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/DescriptorType"
+              }
+            },
+            "Viewpoint": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/DescriptorType"
+              }
+            },
+            "ContentComponent": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ContentComponentType"
+              }
+            },
+            "BaseURL": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/BaseURLType"
+              }
+            },
+            "SegmentBase": {
+              "$ref": "#/definitions/SegmentBaseType"
+            },
+            "SegmentList": {
+              "$ref": "#/definitions/SegmentListType"
+            },
+            "SegmentTemplate": {
+              "$ref": "#/definitions/SegmentTemplateType"
+            },
+            "Representation": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RepresentationType"
+              }
+            },
+            "xlink:href": {
+              "$ref": "xlink.json#/definitions/href"
+            },
+            "xlink:actuate": {
+              "$ref": "xlink.json#/definitions/actuate"
+            },
+            "id": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "group": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "lang": {
+              "type": "string",
+              "pattern": "[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*"
+            },
+            "contentType": {
+              "type": "string"
+            },
+            "par": {
+              "$ref": "#/definitions/RatioType"
+            },
+            "minBandwidth": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "maxBandwidth": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "minWidth": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "maxWidth": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "minHeight": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "maxHeight": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "minFrameRate": {
+              "$ref": "#/definitions/FrameRateType"
+            },
+            "maxFrameRate": {
+              "$ref": "#/definitions/FrameRateType"
+            },
+            "segmentAlignment": {
+              "$ref": "#/definitions/ConditionalUintType"
+            },
+            "subsegmentAlignment": {
+              "$ref": "#/definitions/ConditionalUintType"
+            },
+            "subsegmentStartsWithSAP": {
+              "$ref": "#/definitions/SAPType"
+            },
+            "bitstreamSwitching": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": true
         }
-      },
-      "required": [
-        "#text"
-      ],
-      "additionalProperties": false
+      ]
     },
     "ContentComponentType": {
       "type": "object",
@@ -394,8 +390,8 @@
         },
         "id": {
           "type": "integer",
-          "format": "int32",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 4294967295
         },
         "lang": {
           "type": "string",
@@ -411,86 +407,96 @@
       "additionalProperties": true
     },
     "RepresentationType": {
-      "type": "object",
-      "properties": {
-        "BaseURL": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/BaseURLType"
-          }
-        },
-        "SubRepresentation": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/SubRepresentationType"
-          }
-        },
-        "SegmentBase": {
-          "$ref": "#/definitions/SegmentBaseType"
-        },
-        "SegmentList": {
-          "$ref": "#/definitions/SegmentListType"
-        },
-        "SegmentTemplate": {
-          "$ref": "#/definitions/SegmentTemplateType"
-        },
-        "id": {
-          "$ref": "#/definitions/StringNoWhitespaceType"
-        },
-        "bandwidth": {
-          "type": "integer",
-          "format": "int32",
-          "minimum": 0
-        },
-        "qualityRanking": {
-          "type": "integer",
-          "format": "int32",
-          "minimum": 0
-        },
-        "dependencyId": {
-          "$ref": "#/definitions/StringVectorType"
-        },
-        "mediaStreamStructureId": {
-          "$ref": "#/definitions/StringVectorType"
-        },
-        "#text": {
+      "allOf": [
+        {
           "$ref": "#/definitions/RepresentationBaseType"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "BaseURL": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/BaseURLType"
+              }
+            },
+            "SubRepresentation": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SubRepresentationType"
+              }
+            },
+            "SegmentBase": {
+              "$ref": "#/definitions/SegmentBaseType"
+            },
+            "SegmentList": {
+              "$ref": "#/definitions/SegmentListType"
+            },
+            "SegmentTemplate": {
+              "$ref": "#/definitions/SegmentTemplateType"
+            },
+            "id": {
+              "$ref": "#/definitions/StringNoWhitespaceType"
+            },
+            "bandwidth": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "qualityRanking": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "dependencyId": {
+              "$ref": "#/definitions/StringVectorType"
+            },
+            "mediaStreamStructureId": {
+              "$ref": "#/definitions/StringVectorType"
+            }
+          },
+          "required": [
+            "id",
+            "bandwidth"
+          ],
+          "additionalProperties": true,
+          "$ref": "#/definitions/StringVectorType"
         }
-      },
+      ],
       "required": [
         "id",
-        "bandwidth",
-        "#text"
-      ],
-      "additionalProperties": false
+        "bandwidth"
+      ]
     },
     "SubRepresentationType": {
-      "type": "object",
-      "properties": {
-        "level": {
-          "type": "integer",
-          "format": "int32",
-          "minimum": 0
-        },
-        "dependencyLevel": {
-          "$ref": "#/definitions/UIntVectorType"
-        },
-        "bandwidth": {
-          "type": "integer",
-          "format": "int32",
-          "minimum": 0
-        },
-        "contentComponent": {
-          "$ref": "#/definitions/StringVectorType"
-        },
-        "#text": {
+      "allOf": [
+        {
           "$ref": "#/definitions/RepresentationBaseType"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "level": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "dependencyLevel": {
+              "$ref": "#/definitions/UIntVectorType"
+            },
+            "bandwidth": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "contentComponent": {
+              "$ref": "#/definitions/StringVectorType"
+            }
+          },
+          "additionalProperties": true,
+          "$ref": "#/definitions/StringVectorType"
         }
-      },
-      "required": [
-        "#text"
-      ],
-      "additionalProperties": false
+      ]
     },
     "RepresentationBaseType": {
       "type": "object",
@@ -536,13 +542,13 @@
         },
         "width": {
           "type": "integer",
-          "format": "int32",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 4294967295
         },
         "height": {
           "type": "integer",
-          "format": "int32",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 4294967295
         },
         "sar": {
           "$ref": "#/definitions/RatioType"
@@ -608,12 +614,11 @@
         },
         "timescale": {
           "type": "integer",
-          "format": "int32",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 4294967295
         },
         "presentationTimeOffset": {
           "type": "integer",
-          "format": "int64",
           "minimum": 0
         },
         "indexRange": {
@@ -633,32 +638,33 @@
       "additionalProperties": true
     },
     "MultipleSegmentBaseType": {
-      "type": "object",
-      "properties": {
-        "SegmentTimeline": {
-          "$ref": "#/definitions/SegmentTimelineType"
-        },
-        "BitstreamSwitching": {
-          "$ref": "#/definitions/URLType"
-        },
-        "duration": {
-          "type": "integer",
-          "format": "int32",
-          "minimum": 0
-        },
-        "startNumber": {
-          "type": "integer",
-          "format": "int32",
-          "minimum": 0
-        },
-        "#text": {
+      "allOf": [
+        {
           "$ref": "#/definitions/SegmentBaseType"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "SegmentTimeline": {
+              "$ref": "#/definitions/SegmentTimelineType"
+            },
+            "BitstreamSwitching": {
+              "$ref": "#/definitions/URLType"
+            },
+            "duration": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            },
+            "startNumber": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            }
+          },
+          "additionalProperties": true
         }
-      },
-      "required": [
-        "#text"
-      ],
-      "additionalProperties": false
+      ]
     },
     "URLType": {
       "type": "object",
@@ -674,28 +680,30 @@
       "additionalProperties": true
     },
     "SegmentListType": {
-      "type": "object",
-      "properties": {
-        "SegmentURL": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/SegmentURLType"
-          }
-        },
-        "xlink:href": {
-          "$ref": "xlink.json#/definitions/href"
-        },
-        "xlink:actuate": {
-          "$ref": "xlink.json#/definitions/actuate"
-        },
-        "#text": {
+      "allOf": [
+        {
           "$ref": "#/definitions/MultipleSegmentBaseType"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "SegmentURL": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SegmentURLType"
+              }
+            },
+            "xlink:href": {
+              "$ref": "xlink.json#/definitions/href"
+            },
+            "xlink:actuate": {
+              "$ref": "xlink.json#/definitions/actuate"
+            }
+          },
+          "additionalProperties": true,
+          "$ref": "xlink.json#/definitions/actuate"
         }
-      },
-      "required": [
-        "#text"
-      ],
-      "additionalProperties": false
+      ]
     },
     "SegmentURLType": {
       "type": "object",
@@ -718,28 +726,29 @@
       "additionalProperties": true
     },
     "SegmentTemplateType": {
-      "type": "object",
-      "properties": {
-        "media": {
-          "type": "string"
-        },
-        "index": {
-          "type": "string"
-        },
-        "initialization": {
-          "type": "string"
-        },
-        "bitstreamSwitching": {
-          "type": "string"
-        },
-        "#text": {
+      "allOf": [
+        {
           "$ref": "#/definitions/MultipleSegmentBaseType"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "media": {
+              "type": "string"
+            },
+            "index": {
+              "type": "string"
+            },
+            "initialization": {
+              "type": "string"
+            },
+            "bitstreamSwitching": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
         }
-      },
-      "required": [
-        "#text"
-      ],
-      "additionalProperties": false
+      ]
     },
     "SegmentTimelineType": {
       "type": "object",
@@ -752,12 +761,10 @@
             "properties": {
               "t": {
                 "type": "integer",
-                "format": "int64",
                 "minimum": 0
               },
               "d": {
                 "type": "integer",
-                "format": "int64",
                 "minimum": 0
               },
               "r": {
@@ -797,9 +804,6 @@
           "format": "uri"
         }
       },
-      "required": [
-        "#text"
-      ],
       "additionalProperties": true
     },
     "ProgramInformationType": {
@@ -903,8 +907,8 @@
       "oneOf": [
         {
           "type": "integer",
-          "format": "int32",
-          "minimum": 0
+          "minimum": 0,
+          "maximum": 4294967295
         },
         {
           "type": "boolean"
@@ -918,8 +922,8 @@
     },
     "SAPType": {
       "type": "integer",
-      "format": "int32",
-      "minimum": 0
+      "minimum": 0,
+      "maximum": 4294967295
     },
     "VideoScanType": {
       "enum": [

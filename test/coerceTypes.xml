@@ -13,6 +13,9 @@
 		<data>2.5</data>
 	</quoting>
 	<quoting>
+		<data>true</data>
+	</quoting>
+	<quoting>
 		<data></data>
 	</quoting>
 </Tests>

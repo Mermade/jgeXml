@@ -73,7 +73,7 @@ function runXmlTest(filename,components) {
 		var compare = fs.readFileSync('out/'+stem+'.json',encoding);
 		compare = compare.replaceAll('\r\n','\n');
 
-		if (json == compare) {
+		if (json.trim() == compare.trim()) {
 			passing++;
 		}
 		else {
@@ -267,7 +267,7 @@ process.exitCode = 1; // in case of crash
 var testdir = 'test';
 if (process.argv.length>2) testdir = process.argv[2];
 
-var xmlTypes = ['xml','xsl','xhtml','svg','wsdl','config'];
+var xmlTypes = ['xml','xsl','xhtml','svg','wsdl','config', 'mpd'];
 
 var tests = fs.readdirSync(testdir);
 for (var t in tests) {

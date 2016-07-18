@@ -3,15 +3,32 @@
 var util = require('util');
 var jgeXml = require('./jgeXml.js');
 
+function filterInt(value) {
+	if (/^(\-|\+)?([0-9]+|Infinity)$/.test(value)) return Number(value);
+	return NaN;
+}
+
+function filterFloat(value) {
+	if(/^(\-|\+)?([0-9]*(\.[0-9]+)?|Infinity)$/.test(value)) return Number(value);
+	return NaN;
+}
+
 function emit(token,coerceTypes) {
 	if (coerceTypes) {
-		var num = parseFloat(token);
+		var timestamp = Date.parse(token);
+		if (!isNaN(timestamp) && (token.match('^[0-9]{4}\-[0-9]{2}\-[0-9]{2}.*$'))) {
+			return token;
+		}
+		var num = filterFloat(token);
 		if (!isNaN(num)) {
 			return num;
 		}
-		num = parseInt(token,10);
+		num = filterInt(token); //parseInt
 		if (!isNaN(num)) {
 			return num;
+		}
+		if ((token === 'true') || (token === 'false')) {
+			return token === 'true';
 		}
 		if ((Object.keys(token).length === 0) || (token == 'xsi:nil')) {
 			return 'null';

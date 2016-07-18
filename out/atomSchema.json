@@ -80,6 +80,9 @@
           "properties": {
             "type": {
               "$ref": "#/definitions/textTypeType"
+            },
+            "atom:commonAttributes": {
+              "$ref": "#/definitions/commonAttributes"
             }
           }
         }
@@ -103,6 +106,9 @@
             },
             "email": {
               "$ref": "#/definitions/emailType"
+            },
+            "atom:commonAttributes": {
+              "$ref": "#/definitions/commonAttributes"
             }
           }
         }
@@ -171,6 +177,9 @@
               "items": {
                 "$ref": "#/definitions/entryType"
               }
+            },
+            "atom:commonAttributes": {
+              "$ref": "#/definitions/commonAttributes"
             }
           }
         }
@@ -233,6 +242,9 @@
             },
             "updated": {
               "$ref": "#/definitions/dateTimeType"
+            },
+            "atom:commonAttributes": {
+              "$ref": "#/definitions/commonAttributes"
             }
           }
         }
@@ -254,6 +266,9 @@
             "src": {
               "type": "string",
               "format": "uri"
+            },
+            "atom:commonAttributes": {
+              "$ref": "#/definitions/commonAttributes"
             }
           }
         }
@@ -281,6 +296,9 @@
             },
             "label": {
               "type": "string"
+            },
+            "atom:commonAttributes": {
+              "$ref": "#/definitions/commonAttributes"
             }
           }
         }
@@ -289,9 +307,6 @@
     "generatorType": {
       "type": "object",
       "description": "The Atom generator element is defined in section 4.2.4 of the format spec.",
-      "required": [
-        "#text"
-      ],
       "additionalProperties": false,
       "anyOf": [
         {
@@ -306,6 +321,9 @@
             "version": {
               "type": "string"
             },
+            "atom:commonAttributes": {
+              "$ref": "#/definitions/commonAttributes"
+            },
             "#text": {
               "type": "string"
             }
@@ -316,9 +334,6 @@
     "iconType": {
       "type": "object",
       "description": "The Atom icon construct is defined in section 4.2.5 of the format spec.",
-      "required": [
-        "#text"
-      ],
       "additionalProperties": false,
       "anyOf": [
         {
@@ -326,6 +341,9 @@
         },
         {
           "properties": {
+            "atom:commonAttributes": {
+              "$ref": "#/definitions/commonAttributes"
+            },
             "#text": {
               "type": "string",
               "format": "uri"
@@ -337,9 +355,6 @@
     "idType": {
       "type": "object",
       "description": "The Atom id construct is defined in section 4.2.6 of the format spec.",
-      "required": [
-        "#text"
-      ],
       "additionalProperties": false,
       "anyOf": [
         {
@@ -347,6 +362,9 @@
         },
         {
           "properties": {
+            "atom:commonAttributes": {
+              "$ref": "#/definitions/commonAttributes"
+            },
             "#text": {
               "type": "string",
               "format": "uri"
@@ -387,6 +405,9 @@
             "length": {
               "type": "integer",
               "minimum": 1
+            },
+            "atom:commonAttributes": {
+              "$ref": "#/definitions/commonAttributes"
             }
           }
         }
@@ -395,9 +416,6 @@
     "logoType": {
       "type": "object",
       "description": "The Atom logo construct is defined in section 4.2.8 of the format spec.",
-      "required": [
-        "#text"
-      ],
       "additionalProperties": false,
       "anyOf": [
         {
@@ -405,6 +423,9 @@
         },
         {
           "properties": {
+            "atom:commonAttributes": {
+              "$ref": "#/definitions/commonAttributes"
+            },
             "#text": {
               "type": "string",
               "format": "uri"
@@ -470,6 +491,9 @@
             },
             "updated": {
               "$ref": "#/definitions/dateTimeType"
+            },
+            "atom:commonAttributes": {
+              "$ref": "#/definitions/commonAttributes"
             }
           }
         }
@@ -477,9 +501,6 @@
     },
     "uriType": {
       "type": "object",
-      "required": [
-        "#text"
-      ],
       "additionalProperties": false,
       "anyOf": [
         {
@@ -487,6 +508,9 @@
         },
         {
           "properties": {
+            "atom:commonAttributes": {
+              "$ref": "#/definitions/commonAttributes"
+            },
             "#text": {
               "type": "string",
               "format": "uri"
@@ -497,9 +521,6 @@
     },
     "dateTimeType": {
       "type": "object",
-      "required": [
-        "#text"
-      ],
       "additionalProperties": false,
       "anyOf": [
         {
@@ -507,6 +528,9 @@
         },
         {
           "properties": {
+            "atom:commonAttributes": {
+              "$ref": "#/definitions/commonAttributes"
+            },
             "#text": {
               "type": "string",
               "format": "date-time"

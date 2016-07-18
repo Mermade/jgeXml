@@ -58,9 +58,11 @@ function toArray(item) {
 }
 
 function mandate(target,name) {
-	if (!target.required) target.required = [];
-	if (target.required.indexOf(name) < 0) {
-		target.required.push(name);
+	if ((name != '#text') && (name != '#')) {
+		if (!target.required) target.required = [];
+		if (target.required.indexOf(name) < 0) {
+			target.required.push(name);
+		}
 	}
 }
 
@@ -122,22 +124,41 @@ function mapType(type) {
 		result.type = 'integer';
 		result.minimum = 0;
 	}
-	else if ((type == 'xs:unsignedInt') || (type == 'xs:unsignedShort') || (type == 'xs:unsignedByte')) {
+	else if (type == 'xs:unsignedInt') {
 		result.type = 'integer';
-		result.format = 'int32';
 		result.minimum = 0;
+		result.maximum = 4294967295;
 	}
-	else if ((type == 'xs:int') || (type == 'xs:short') || (type == 'xs:byte')) {
+	else if (type == 'xs:unsignedShort') {
 		result.type = 'integer';
-		result.format = 'int32';
+		result.minimum = 0;
+		result.maximum = 65535;
+	}
+	else if (type == 'xs:unsignedByte') {
+		result.type = 'integer';
+		result.minimum = 0;
+		result.maximum = 255;
+	}
+	else if (type == 'xs:int') {
+		result.type = 'integer';
+		result.maximum = 2147483647;
+		result.minimum = -2147483648;
+	}
+	else if (type == 'xs:short') {
+		result.type = 'integer';
+		result.maximum = 32767;
+		result.minimum = -32768;
+	}
+	else if (type == 'xs:byte') {
+		result.type = 'integer';
+		result.maximum = 127;
+		result.minimum = -128;
 	}
 	else if (type == 'xs:long') {
 		result.type = 'integer';
-		result.format = 'int64';
 	}
 	else if (type == 'xs:unsignedLong') {
 		result.type = 'integer';
-		result.format = 'int64';
 		result.minimum = 0;
 	}
 
@@ -239,6 +260,7 @@ function initTarget(parent) {
 		target.required = [];
 		target.additionalProperties = false;
 	}
+	if (!target.allOf) target.allOf = [];
 }
 
 function doElement(src,parent,key) {
@@ -247,7 +269,8 @@ function doElement(src,parent,key) {
 
 	var simpleType;
 	var doc;
-	var inAnyOf = -1;
+	var inAnyOf = -1; // used for attributeGroups
+	var inAllOf = (target && target.allOf) ? target.allOf.length-1 : -1; // used for extension based composition
 
 	var element = src[key];
 	if ((typeof element == 'undefined') || (null === element)) {
@@ -284,7 +307,24 @@ function doElement(src,parent,key) {
 	}
 	else if ((element["xs:extension"]) && (element["xs:extension"]["@base"])) {
 		type = element["xs:extension"]["@base"];
-		if (!name) name = "#text"; // see anonymous types
+		var tempType = finaliseType(mapType(type));
+		if (!tempType["$ref"]) {
+			name = "#text"; // see anonymous types
+		}
+		else {
+			var oldP = clone(target);
+			oldP.additionalProperties = true;
+			//delete target.properties;
+			for (var v in target) {
+				delete target[v];
+			}
+			if (!target.allOf) target.allOf = [];
+			var newt = {};
+			target.allOf.push(newt);
+			target.allOf.push(oldP);
+			name = '#';
+			inAllOf = 0; //target.allOf.length-1;
+		}
 	}
 	else if (element["xs:union"]) {
 		var types = element["xs:union"]["@memberTypes"].split(' ');
@@ -404,6 +444,9 @@ function doElement(src,parent,key) {
 		if (inAnyOf>=0) {
 			target.anyOf[inAnyOf]["$ref"] = typeData["$ref"];
 		}
+		if (inAllOf>=0) {
+			target.allOf[inAllOf]["$ref"] = typeData["$ref"];
+		}
 		else {
 			target.properties[name] = typeData; // Object.assign 'corrupts' property ordering
 		}
@@ -491,16 +534,16 @@ function clean(obj,parent,key) {
 	if (obj.properties && (Object.keys(obj.properties).length == 1) && obj.properties["#text"] && obj.properties["#text"]["$ref"]) {
 		obj.properties["$ref"] = obj.properties["#text"]["$ref"];
 		delete obj.properties["#text"]; // anonymous types
-		if (obj.required) {
-			for (var r in obj.required) {
-				if (obj.required[r] == '#text') delete obj.required[r];
-			}
-		}
 	}
 	if (obj.properties && obj.anyOf) {
 		var newI = {};
 		//newI.type = 'object';
-		newI.properties = obj.properties;
+		if (obj.properties["$ref"]) {
+			newI["$ref"] = obj.properties["$ref"];
+		}
+		else {
+			newI.properties = obj.properties;
+		}
 		obj.anyOf.push(newI);
 		obj.properties = {}; // gets removed later
 	}
