@@ -57,11 +57,18 @@ function toArray(item) {
 	}
 }
 
-function mandate(target,name) {
+function mandate(target,inAnyOf,inAllOf,name) {
 	if ((name != '#text') && (name != '#')) {
-		if (!target.required) target.required = [];
-		if (target.required.indexOf(name) < 0) {
-			target.required.push(name);
+		var tempTarget = target;
+		if (inAnyOf>=0) {
+			tempTarget = target.inAllOf[inAnyOf];
+		}
+		if (inAllOf>=0) {
+			tempTarget = target.inAllOf[inAllOf];
+		}
+		if (!tempTarget.required) tempTarget.required = [];
+		if (tempTarget.required.indexOf(name) < 0) {
+			tempTarget.required.push(name);
 		}
 	}
 }
@@ -269,7 +276,7 @@ function doElement(src,parent,key) {
 
 	var simpleType;
 	var doc;
-	var inAnyOf = -1; // used for attributeGroups
+	var inAnyOf = -1; // used for attributeGroups - properties can get merged in here later, see mergeAnyOf
 	var inAllOf = (target && target.allOf) ? target.allOf.length-1 : -1; // used for extension based composition
 
 	var element = src[key];
@@ -314,7 +321,6 @@ function doElement(src,parent,key) {
 		else {
 			var oldP = clone(target);
 			oldP.additionalProperties = true;
-			//delete target.properties;
 			for (var v in target) {
 				delete target[v];
 			}
@@ -378,8 +384,10 @@ function doElement(src,parent,key) {
 			if (!target.anyOf) target.anyOf = [];
 			var newt = {};
 			newt.properties = {};
+			newt.required = clone(target.required);
 			target.anyOf.push(newt);
 			inAnyOf = target.anyOf.length-1;
+			target.required = [];
 			delete src[key];
 			minOccurs = 0;
 		}
@@ -429,7 +437,7 @@ function doElement(src,parent,key) {
 			// TODO add mode where if array minOccurs is 1, add oneOf allowing single object or array with object as item
 		}
 		if (minOccurs > 0) {
-			mandate(target,name);
+			mandate(target,inAnyOf,inAllOf,name);
 		}
 
 		if (simpleType) {
@@ -441,11 +449,11 @@ function doElement(src,parent,key) {
 			}
 		}
 
-		if (inAnyOf>=0) {
-			target.anyOf[inAnyOf]["$ref"] = typeData["$ref"];
-		}
 		if (inAllOf>=0) {
 			target.allOf[inAllOf]["$ref"] = typeData["$ref"];
+		}
+		else if (inAnyOf>=0) {
+			target.anyOf[inAnyOf]["$ref"] = typeData["$ref"];
 		}
 		else {
 			target.properties[name] = typeData; // Object.assign 'corrupts' property ordering
@@ -535,17 +543,30 @@ function clean(obj,parent,key) {
 		obj.properties["$ref"] = obj.properties["#text"]["$ref"];
 		delete obj.properties["#text"]; // anonymous types
 	}
-	if (obj.properties && obj.anyOf) {
+	if (obj.properties && obj.anyOf) { // mergeAnyOf
 		var newI = {};
-		//newI.type = 'object';
 		if (obj.properties["$ref"]) {
 			newI["$ref"] = obj.properties["$ref"];
 		}
-		else {
+		else if (Object.keys(obj.properties).length > 0) {
 			newI.properties = obj.properties;
+			newI.required = obj.required;
 		}
-		obj.anyOf.push(newI);
+		if (Object.keys(newI).length > 0) {
+			obj.anyOf.push(newI);
+		}
 		obj.properties = {}; // gets removed later
+		obj.required = []; // ditto
+
+		if (obj.anyOf.length==1) {
+			if (obj.anyOf[0]["$ref"]) {
+				obj["$ref"] = clone(obj.anyOf[0]["$ref"]);
+				delete obj.type;
+				delete obj.additionalProperties;
+			}
+			// possible missing else here for properties !== {}
+			obj.anyOf = []; // also gets removed later
+		}
 	}
 }
 
