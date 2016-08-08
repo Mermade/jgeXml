@@ -80,9 +80,6 @@
           "properties": {
             "type": {
               "$ref": "#/definitions/textTypeType"
-            },
-            "atom:commonAttributes": {
-              "$ref": "#/definitions/commonAttributes"
             }
           }
         }
@@ -106,9 +103,6 @@
             },
             "email": {
               "$ref": "#/definitions/emailType"
-            },
-            "atom:commonAttributes": {
-              "$ref": "#/definitions/commonAttributes"
             }
           }
         }
@@ -177,9 +171,6 @@
               "items": {
                 "$ref": "#/definitions/entryType"
               }
-            },
-            "atom:commonAttributes": {
-              "$ref": "#/definitions/commonAttributes"
             }
           }
         }
@@ -242,9 +233,6 @@
             },
             "updated": {
               "$ref": "#/definitions/dateTimeType"
-            },
-            "atom:commonAttributes": {
-              "$ref": "#/definitions/commonAttributes"
             }
           }
         }
@@ -266,9 +254,6 @@
             "src": {
               "type": "string",
               "format": "uri"
-            },
-            "atom:commonAttributes": {
-              "$ref": "#/definitions/commonAttributes"
             }
           }
         }
@@ -277,12 +262,12 @@
     "categoryType": {
       "type": "object",
       "description": "The Atom category construct is defined in section 4.2.2 of the format spec.",
-      "required": [
-        "term"
-      ],
       "additionalProperties": false,
       "anyOf": [
         {
+          "required": [
+            "term"
+          ],
           "$ref": "#/definitions/commonAttributes"
         },
         {
@@ -296,9 +281,6 @@
             },
             "label": {
               "type": "string"
-            },
-            "atom:commonAttributes": {
-              "$ref": "#/definitions/commonAttributes"
             }
           }
         }
@@ -321,9 +303,6 @@
             "version": {
               "type": "string"
             },
-            "atom:commonAttributes": {
-              "$ref": "#/definitions/commonAttributes"
-            },
             "#text": {
               "type": "string"
             }
@@ -341,9 +320,6 @@
         },
         {
           "properties": {
-            "atom:commonAttributes": {
-              "$ref": "#/definitions/commonAttributes"
-            },
             "#text": {
               "type": "string",
               "format": "uri"
@@ -362,9 +338,6 @@
         },
         {
           "properties": {
-            "atom:commonAttributes": {
-              "$ref": "#/definitions/commonAttributes"
-            },
             "#text": {
               "type": "string",
               "format": "uri"
@@ -376,12 +349,12 @@
     "linkType": {
       "type": "object",
       "description": "The Atom link construct is defined in section 3.4 of the format spec.",
-      "required": [
-        "href"
-      ],
       "additionalProperties": false,
       "anyOf": [
         {
+          "required": [
+            "href"
+          ],
           "$ref": "#/definitions/commonAttributes"
         },
         {
@@ -405,9 +378,6 @@
             "length": {
               "type": "integer",
               "minimum": 1
-            },
-            "atom:commonAttributes": {
-              "$ref": "#/definitions/commonAttributes"
             }
           }
         }
@@ -423,9 +393,6 @@
         },
         {
           "properties": {
-            "atom:commonAttributes": {
-              "$ref": "#/definitions/commonAttributes"
-            },
             "#text": {
               "type": "string",
               "format": "uri"
@@ -491,9 +458,6 @@
             },
             "updated": {
               "$ref": "#/definitions/dateTimeType"
-            },
-            "atom:commonAttributes": {
-              "$ref": "#/definitions/commonAttributes"
             }
           }
         }
@@ -508,9 +472,6 @@
         },
         {
           "properties": {
-            "atom:commonAttributes": {
-              "$ref": "#/definitions/commonAttributes"
-            },
             "#text": {
               "type": "string",
               "format": "uri"
@@ -528,9 +489,6 @@
         },
         {
           "properties": {
-            "atom:commonAttributes": {
-              "$ref": "#/definitions/commonAttributes"
-            },
             "#text": {
               "type": "string",
               "format": "date-time"

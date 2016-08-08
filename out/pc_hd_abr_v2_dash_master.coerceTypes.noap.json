@@ -8,9 +8,9 @@
     "maxSegmentDuration": "PT4S",
     "minBufferTime": "PT1.920S",
     "profiles": "urn:dvb:dash:profile:dvb-dash:2014,urn:dvb:dash:profile:dvb-dash:isoff-ext-live:2014",
-    "Period": [{
+    "Period": {
       "duration": "PT29M24.400S",
-      "BaseURL": ["dash/"],
+      "BaseURL": "dash/",
       "AdaptationSet": [
         {
           "group": 1,
@@ -18,19 +18,19 @@
           "lang": "en",
           "minBandwidth": 96000,
           "maxBandwidth": 96000,
-          "segmentAlignment": false,
-          "audioSamplingRate": "48000",
+          "segmentAlignment": true,
+          "audioSamplingRate": 48000,
           "mimeType": "audio/mp4",
           "codecs": "mp4a.40.5",
           "startWithSAP": 1,
-          "AudioChannelConfiguration": [{
+          "AudioChannelConfiguration": {
             "schemeIdUri": "urn:mpeg:dash:23003:3:audio_channel_configuration:2011",
-            "value": "2"
-          }],
-          "Role": [{
+            "value": 2
+          },
+          "Role": {
             "schemeIdUri": "urn:mpeg:dash:role:2011",
             "value": "main"
-          }],
+          },
           "SegmentTemplate": {
             "timescale": 24000,
             "initialization": "vf_b05tr53t_8233510d-66fb-462e-8e22-deb72abc9c6c-$RepresentationID$.dash",
@@ -38,10 +38,10 @@
             "startNumber": 1,
             "duration": 92160
           },
-          "Representation": [{
+          "Representation": {
             "id": "audio_1=96000",
             "bandwidth": 96000
-          }]
+          }
         },
         {
           "group": 2,
@@ -53,22 +53,22 @@
           "maxWidth": 1280,
           "minHeight": 216,
           "maxHeight": 720,
-          "minFrameRate": "25",
-          "maxFrameRate": "50",
-          "segmentAlignment": false,
+          "minFrameRate": 25,
+          "maxFrameRate": 50,
+          "segmentAlignment": true,
           "mimeType": "video/mp4",
           "startWithSAP": 1,
-          "Role": [{
+          "Role": {
             "schemeIdUri": "urn:mpeg:dash:role:2011",
             "value": "main"
-          }],
+          },
           "Representation": [
             {
               "id": "video=281000",
               "bandwidth": 281000,
               "width": 384,
               "height": 216,
-              "frameRate": "25",
+              "frameRate": 25,
               "codecs": "avc3.42C015",
               "scanType": "progressive",
               "SegmentTemplate": {
@@ -84,7 +84,7 @@
               "bandwidth": 437000,
               "width": 512,
               "height": 288,
-              "frameRate": "25",
+              "frameRate": 25,
               "codecs": "avc3.4D401E",
               "scanType": "progressive",
               "SegmentTemplate": {
@@ -100,7 +100,7 @@
               "bandwidth": 827000,
               "width": 704,
               "height": 396,
-              "frameRate": "25",
+              "frameRate": 25,
               "codecs": "avc3.4D401E",
               "scanType": "progressive",
               "SegmentTemplate": {
@@ -116,7 +116,7 @@
               "bandwidth": 1604000,
               "width": 960,
               "height": 540,
-              "frameRate": "25",
+              "frameRate": 25,
               "codecs": "avc3.4D401F",
               "scanType": "progressive",
               "SegmentTemplate": {
@@ -132,7 +132,7 @@
               "bandwidth": 2812000,
               "width": 960,
               "height": 540,
-              "frameRate": "50",
+              "frameRate": 50,
               "codecs": "avc3.64001F",
               "scanType": "progressive",
               "SegmentTemplate": {
@@ -148,7 +148,7 @@
               "bandwidth": 5070000,
               "width": 1280,
               "height": 720,
-              "frameRate": "50",
+              "frameRate": 50,
               "codecs": "avc3.640020",
               "scanType": "progressive",
               "SegmentTemplate": {
@@ -162,6 +162,7 @@
           ]
         }
       ]
-    }]
+    }
   }
 }
+

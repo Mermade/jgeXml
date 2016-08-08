@@ -648,10 +648,14 @@ module.exports = {
 
 		var obj = {};
 
-		var id = src["xs:schema"]["@targetNamespace"];
-		if (!id) {
-			id = src["xs:schema"]["@xmlns"];
+		var id = '';
+		if (src["xs:schema"]) {
+			id = src["xs:schema"]["@targetNamespace"];
+			if (!id) {
+				id = src["xs:schema"]["@xmlns"];
+			}
 		}
+		else return false;
 
 		for (var a in src["xs:schema"]) {
 			if (a.startsWith('@xmlns:')) {
@@ -667,7 +671,7 @@ module.exports = {
 		if (id) {
 			obj.id = id;
 		}
-		if (src["xs:schema"]["xs:annotation"]) {
+		if (src["xs:schema"] && src["xs:schema"]["xs:annotation"]) {
 			obj.description = '';
 			src["xs:schema"]["xs:annotation"] = toArray(src["xs:schema"]["xs:annotation"]);
 			for (var a in src["xs:schema"]["xs:annotation"]) {

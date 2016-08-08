@@ -462,10 +462,6 @@
           "additionalProperties": true,
           "$ref": "#/definitions/StringVectorType"
         }
-      ],
-      "required": [
-        "id",
-        "bandwidth"
       ]
     },
     "SubRepresentationType": {
