@@ -1,7 +1,7 @@
 {
   "name": "jgexml",
   "version": "0.3.2",
-  "description": "The Just-Good-Enough XML Parser",
+  "description": "The Just-Good-Enough XML Toolkit",
   "main": "jgeXml.js",
   "scripts": {
     "test": "node testRunner",

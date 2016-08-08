@@ -61,10 +61,10 @@ function mandate(target,inAnyOf,inAllOf,name) {
 	if ((name != '#text') && (name != '#')) {
 		var tempTarget = target;
 		if (inAnyOf>=0) {
-			tempTarget = target.inAllOf[inAnyOf];
+			tempTarget = target.anyOf[inAnyOf];
 		}
 		if (inAllOf>=0) {
-			tempTarget = target.inAllOf[inAllOf];
+			tempTarget = target.allOf[inAllOf];
 		}
 		if (!tempTarget.required) tempTarget.required = [];
 		if (tempTarget.required.indexOf(name) < 0) {
