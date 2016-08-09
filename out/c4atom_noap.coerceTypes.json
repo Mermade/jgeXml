@@ -20,7 +20,7 @@
     },
     "link": {
       "rel": "self",
-      "href": "http://api.channel4.com/pmlsd/coming-soon.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+      "href": "http://api.channel4.com/pmlsd/coming-soon.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
       "type": "application/atom+xml"
     },
     "dc:relation.platformClientVersion": 1.1,
@@ -48,24 +48,24 @@
           },
           {
             "rel": "self",
-            "href": "http://api.channel4.com/pmlsd/ramsays-hotel-hell.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/ramsays-hotel-hell.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml"
           },
           {
             "rel": "related",
-            "href": "http://api.channel4.com/pmlsd/ramsays-hotel-hell/4od.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/ramsays-hotel-hell/4od.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml",
             "title": "4oD"
           },
           {
             "rel": "related",
-            "href": "http://api.channel4.com/pmlsd/ramsays-hotel-hell/4od/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/ramsays-hotel-hell/4od/episode-guide.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml",
             "title": "4oD Episode Guide"
           },
           {
             "rel": "related",
-            "href": "http://api.channel4.com/pmlsd/ramsays-hotel-hell/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/ramsays-hotel-hell/episode-guide.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml",
             "title": "Episode Guide"
           }
@@ -117,30 +117,30 @@
           },
           {
             "rel": "self",
-            "href": "http://api.channel4.com/pmlsd/gogglebox.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/gogglebox.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml"
           },
           {
             "rel": "related",
-            "href": "http://api.channel4.com/pmlsd/gogglebox/4od.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/gogglebox/4od.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml",
             "title": "4oD"
           },
           {
             "rel": "related",
-            "href": "http://api.channel4.com/pmlsd/gogglebox/4od/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/gogglebox/4od/episode-guide.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml",
             "title": "4oD Episode Guide"
           },
           {
             "rel": "related",
-            "href": "http://api.channel4.com/pmlsd/gogglebox/videos/all.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/gogglebox/videos/all.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml",
             "title": "Clips"
           },
           {
             "rel": "related",
-            "href": "http://api.channel4.com/pmlsd/gogglebox/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/gogglebox/episode-guide.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml",
             "title": "Episode Guide"
           }
@@ -192,18 +192,18 @@
           },
           {
             "rel": "self",
-            "href": "http://api.channel4.com/pmlsd/chinas-forgotten-emperor.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/chinas-forgotten-emperor.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml"
           },
           {
             "rel": "related",
-            "href": "http://api.channel4.com/pmlsd/chinas-forgotten-emperor/videos/all.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/chinas-forgotten-emperor/videos/all.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml",
             "title": "Clips"
           },
           {
             "rel": "related",
-            "href": "http://api.channel4.com/pmlsd/chinas-forgotten-emperor/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/chinas-forgotten-emperor/episode-guide.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml",
             "title": "Episode Guide"
           }
@@ -255,30 +255,30 @@
           },
           {
             "rel": "self",
-            "href": "http://api.channel4.com/pmlsd/999-whats-your-emergency.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/999-whats-your-emergency.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml"
           },
           {
             "rel": "related",
-            "href": "http://api.channel4.com/pmlsd/999-whats-your-emergency/4od.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/999-whats-your-emergency/4od.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml",
             "title": "4oD"
           },
           {
             "rel": "related",
-            "href": "http://api.channel4.com/pmlsd/999-whats-your-emergency/4od/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/999-whats-your-emergency/4od/episode-guide.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml",
             "title": "4oD Episode Guide"
           },
           {
             "rel": "related",
-            "href": "http://api.channel4.com/pmlsd/999-whats-your-emergency/videos/all.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/999-whats-your-emergency/videos/all.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml",
             "title": "Clips"
           },
           {
             "rel": "related",
-            "href": "http://api.channel4.com/pmlsd/999-whats-your-emergency/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs",
+            "href": "http://api.channel4.com/pmlsd/999-whats-your-emergency/episode-guide.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx",
             "type": "application/atom+xml",
             "title": "Episode Guide"
           }

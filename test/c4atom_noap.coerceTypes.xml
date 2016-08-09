@@ -6,7 +6,7 @@
     <name>Channel 4 Television</name>
   </author>
   <logo imageSource="default">http://ic.c4assets.com/c4_atom_small.gif?interpolation=none&amp;resize=86px:63px</logo>
-  <link rel="self" href="http://api.channel4.com/pmlsd/coming-soon.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml"></link>
+  <link rel="self" href="http://api.channel4.com/pmlsd/coming-soon.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml"></link>
   <dc:relation.platformClientVersion>1.1</dc:relation.platformClientVersion>
   <generator version="2.14">PMLSD</generator>
   <entry>
@@ -15,10 +15,10 @@
     <summary type="text">Gordon Ramsay returns to the USA to help Angler's Lodge in Idaho, a stunning venue whose owners have been struck by family tragedy. Can Gordon rescue the broken family's business?</summary>
     <updated>2016-06-30T14:03:50.140Z</updated>
     <link rel="alternate" href="http://www.channel4.com/programmes/ramsays-hotel-hell" type="text/html"></link>
-    <link rel="self" href="http://api.channel4.com/pmlsd/ramsays-hotel-hell.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml"></link>
-    <link rel="related" href="http://api.channel4.com/pmlsd/ramsays-hotel-hell/4od.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml" title="4oD"></link>
-    <link rel="related" href="http://api.channel4.com/pmlsd/ramsays-hotel-hell/4od/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml" title="4oD Episode Guide"></link>
-    <link rel="related" href="http://api.channel4.com/pmlsd/ramsays-hotel-hell/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml" title="Episode Guide"></link>
+    <link rel="self" href="http://api.channel4.com/pmlsd/ramsays-hotel-hell.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml"></link>
+    <link rel="related" href="http://api.channel4.com/pmlsd/ramsays-hotel-hell/4od.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml" title="4oD"></link>
+    <link rel="related" href="http://api.channel4.com/pmlsd/ramsays-hotel-hell/4od/episode-guide.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml" title="4oD Episode Guide"></link>
+    <link rel="related" href="http://api.channel4.com/pmlsd/ramsays-hotel-hell/episode-guide.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml" title="Episode Guide"></link>
     <media:content>
       <media:thumbnail imageSource="own" altText="Ramsay's Hotel Hell" width="200" url="http://cache.channel4.com/assets/programmes/images/ramsays-hotel-hell/series-3/episode-1/9aab52d1-3208-4ed8-b2ad-a11239c484eb_200x113.jpg" height="113"></media:thumbnail>
     </media:content>
@@ -47,11 +47,11 @@
     <summary type="text">A special programme revisiting some of the best and funniest moments from the most recent series, from Britain's Got Talent to First Dates, Caravanner of the Year and Dogs Might Fly.</summary>
     <updated>2016-06-30T14:03:50.142Z</updated>
     <link rel="alternate" href="http://www.channel4.com/programmes/gogglebox" type="text/html"></link>
-    <link rel="self" href="http://api.channel4.com/pmlsd/gogglebox.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml"></link>
-    <link rel="related" href="http://api.channel4.com/pmlsd/gogglebox/4od.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml" title="4oD"></link>
-    <link rel="related" href="http://api.channel4.com/pmlsd/gogglebox/4od/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml" title="4oD Episode Guide"></link>
-    <link rel="related" href="http://api.channel4.com/pmlsd/gogglebox/videos/all.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml" title="Clips"></link>
-    <link rel="related" href="http://api.channel4.com/pmlsd/gogglebox/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml" title="Episode Guide"></link>
+    <link rel="self" href="http://api.channel4.com/pmlsd/gogglebox.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml"></link>
+    <link rel="related" href="http://api.channel4.com/pmlsd/gogglebox/4od.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml" title="4oD"></link>
+    <link rel="related" href="http://api.channel4.com/pmlsd/gogglebox/4od/episode-guide.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml" title="4oD Episode Guide"></link>
+    <link rel="related" href="http://api.channel4.com/pmlsd/gogglebox/videos/all.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml" title="Clips"></link>
+    <link rel="related" href="http://api.channel4.com/pmlsd/gogglebox/episode-guide.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml" title="Episode Guide"></link>
     <media:content>
       <media:thumbnail imageSource="fallback" altText="Gogglebox: The Best Bits" width="200" url="http://cache.channel4.com/assets/programmes/images/gogglebox/series-2016/b944a7f5-7d23-4c4e-825f-893a27d43640_200x113.jpg" height="113"></media:thumbnail>
     </media:content>
@@ -80,9 +80,9 @@
     <summary type="text">For 1300 years Wu Zetian, China's only female Emperor, has been remembered as a callous tyrant who brought calamity to China. But new discoveries reveal a very different story of her reign.</summary>
     <updated>2016-06-30T14:03:50.143Z</updated>
     <link rel="alternate" href="http://www.channel4.com/programmes/chinas-forgotten-emperor" type="text/html"></link>
-    <link rel="self" href="http://api.channel4.com/pmlsd/chinas-forgotten-emperor.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml"></link>
-    <link rel="related" href="http://api.channel4.com/pmlsd/chinas-forgotten-emperor/videos/all.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml" title="Clips"></link>
-    <link rel="related" href="http://api.channel4.com/pmlsd/chinas-forgotten-emperor/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml" title="Episode Guide"></link>
+    <link rel="self" href="http://api.channel4.com/pmlsd/chinas-forgotten-emperor.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml"></link>
+    <link rel="related" href="http://api.channel4.com/pmlsd/chinas-forgotten-emperor/videos/all.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml" title="Clips"></link>
+    <link rel="related" href="http://api.channel4.com/pmlsd/chinas-forgotten-emperor/episode-guide.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml" title="Episode Guide"></link>
     <media:content>
       <media:thumbnail imageSource="fallback" altText="China's Forgotten Emperor" width="200" url="http://cache.channel4.com/assets/programmes/images/chinas-forgotten-emperor/series-1/9fe59fef-180b-46ed-9a71-31ac09dc5d9d_200x113.jpg" height="113"></media:thumbnail>
     </media:content>
@@ -111,11 +111,11 @@
     <summary type="text">The new series focuses on the work of Cheshire's emergency services. When a 20-year-old girl collapses at home after a night out, her life depends on Will, at the 999 call centre. (S3 Ep1)</summary>
     <updated>2016-06-30T14:03:50.145Z</updated>
     <link rel="alternate" href="http://www.channel4.com/programmes/999-whats-your-emergency" type="text/html"></link>
-    <link rel="self" href="http://api.channel4.com/pmlsd/999-whats-your-emergency.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml"></link>
-    <link rel="related" href="http://api.channel4.com/pmlsd/999-whats-your-emergency/4od.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml" title="4oD"></link>
-    <link rel="related" href="http://api.channel4.com/pmlsd/999-whats-your-emergency/4od/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml" title="4oD Episode Guide"></link>
-    <link rel="related" href="http://api.channel4.com/pmlsd/999-whats-your-emergency/videos/all.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml" title="Clips"></link>
-    <link rel="related" href="http://api.channel4.com/pmlsd/999-whats-your-emergency/episode-guide.atom?apikey=sxwmsq9k9mtkdh9ff6vxuyjs" type="application/atom+xml" title="Episode Guide"></link>
+    <link rel="self" href="http://api.channel4.com/pmlsd/999-whats-your-emergency.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml"></link>
+    <link rel="related" href="http://api.channel4.com/pmlsd/999-whats-your-emergency/4od.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml" title="4oD"></link>
+    <link rel="related" href="http://api.channel4.com/pmlsd/999-whats-your-emergency/4od/episode-guide.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml" title="4oD Episode Guide"></link>
+    <link rel="related" href="http://api.channel4.com/pmlsd/999-whats-your-emergency/videos/all.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml" title="Clips"></link>
+    <link rel="related" href="http://api.channel4.com/pmlsd/999-whats-your-emergency/episode-guide.atom?apikey=xxxxxxxxxxxxxxxxxxxxxxx" type="application/atom+xml" title="Episode Guide"></link>
     <media:content>
       <media:thumbnail imageSource="own" altText="999: What's Your Emergency?" width="200" url="http://cache.channel4.com/assets/programmes/images/999-whats-your-emergency/series-3/episode-1/1bdb70dd-6934-41f2-9c80-620eb83e082b_200x113.jpg" height="113"></media:thumbnail>
     </media:content>
