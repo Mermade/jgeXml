@@ -1,6 +1,6 @@
 {
   "name": "jgexml",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "The Just-Good-Enough XML Toolkit",
   "main": "jgeXml.js",
   "scripts": {
