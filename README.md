@@ -52,6 +52,9 @@ In JSON, child elements can be represented as properties (the default) or object
 The parser by default treats all content as strings when converting to JSON, optionally data can be coerced
 to primitive numbers or null values.
 
+The utility `xsd2json` can convert most XML Schemas to JSON schema draft 4. XSD's may of course be converted
+to JSON simply as if they were XML documents too.
+
 Experimental JSONPath and JSONT utilities are under development.
 
 ## Limitations
@@ -60,7 +63,6 @@ jgeXml is currently schema agnostic and staunchly atheist when it comes to DTDs.
 consumer to interpret the namespace portions of element names. It can parse internal DTDs, but does nothing with them.
 xmlWrite minimally supports DTDs but you must build them and the DOCTYPE yourself.
 
-It can parse and transform XSD files as XML, conversion to JSON schema is planned.
 
 The parser is string-based; to process streams, read the data into a string first. It may be memory intensive on large documents.
 

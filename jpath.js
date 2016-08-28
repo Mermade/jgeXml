@@ -5,12 +5,19 @@ String.prototype.replaceAll = function(search, replacement) {
     return target.split(search).join(replacement);
 };
 
+function jpescape(s) {
+	s = s.replaceAll('~','~0');
+	s = s.replaceAll('/','~1');
+	return s;
+}
+
 // JSON Pointer specification: http://tools.ietf.org/html/rfc6901
 function jptr(obj, prop, newValue) {
     //property not found
     if (typeof obj === 'undefined') return false;
-	if (!prop) return obj;
+	if ((!prop) || (prop == '#')) return obj;
 
+	if (prop.startsWith('#')) prop = prop.slice(1);
 	if (prop.startsWith('/')) prop = prop.slice(1);
 	var props = prop.split('/');
 
@@ -235,5 +242,6 @@ module.exports = {
 	selectRegex : selectRegex,
 	path : path,
 	fetchFromObject : fetchFromObject,
-	jptr : jptr
+	jptr : jptr,
+	jpescape : jpescape
 };
