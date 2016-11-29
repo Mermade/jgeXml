@@ -23,9 +23,9 @@ function lines(s) {
 }
 
 function diff(s1,s2) {
-	var red = '\x1b[31m';
-	var green = '\x1b[32m';
-	var normal = '\x1b[0m';
+	var red = process.env.NODE_DISABLE_COLORS ? '' : '\x1b[31m';
+	var green = process.env.NODE_DISABLE_COLORS ? '' : '\x1b[32m';
+	var normal = process.env.NODE_DISABLE_COLORS ? '' : '\x1b[0m';
 	var l1 = lines(s1);
 	var l2 = lines(s2);
 	var top = l1.length > l2.length ? l2.length : l1.length;
