@@ -1,5 +1,7 @@
 # jgeXml - The Just-Good-Enough XML Toolkit
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/MikeRalphson/jgeXml.svg)](https://greenkeeper.io/)
+
 [![Build status](https://travis-ci.org/MikeRalphson/jgeXml.svg?branch=master)](https://travis-ci.org/MikeRalphson/jgeXml)
 [![Join the chat at https://gitter.im/MikeRalphson/jgeXml](https://badges.gitter.im/MikeRalphson/jgeXml.svg)](https://gitter.im/MikeRalphson/jgeXml?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
