@@ -1,0 +1,158 @@
+{
+  "title": "test/purchaseorder.xsd",
+  "$schema": "http://json-schema.org/schema#",
+  "description": "Purchase order schema for Example.com.\n     Copyright 2000 Example.com. All rights reserved.",
+  "type": "object",
+  "properties": {
+    "purchaseOrder": {
+      "$ref": "#/definitions/PurchaseOrderType"
+    }
+  },
+  "required": [
+    "purchaseOrder"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "comment": {
+      "type": "string"
+    },
+    "PurchaseOrderType": {
+      "type": "object",
+      "properties": {
+        "shipTo": {
+          "$ref": "#/definitions/USAddress"
+        },
+        "billTo": {
+          "$ref": "#/definitions/USAddress"
+        },
+        "comment": {
+          "$ref": "#/definitions/comment"
+        },
+        "items": {
+          "$ref": "#/definitions/Items"
+        },
+        "orderDate": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$"
+        }
+      },
+      "required": [
+        "shipTo",
+        "billTo",
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "USAddress": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "street": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "number"
+        },
+        "country": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "street",
+        "city",
+        "state",
+        "zip"
+      ],
+      "additionalProperties": false
+    },
+    "Items": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productName": {
+                "type": "string"
+              },
+              "quantity": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "USPrice": {
+                "type": "number"
+              },
+              "comment": {
+                "$ref": "#/definitions/comment"
+              },
+              "shipDate": {
+                "type": "string",
+                "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$"
+              },
+              "partNum": {
+                "$ref": "#/definitions/SKU"
+              },
+              "item": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "productName": {
+                      "type": "string"
+                    },
+                    "quantity": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "USPrice": {
+                      "type": "number"
+                    },
+                    "comment": {
+                      "$ref": "#/definitions/comment"
+                    },
+                    "shipDate": {
+                      "type": "string",
+                      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}.*$"
+                    },
+                    "partNum": {
+                      "$ref": "#/definitions/SKU"
+                    }
+                  },
+                  "required": [
+                    "productName",
+                    "quantity",
+                    "USPrice",
+                    "partNum"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "productName",
+              "quantity",
+              "USPrice",
+              "partNum"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "SKU": {
+      "type": "string",
+      "pattern": "\\d{3}-[A-Z]{2}"
+    }
+  }
+}
