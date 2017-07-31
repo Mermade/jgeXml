@@ -7,12 +7,14 @@ var target; // for new properties
 var attributePrefix = '@';
 var laxURIs = false;
 var defaultNameSpace = '';
+var xsPrefix = 'xs:';
 
-function reset(attrPrefix,laxURIprocessing) {
+function reset(attrPrefix,laxURIprocessing,newXsPrefix) {
 	target = null;
 	attributePrefix = attrPrefix;
 	laxURIs = laxURIprocessing;
 	defaultNameSpace = '';
+	xsPrefix = newXsPrefix||'xs:';
 }
 
 function clone(obj) {
@@ -112,143 +114,143 @@ function mapType(type) {
 			result.oneOf.push(finaliseType(mapType(type[t])));
 		}
 	}
-    else if (type == 'xs:integer') {
+    else if (type == xsPrefix+'integer') {
 		result.type = 'integer';
 	}
-	else if (type == 'xs:positiveInteger') {
+	else if (type == xsPrefix+'positiveInteger') {
 		result.type = 'integer';
 		result.minimum = 1;
 	}
-	else if (type == 'xs:nonPositiveInteger') {
+	else if (type == xsPrefix+'nonPositiveInteger') {
 		result.type = 'integer';
 		result.maximum = 0;
 	}
-	else if (type == 'xs:negativeInteger') {
+	else if (type == xsPrefix+'negativeInteger') {
 		result.type = 'integer';
 		result.maximum = -1;
 	}
-	else if (type == 'xs:nonNegativeInteger') {
+	else if (type == xsPrefix+'nonNegativeInteger') {
 		result.type = 'integer';
 		result.minimum = 0;
 	}
-	else if (type == 'xs:unsignedInt') {
+	else if (type == xsPrefix+'unsignedInt') {
 		result.type = 'integer';
 		result.minimum = 0;
 		result.maximum = 4294967295;
 	}
-	else if (type == 'xs:unsignedShort') {
+	else if (type == xsPrefix+'unsignedShort') {
 		result.type = 'integer';
 		result.minimum = 0;
 		result.maximum = 65535;
 	}
-	else if (type == 'xs:unsignedByte') {
+	else if (type == xsPrefix+'unsignedByte') {
 		result.type = 'integer';
 		result.minimum = 0;
 		result.maximum = 255;
 	}
-	else if (type == 'xs:int') {
+	else if (type == xsPrefix+'int') {
 		result.type = 'integer';
 		result.maximum = 2147483647;
 		result.minimum = -2147483648;
 	}
-	else if (type == 'xs:short') {
+	else if (type == xsPrefix+'short') {
 		result.type = 'integer';
 		result.maximum = 32767;
 		result.minimum = -32768;
 	}
-	else if (type == 'xs:byte') {
+	else if (type == xsPrefix+'byte') {
 		result.type = 'integer';
 		result.maximum = 127;
 		result.minimum = -128;
 	}
-	else if (type == 'xs:long') {
+	else if (type == xsPrefix+'long') {
 		result.type = 'integer';
 	}
-	else if (type == 'xs:unsignedLong') {
+	else if (type == xsPrefix+'unsignedLong') {
 		result.type = 'integer';
 		result.minimum = 0;
 	}
 
-	if (type == 'xs:string') result.type = 'string';
-	if (type == 'xs:NMTOKEN') result.type = 'string';
-	if (type == 'xs:NMTOKENS') result.type = 'string';
-	if (type == 'xs:ENTITY') result.type = 'string';
-	if (type == 'xs:ENTITIES') result.type = 'string';
-	if (type == 'xs:ID') result.type = 'string';
-	if (type == 'xs:IDREF') result.type = 'string';
-	if (type == 'xs:IDREFS') result.type = 'string';
-	if (type == 'xs:NOTATION') result.type = 'string';
-	if (type == 'xs:token') result.type = 'string';
-	if (type == 'xs:Name') result.type = 'string';
-	if (type == 'xs:NCName') result.type = 'string';
-	if (type == 'xs:QName') result.type = 'string';
-	if (type == 'xs:normalizedString') result.type = 'string';
-	if (type == 'xs:base64Binary') {
+	if (type == xsPrefix+'string') result.type = 'string';
+	if (type == xsPrefix+'NMTOKEN') result.type = 'string';
+	if (type == xsPrefix+'NMTOKENS') result.type = 'string';
+	if (type == xsPrefix+'ENTITY') result.type = 'string';
+	if (type == xsPrefix+'ENTITIES') result.type = 'string';
+	if (type == xsPrefix+'ID') result.type = 'string';
+	if (type == xsPrefix+'IDREF') result.type = 'string';
+	if (type == xsPrefix+'IDREFS') result.type = 'string';
+	if (type == xsPrefix+'NOTATION') result.type = 'string';
+	if (type == xsPrefix+'token') result.type = 'string';
+	if (type == xsPrefix+'Name') result.type = 'string';
+	if (type == xsPrefix+'NCName') result.type = 'string';
+	if (type == xsPrefix+'QName') result.type = 'string';
+	if (type == xsPrefix+'normalizedString') result.type = 'string';
+	if (type == xsPrefix+'base64Binary') {
 		result.type = 'string';
 		result.format = 'byte';
 	}
-	if (type == 'xs:hexBinary') {
+	if (type == xsPrefix+'hexBinary') {
 		result.type = 'string';
 		result.format = '^[0-9,a-f,A-F]*';
 	}
 
-	if (type == 'xs:boolean') result.type = 'boolean';
+	if (type == xsPrefix+'boolean') result.type = 'boolean';
 
-	if (type == 'xs:date') {
+	if (type == xsPrefix+'date') {
 		result.type = 'string';
 		result.pattern = '^[0-9]{4}\-[0-9]{2}\-[0-9]{2}.*$'; //timezones
 	}
-	else if (type == 'xs:dateTime') {
+	else if (type == xsPrefix+'dateTime') {
 		result.type = 'string';
 		result.format = 'date-time';
 	}
-	else if (type == 'xs:time') {
+	else if (type == xsPrefix+'time') {
 		result.type = 'string';
 		result.pattern = '^[0-9]{2}\:[0-9]{2}:[0-9]{2}.*$'; // timezones
 	}
-	else if (type == 'xs:duration') {
+	else if (type == xsPrefix+'duration') {
 		result.type = 'string';
 		result.pattern = '^(-)?P(?:([0-9,.]*)Y)?(?:([0-9,.]*)M)?(?:([0-9,.]*)W)?(?:([0-9,.]*)D)?(?:T(?:([0-9,.]*)H)?(?:([0-9,.]*)M)?(?:([0-9,.]*)S)?)?$';
 	}
-	else if (type == 'xs:gDay') {
+	else if (type == xsPrefix+'gDay') {
 		result.type = 'string';
 		result.pattern = '[0-9]{2}';
 	}
-	else if (type == 'xs:gMonth') {
+	else if (type == xsPrefix+'gMonth') {
 		result.type = 'string';
 		result.pattern = '[0-9]{2}';
 	}
-	else if (type == 'xs:gMonthDay') {
+	else if (type == xsPrefix+'gMonthDay') {
 		result.type = 'string';
 		result.pattern = '[0-9]{2}\-[0-9]{2}';
 	}
-	else if (type == 'xs:gYear') {
+	else if (type == xsPrefix+'gYear') {
 		result.type = 'string';
 		result.pattern = '[0-9]{4}';
 	}
-	else if (type == 'xs:gYearMonth') {
+	else if (type == xsPrefix+'gYearMonth') {
 		result.type = 'string';
 		result.pattern = '[0-9]{4}\-[0-9]{2}';
 	}
 
-	if (type == 'xs:language') {
+	if (type == xsPrefix+'language') {
 		result.type = 'string';
 		result.pattern = '[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*';
 	}
 
-	if (type == 'xs:decimal') {
+	if (type == xsPrefix+'decimal') {
 		result.type = 'number';
 	}
-	else if (type == 'xs:double') {
+	else if (type == xsPrefix+'double') {
 		result.type = 'number';
 		result.format = 'double';
 	}
-	else if (type == 'xs:float') {
+	else if (type == xsPrefix+'float') {
 		result.type = 'number';
 		result.format = 'float';
 	}
 
-	if (type == 'xs:anyURI') {
+	if (type == xsPrefix+'anyURI') {
 		result.type = 'string';
 		if (!laxURIs) {
 			result.format = 'uri'; //XSD allows relative URIs, it seems JSON schema uri format may not?
@@ -284,12 +286,12 @@ function doElement(src,parent,key) {
 		return false;
 	}
 
-	if ((key == "xs:any") || (key == "xs:anyAttribute")) {
+	if ((key == xsPrefix+"any") || (key == xsPrefix+"anyAttribute")) {
 		if (target) target.additionalProperties = true; // target should always be defined at this point
 	}
 
-	if (element["xs:annotation"]) {
-		doc = element["xs:annotation"]["xs:documentation"];
+	if (element[xsPrefix+"annotation"]) {
+		doc = element[xsPrefix+"annotation"][xsPrefix+"documentation"];
 	}
 
 	if (element["@name"]) {
@@ -298,22 +300,22 @@ function doElement(src,parent,key) {
 	if (element["@type"]) {
 		type = element["@type"];
 	}
-	else if ((element["@name"]) && (element["xs:simpleType"])) {
-		type = element["xs:simpleType"]["xs:restriction"]["@base"];
-		simpleType = element["xs:simpleType"]["xs:restriction"];
-		if (element["xs:simpleType"]["xs:annotation"]) {
-			simpleType["xs:annotation"] = element["xs:simpleType"]["xs:annotation"];
+	else if ((element["@name"]) && (element[xsPrefix+"simpleType"])) {
+		type = element[xsPrefix+"simpleType"][xsPrefix+"restriction"]["@base"];
+		simpleType = element[xsPrefix+"simpleType"][xsPrefix+"restriction"];
+		if (element[xsPrefix+"simpleType"][xsPrefix+"annotation"]) {
+			simpleType[xsPrefix+"annotation"] = element[xsPrefix+"simpleType"][xsPrefix+"annotation"];
 		}
 	}
-	else if ((element["@name"]) && (element["xs:restriction"])) {
-		type = element["xs:restriction"]["@base"];
-		simpleType = element["xs:restriction"];
-		if (element["xs:annotation"]) {
-			simpleType["xs:annotation"] = element["xs:annotation"];
+	else if ((element["@name"]) && (element[xsPrefix+"restriction"])) {
+		type = element[xsPrefix+"restriction"]["@base"];
+		simpleType = element[xsPrefix+"restriction"];
+		if (element[xsPrefix+"annotation"]) {
+			simpleType[xsPrefix+"annotation"] = element[xsPrefix+"annotation"];
 		}
 	}
-	else if ((element["xs:extension"]) && (element["xs:extension"]["@base"])) {
-		type = element["xs:extension"]["@base"];
+	else if ((element[xsPrefix+"extension"]) && (element[xsPrefix+"extension"]["@base"])) {
+		type = element[xsPrefix+"extension"]["@base"];
 		var tempType = finaliseType(mapType(type));
 		if (!tempType["$ref"]) {
 			name = "#text"; // see anonymous types
@@ -332,14 +334,14 @@ function doElement(src,parent,key) {
 			inAllOf = 0; //target.allOf.length-1;
 		}
 	}
-	else if (element["xs:union"]) {
-		var types = element["xs:union"]["@memberTypes"].split(' ');
+	else if (element[xsPrefix+"union"]) {
+		var types = element[xsPrefix+"union"]["@memberTypes"].split(' ');
 		type = [];
 		for (var t in types) {
 			type.push(types[t]);
 		}
 	}
-	else if (element["xs:list"]) {
+	else if (element[xsPrefix+"list"]) {
 		type = 'string';
 	}
 	else if (element["@ref"]) {
@@ -380,7 +382,7 @@ function doElement(src,parent,key) {
 		}
 
 		// handle @ref / attributeGroups
-		if ((key == "xs:attributeGroup") && (element["@ref"])) { // || (name == '$ref')) {
+		if ((key == xsPrefix+"attributeGroup") && (element["@ref"])) { // || (name == '$ref')) {
 			if (!target.anyOf) target.anyOf = [];
 			var newt = {};
 			newt.properties = {};
@@ -392,20 +394,20 @@ function doElement(src,parent,key) {
 			minOccurs = 0;
 		}
 
-		if ((parent["xs:annotation"]) && ((parent["xs:annotation"]["xs:documentation"]))) {
-			target.description = parent["xs:annotation"]["xs:documentation"];
+		if ((parent[xsPrefix+"annotation"]) && ((parent[xsPrefix+"annotation"][xsPrefix+"documentation"]))) {
+			target.description = parent[xsPrefix+"annotation"][xsPrefix+"documentation"];
 		}
-		if ((element["xs:annotation"]) && ((element["xs:annotation"]["xs:documentation"]))) {
-			target.description = (target.description ? target.decription + '\n' : '') + element["xs:annotation"]["xs:documentation"];
+		if ((element[xsPrefix+"annotation"]) && ((element[xsPrefix+"annotation"][xsPrefix+"documentation"]))) {
+			target.description = (target.description ? target.decription + '\n' : '') + element[xsPrefix+"annotation"][xsPrefix+"documentation"];
 		}
 
 		var enumSource;
 
-		if (element["xs:simpleType"] && element["xs:simpleType"]["xs:restriction"] && element["xs:simpleType"]["xs:restriction"]["xs:enumeration"]) {
-			var enumSource = element["xs:simpleType"]["xs:restriction"]["xs:enumeration"];
+		if (element[xsPrefix+"simpleType"] && element[xsPrefix+"simpleType"][xsPrefix+"restriction"] && element[xsPrefix+"simpleType"][xsPrefix+"restriction"][xsPrefix+"enumeration"]) {
+			var enumSource = element[xsPrefix+"simpleType"][xsPrefix+"restriction"][xsPrefix+"enumeration"];
 		}
-		else if (element["xs:restriction"] && element["xs:restriction"]["xs:enumeration"]) {
-			var enumSource = element["xs:restriction"]["xs:enumeration"];
+		else if (element[xsPrefix+"restriction"] && element[xsPrefix+"restriction"][xsPrefix+"enumeration"]) {
+			var enumSource = element[xsPrefix+"restriction"][xsPrefix+"enumeration"];
 		}
 
 		if (enumSource) {
@@ -413,11 +415,11 @@ function doElement(src,parent,key) {
 			typeData["enum"] = [];
 			for (var i=0;i<enumSource.length;i++) {
 				typeData["enum"].push(enumSource[i]["@value"]);
-				if ((enumSource[i]["xs:annotation"]) && (enumSource[i]["xs:annotation"]["xs:documentation"])) {
+				if ((enumSource[i][xsPrefix+"annotation"]) && (enumSource[i][xsPrefix+"annotation"][xsPrefix+"documentation"])) {
 					if (typeData.description) {
 						typeData.description += '';
 					}
-					typeData.description += enumSource[i]["@value"]+': '+enumSource[i]["xs:annotation"]["xs:documentation"];
+					typeData.description += enumSource[i]["@value"]+': '+enumSource[i][xsPrefix+"annotation"][xsPrefix+"documentation"];
 				}
 			}
 			if (!typeData.description) delete typeData.description;
@@ -441,11 +443,11 @@ function doElement(src,parent,key) {
 		}
 
 		if (simpleType) {
-			if (simpleType["xs:minLength"]) typeData.minLength = parseInt(simpleType["xs:minLength"]["@value"],10);
-			if (simpleType["xs:maxLength"]) typeData.maxLength = parseInt(simpleType["xs:maxLength"]["@value"],10);
-			if (simpleType["xs:pattern"]) typeData.pattern = simpleType["xs:pattern"]["@value"];
-			if ((simpleType["xs:annotation"]) && (simpleType["xs:annotation"]["xs:documentation"])) {
-				typeData.description = simpleType["xs:annotation"]["xs:documentation"];
+			if (simpleType[xsPrefix+"minLength"]) typeData.minLength = parseInt(simpleType[xsPrefix+"minLength"]["@value"],10);
+			if (simpleType[xsPrefix+"maxLength"]) typeData.maxLength = parseInt(simpleType[xsPrefix+"maxLength"]["@value"],10);
+			if (simpleType[xsPrefix+"pattern"]) typeData.pattern = simpleType[xsPrefix+"pattern"]["@value"];
+			if ((simpleType[xsPrefix+"annotation"]) && (simpleType[xsPrefix+"annotation"][xsPrefix+"documentation"])) {
+				typeData.description = simpleType[xsPrefix+"annotation"][xsPrefix+"documentation"];
 			}
 		}
 
@@ -464,19 +466,19 @@ function doElement(src,parent,key) {
 }
 
 function moveAttributes(obj,parent,key) {
-	if (key == 'xs:attribute') {
+	if (key == xsPrefix+'attribute') {
 
 		obj[key] = toArray(obj[key]);
 
 		var target;
 
-		if (obj["xs:sequence"] && obj["xs:sequence"]["xs:element"]) {
-			obj["xs:sequence"]["xs:element"] = toArray(obj["xs:sequence"]["xs:element"]);
-			target = obj["xs:sequence"]["xs:element"];
+		if (obj[xsPrefix+"sequence"] && obj[xsPrefix+"sequence"][xsPrefix+"element"]) {
+			obj[xsPrefix+"sequence"][xsPrefix+"element"] = toArray(obj[xsPrefix+"sequence"][xsPrefix+"element"]);
+			target = obj[xsPrefix+"sequence"][xsPrefix+"element"];
 		}
-		if (obj["xs:choice"] && obj["xs:choice"]["xs:element"]) {
-			obj["xs:choice"]["xs:element"] = toArray(obj["xs:choice"]["xs:element"]);
-			target = obj["xs:choice"]["xs:element"];
+		if (obj[xsPrefix+"choice"] && obj[xsPrefix+"choice"][xsPrefix+"element"]) {
+			obj[xsPrefix+"choice"][xsPrefix+"element"] = toArray(obj[xsPrefix+"choice"][xsPrefix+"element"]);
+			target = obj[xsPrefix+"choice"][xsPrefix+"element"];
 		}
 
 		if (target) target = toArray(target);
@@ -497,15 +499,15 @@ function moveAttributes(obj,parent,key) {
 }
 
 function processChoice(obj,parent,key) {
-	if (key == 'xs:choice') {
-		var e = obj[key]["xs:element"] = toArray(obj[key]["xs:element"]);
+	if (key == xsPrefix+'choice') {
+		var e = obj[key][xsPrefix+"element"] = toArray(obj[key][xsPrefix+"element"]);
 		for (var i=0;i<e.length;i++) {
 			if (!e[i]["@isAttr"]) {
 				e[i]["@isChoice"] = true;
 			}
 		}
-		if (obj[key]["xs:group"]) {
-			var g = obj[key]["xs:group"] = toArray(obj[key]["xs:group"]);
+		if (obj[key][xsPrefix+"group"]) {
+			var g = obj[key][xsPrefix+"group"] = toArray(obj[key][xsPrefix+"group"]);
 			for (var i=0;i<g.length;i++) {
 				if (!g[i]["@isAttr"]) {
 					g[i]["@isChoice"] = true;
@@ -516,7 +518,7 @@ function processChoice(obj,parent,key) {
 }
 
 function renameObjects(obj,parent,key) {
-	if (key == 'xs:complexType') {
+	if (key == xsPrefix+'complexType') {
 		var name = obj["@name"];
 		if (name) {
 			rename(obj,key,name);
@@ -526,7 +528,7 @@ function renameObjects(obj,parent,key) {
 }
 
 function moveProperties(obj,parent,key) {
-	if (key == 'xs:sequence') {
+	if (key == xsPrefix+'sequence') {
 		if (obj[key].properties) {
 			obj.properties = obj[key].properties;
 			obj.required = obj[key].required;
@@ -636,8 +638,8 @@ function recurse(obj,parent,callback,depthFirst) {
 }
 
 module.exports = {
-	getJsonSchema : function getJsonSchema(src,title,outputAttrPrefix,laxURIs) { // TODO convert to options parameter
-		reset(outputAttrPrefix,laxURIs);
+	getJsonSchema : function getJsonSchema(src,title,outputAttrPrefix,laxURIs,newXsPrefix) { // TODO convert to options parameter
+		reset(outputAttrPrefix,laxURIs,newXsPrefix);
 
 		recurse(src,{},function(src,parent,key) {
 			moveAttributes(src,parent,key);
@@ -649,17 +651,17 @@ module.exports = {
 		var obj = {};
 
 		var id = '';
-		if (src["xs:schema"]) {
-			id = src["xs:schema"]["@targetNamespace"];
+		if (src[xsPrefix+"schema"]) {
+			id = src[xsPrefix+"schema"]["@targetNamespace"];
 			if (!id) {
-				id = src["xs:schema"]["@xmlns"];
+				id = src[xsPrefix+"schema"]["@xmlns"];
 			}
 		}
 		else return false;
 
-		for (var a in src["xs:schema"]) {
+		for (var a in src[xsPrefix+"schema"]) {
 			if (a.startsWith('@xmlns:')) {
-				if (src["xs:schema"][a] == id) {
+				if (src[xsPrefix+"schema"][a] == id) {
 					defaultNameSpace = a.replace('@xmlns:','');
 				}
 			}
@@ -671,21 +673,21 @@ module.exports = {
 		if (id) {
 			obj.id = id;
 		}
-		if (src["xs:schema"] && src["xs:schema"]["xs:annotation"]) {
+		if (src[xsPrefix+"schema"] && src[xsPrefix+"schema"][xsPrefix+"annotation"]) {
 			obj.description = '';
-			src["xs:schema"]["xs:annotation"] = toArray(src["xs:schema"]["xs:annotation"]);
-			for (var a in src["xs:schema"]["xs:annotation"]) {
-				var annotation = src["xs:schema"]["xs:annotation"][a];
-				if ((annotation["xs:documentation"]) && (annotation["xs:documentation"]["#text"])) {
-					obj.description += (obj.description ? '\n' : '') + annotation["xs:documentation"]["#text"];
+			src[xsPrefix+"schema"][xsPrefix+"annotation"] = toArray(src[xsPrefix+"schema"][xsPrefix+"annotation"]);
+			for (var a in src[xsPrefix+"schema"][xsPrefix+"annotation"]) {
+				var annotation = src[xsPrefix+"schema"][xsPrefix+"annotation"][a];
+				if ((annotation[xsPrefix+"documentation"]) && (annotation[xsPrefix+"documentation"]["#text"])) {
+					obj.description += (obj.description ? '\n' : '') + annotation[xsPrefix+"documentation"]["#text"];
 				}
 				else {
-					if (annotation["xs:documentation"]) obj.description += (obj.description ? '\n' : '') + annotation["xs:documentation"];
+					if (annotation[xsPrefix+"documentation"]) obj.description += (obj.description ? '\n' : '') + annotation[xsPrefix+"documentation"];
 				}
 			}
 		}
 
-		var rootElement = src["xs:schema"]["xs:element"];
+		var rootElement = src[xsPrefix+"schema"][xsPrefix+"element"];
 		if (Array.isArray(rootElement)) {
 			rootElement = rootElement[0];
 		}
@@ -720,12 +722,12 @@ module.exports = {
 		});
 
 		// remove rootElement to leave ref'd definitions
-		if (Array.isArray(src["xs:schema"]["xs:element"])) {
-			//src["xs:schema"]["xs:element"] = src["xs:schema"]["xs:element"].splice(0,1);
-			delete src["xs:schema"]["xs:element"][0];
+		if (Array.isArray(src[xsPrefix+"schema"][xsPrefix+"element"])) {
+			//src[xsPrefix+"schema"][xsPrefix+"element"] = src[xsPrefix+"schema"][xsPrefix+"element"].splice(0,1);
+			delete src[xsPrefix+"schema"][xsPrefix+"element"][0];
 		}
 		else {
-			delete src["xs:schema"]["xs:element"];
+			delete src[xsPrefix+"schema"][xsPrefix+"element"];
 		}
 
 		obj.definitions = clone(src);
@@ -744,7 +746,7 @@ module.exports = {
 			clean(obj,parent,key);
 		});
 
-		delete(obj.definitions["xs:schema"]);
+		delete(obj.definitions[xsPrefix+"schema"]);
 
 		var count = 1;
 		while (count>0) { // loop until we haven't removed any empties
