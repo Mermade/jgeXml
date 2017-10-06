@@ -54,7 +54,7 @@ function jptr(obj, prop, newValue) {
 	}
 	//no split; get property[index] or property
 	var source = obj;
-	if (prop[0]) source = obj[prop];
+	if (current) source = obj[current];
 	if (index>=0) {
 		if (index>=source.length) {
 			if (typeof newValue != 'undefined') {
