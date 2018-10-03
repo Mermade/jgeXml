@@ -8,7 +8,6 @@ var jgeXml = require('./jgeXml');
 var xw = require('./xmlWrite');
 var x2j = require('./xml2json');
 var j2x = require('./json2xml');
-var j2y = require('./json2yaml');
 var xsd2j = require('./xsd2json');
 var jpath = require('./jpath');
 
@@ -189,38 +188,6 @@ function runJsonTest(filename,components) {
 	}
 }
 
-function runYamlTest(filename,components) {
-	var stem = '';
-	for (var c=0;c<components.length-1;c++) {
-		stem += (stem ? '.' : '') + components[c];
-	}
-
-	var	exists = false;
-	try {
-		fs.statSync('out/'+stem+'.yaml',fs.R_OK);
-		console.log('  Convert and compare to YAML');
-		exists = true;
-	}
-	catch(err) {}
-
-	if (exists) {
-		var json = fs.readFileSync(testdir+'/'+filename,encoding);
-		var obj = JSON.parse(json);
-		var yaml = j2y.getYaml(obj);
-		var compare = fs.readFileSync('out/'+stem+'.yaml',encoding);
-		compare = compare.replaceAll('\r\n','\n');
-
-		if (yaml == compare) {
-			passing++;
-		}
-		else {
-			diff(yaml,compare);
-			console.log('  Fail');
-			failing++;
-		}
-	}
-}
-
 function testXml(filename,components,expected) {
 	if (!expected) console.log('  Expected to fail');
 	var xml = fs.readFileSync(testdir+'/'+filename,encoding);
@@ -302,7 +269,6 @@ for (var t in tests) {
 	}
 	else if (components[components.length-1] == 'json') {
 		runJsonTest(filename,components);
-		runYamlTest(filename,components);
 	}
 }
 
