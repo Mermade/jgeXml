@@ -452,10 +452,12 @@ function doElement(src,parent,key) {
 		}
 
 		if (inAllOf>=0) {
-			target.allOf[inAllOf]["$ref"] = typeData["$ref"];
+			if (typeData.$ref) target.allOf[inAllOf].$ref = typeData["$ref"]
+			else delete target.allOf[inAllOf].$ref;
 		}
 		else if (inAnyOf>=0) {
-			target.anyOf[inAnyOf]["$ref"] = typeData["$ref"];
+			if (typeData.$ref) target.anyOf[inAnyOf].$ref = typeData["$ref"]
+			else delete target.anyOf[inAnyOf].$ref;
 		}
 		else {
 			target.properties[name] = typeData; // Object.assign 'corrupts' property ordering
