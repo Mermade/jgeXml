@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MikeRalphson/jgeXml.git"
+    "url": "git+https://github.com/Mermade/jgeXml.git"
   },
   "keywords": [
     "xml",
@@ -31,7 +31,7 @@
   "author": "Mike Ralphson",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/MikeRalphson/jgeXml/issues"
+    "url": "https://github.com/Mermade/jgeXml/issues"
   },
-  "homepage": "https://github.com/MikeRalphson/jgeXml#readme"
+  "homepage": "https://github.com/Mermade/jgeXml#readme"
 }
