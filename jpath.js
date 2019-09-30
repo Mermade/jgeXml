@@ -1,14 +1,9 @@
 'use strict';
 
-String.prototype.replaceAll = function(search, replacement) {
-    var target = this;
-    return target.split(search).join(replacement);
-};
-
 function jpescape(s) {
-	s = s.replaceAll('~','~0');
-	s = s.replaceAll('/','~1');
-	return s;
+    s = s.replaceAll('~','~0');
+    s = s.replaceAll('/','~1');
+    return s;
 }
 
 // JSON Pointer specification: http://tools.ietf.org/html/rfc6901

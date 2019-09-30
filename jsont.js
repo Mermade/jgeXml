@@ -1,11 +1,6 @@
 'use strict';
 
-var jpath = require('./jpath');
-
-String.prototype.replaceAll = function(search, replacement) {
-    var target = this;
-    return target.split(search).join(replacement);
-};
+const jpath = require('./jpath');
 
 function transform(obj,rules) {
 	var objName = '$';

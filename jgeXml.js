@@ -24,10 +24,7 @@ const sDTD = 21;
 const sError = 23;
 const sEndDocument = 25;
 
-String.prototype.replaceAll = function(search, replacement) {
-    var target = this;
-    return target.split(search).join(replacement);
-};
+require('./common');
 
 function stateName(state) {
 	if (state == sInitial) {

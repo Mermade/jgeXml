@@ -8,11 +8,6 @@ var depth = 0;
 var pretty = 0;
 var spacer = ' ';
 
-String.prototype.replaceAll = function(search, replacement) {
-    var target = this;
-    return target.split(search).join(replacement);
-};
-
 function encode(s) {
 	var es = s;
 	if (typeof s === 'string') { // might be a number, boolean or null
