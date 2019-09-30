@@ -1,0 +1,23 @@
+{
+  "title": "test/issue9.xsd",
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "test": {
+      "type": "object",
+      "properties": {
+        "@id": {
+          "type": "string",
+          "enum": [
+            "123"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "test"
+  ],
+  "additionalProperties": false
+}
