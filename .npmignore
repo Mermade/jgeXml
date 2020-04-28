@@ -1,5 +1,7 @@
 test/
+in/
 out/
+.vscode/
 old/
 musicxml/
 xmlbible/
