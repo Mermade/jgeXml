@@ -48,7 +48,7 @@ In JSON, child elements can be represented as properties (the default) or object
 
 The parser by default treats all content as strings when converting to JSON, optionally data can be coerced to primitive numbers or null values.
 
-The `xsd2json` utility can convert most XML Schemas to JSON schema draft 4. XSD's may of course be converted to JSON simply as if they were XML documents too.
+The `xsd2json` utility can convert most simple XML Schemas to JSON schema draft 4. XSD's may of course be converted to JSON simply as if they were XML documents too.
 
 Experimental JSONPath and JSONT utilities are under development.
 
