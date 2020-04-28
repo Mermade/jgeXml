@@ -1,9 +1,13 @@
 'use strict';
 
 var fs = require('fs');
-var jgeXml = require('./jgeXml.js');
+var jgeXml = require('../jgeXml.js');
 
 var filename = process.argv[2];
+if (!filename) {
+	console.warn('Usage: pushparser {infile} [encoding]');
+	process.exit(1);
+}
 var encoding = 'utf8';
 if (process.argv.length>3) encoding = process.argv[3];
 

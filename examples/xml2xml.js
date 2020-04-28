@@ -1,8 +1,8 @@
 'use strict';
 
 var fs = require('fs');
-var jgeXml = require('./jgeXml.js');
-var xmlWrite = require('./xmlWrite.js');
+var jgeXml = require('../jgeXml.js');
+var xmlWrite = require('../xmlWrite.js');
 
 function x2x(xml) {
 	var attributeName = '';
@@ -41,6 +41,10 @@ function x2x(xml) {
 }
 
 var filename = process.argv[2];
+if (!filename) {
+	console.warn('Usage: xml2xml {infile}');
+	process.exit(1);
+}
 
 var xml = fs.readFileSync(filename,'utf8');
 
@@ -48,10 +52,7 @@ var s1 = x2x(xml); // normalise declaration, spacing and empty elements etc
 var s2 = x2x(s1); // compare
 var same = (s1 == s2);
 if (!same) {
-	console.log(s1);
-	console.log();
+	console.warn(s1);
 	process.exitCode = 1;
 }
 console.log(s2);
-console.log();
-console.log(same);

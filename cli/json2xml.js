@@ -1,18 +1,23 @@
+#!/usr/bin/env node
 'use strict';
 
 var fs = require('fs');
-var j2x = require('./json2xml');
+var j2x = require('../json2xml');
 
 var filename = process.argv[2];
+if (!filename) {
+	console.warn('Usage: json2xml {infile}');
+	process.exit(1);
+}
 var indent = 2;
 var indentStr = ' ';
+
 if (process.argv.length>3) {
 	indent = 1;
 	indentStr = '\t';
 }
 
 var json = fs.readFileSync(filename,'utf8');
-console.log(json);
 
 var obj = {};
 try {
@@ -25,7 +30,4 @@ catch (err) {
 }
 
 var xml = j2x.getXml(obj,'@','',indent,indentStr,false);
-console.log();
 console.log(xml);
-console.log();
-console.log(true);

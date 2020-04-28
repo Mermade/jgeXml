@@ -2,6 +2,10 @@
 
 const jpath = require('./jpath');
 
+function replaceAll(s, from, to) {
+	return s.split(from).join(to);
+}
+
 function transform(obj,rules) {
 	var objName = '$';
 	var isArray = false;
@@ -47,9 +51,9 @@ function transform(obj,rules) {
 			}
 
 			for (var i=1;i<elements.length;i=i+2) {
-				elements[i] = elements[i].replaceAll('$',arrRules[r].ruleName);
-				elements[i] = elements[i].replaceAll('[*]','['+o+']'); //specify the current index
-				elements[i] = elements[i].replaceAll('self','');
+				elements[i] = replaceAll(elements[i], '$',arrRules[r].ruleName);
+				elements[i] = replaceAll(elements[i], '[*]','['+o+']'); //specify the current index
+				elements[i] = replaceAll(elements[i], 'self','');
 				elements[i] = jpath.fetchFromObject(obj,elements[i]);
 
 				if (elements[i] == null) {

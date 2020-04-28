@@ -1,6 +1,6 @@
 'use strict';
 
-var jsont = require('./jsont');
+var jsont = require('../jsont');
 
 function run(obj,rules) {
 	console.log();

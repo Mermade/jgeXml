@@ -3,9 +3,14 @@
   "version": "0.3.9",
   "description": "The Just-Good-Enough XML Toolkit",
   "main": "jgeXml.js",
+  "bin": {
+    "xml2json": "./cli/xml2json.js",
+    "json2xml": "./cli/json2xml.js",
+    "xsd2json": "./cli/xsd2json.js"
+  },
   "scripts": {
     "test": "node testRunner",
-    "cover": "istanbul cover testRunner.js"
+    "cover": "npx istanbul cover testRunner.js"
   },
   "repository": {
     "type": "git",
@@ -15,7 +20,6 @@
     "xml",
     "javascript",
     "json",
-    "yaml",
     "jsonpath",
     "jsont",
     "parser",

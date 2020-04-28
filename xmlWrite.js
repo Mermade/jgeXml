@@ -8,14 +8,18 @@ var depth = 0;
 var pretty = 0;
 var spacer = ' ';
 
+function replaceAll(s, from, to) {
+	return s.split(from).join(to);
+}
+
 function encode(s) {
 	var es = s;
 	if (typeof s === 'string') { // might be a number, boolean or null
-		es = es.replaceAll('&','&amp;');
-		es = es.replaceAll('<','&lt;');
-		es = es.replaceAll('>','&gt;');
-		es = es.replaceAll('"','&quot;');
-		es = es.replaceAll("'",'&apos;');
+		es = replaceAll(es, '&','&amp;');
+		es = replaceAll(es, '<','&lt;');
+		es = replaceAll(es, '>','&gt;');
+		es = replaceAll(es, '"','&quot;');
+		es = replaceAll(es, "'",'&apos;');
 	}
 	return es;
 }

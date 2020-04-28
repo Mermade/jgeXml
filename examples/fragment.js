@@ -1,6 +1,6 @@
 'use strict';
 
-var xw = require('./xmlWrite');
+var xw = require('../xmlWrite');
 
 xw.startFragment(2);
 xw.docType('fubar');

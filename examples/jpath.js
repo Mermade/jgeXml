@@ -1,8 +1,9 @@
 'use strict';
 
 var fs = require('fs');
-var x2j = require('./xml2json');
-var jpath = require('./jpath');
+var path = require('path');
+var x2j = require('../xml2json');
+var jpath = require('../jpath');
 
 function dumpResults(tree,query) {
 	console.log();
@@ -46,7 +47,7 @@ function testProperties(obj) {
 	ptrTest(obj,'/store/book/2/price');
 }
 
-var filename = process.argv[2];
+var filename = process.argv[2] || path.resolve(__dirname,'../test/bookstore.json');
 var valueProperty = false;
 if (process.argv.length>3) {
 	valueProperty = true;
