@@ -1,6 +1,9 @@
 test/nitro-schema.xsd
 out/nitro-schema.json
 
+in/
+.vscode/
+
 # Logs
 logs
 *.log
