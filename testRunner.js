@@ -145,7 +145,7 @@ function runXsdTest(filename,components) {
 		var compare = fs.readFileSync('out/'+stem+'.json',encoding);
 		compare = compare.replaceAll('\r\n','\n');
 
-		if (json == compare) {
+		if (json.trim() == compare.trim()) {
 			passing++;
 		}
 		else {

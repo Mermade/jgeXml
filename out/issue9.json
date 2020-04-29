@@ -4,16 +4,16 @@
   "type": "object",
   "properties": {
     "test": {
-      "type": "object",
       "properties": {
-        "@id": {
+        "id": {
           "type": "string",
           "enum": [
             "123"
           ]
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "type": "object"
     }
   },
   "required": [

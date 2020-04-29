@@ -62,7 +62,10 @@
           "type": "number"
         },
         "country": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "US"
+          ]
         }
       },
       "required": [

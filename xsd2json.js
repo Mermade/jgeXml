@@ -357,11 +357,13 @@ function doElement(src, parent, key) {
 
         var minOccurs = 1;
         var maxOccurs = 1;
+        var enumList = [];
         if (element["@minOccurs"]) minOccurs = parseInt(element["@minOccurs"], 10);
         if (element["@maxOccurs"]) maxOccurs = element["@maxOccurs"];
         if (maxOccurs == 'unbounded') maxOccurs = Number.MAX_SAFE_INTEGER;
         if (isAttribute) {
             if ((!element["@use"]) || (element["@use"] != 'required')) minOccurs = 0;
+            if (element["@fixed"]) enumList.push(element["@fixed"]);
         }
         if (element["@isChoice"]) minOccurs = 0;
 
@@ -372,6 +374,10 @@ function doElement(src, parent, key) {
 
         if (doc) {
             typeData.description = doc;
+        }
+
+        if (enumList.length) {
+            typeData.enum = enumList;
         }
 
         if (typeData.type == 'object') {
@@ -460,6 +466,7 @@ function doElement(src, parent, key) {
             else delete target.anyOf[inAnyOf].$ref;
         }
         else {
+            if (!target.type) target.type = 'object';
             target.properties[name] = typeData; // Object.assign 'corrupts' property ordering
         }
 
@@ -482,8 +489,6 @@ function moveAttributes(obj, parent, key) {
             obj[xsPrefix + "choice"][xsPrefix + "element"] = toArray(obj[xsPrefix + "choice"][xsPrefix + "element"]);
             target = obj[xsPrefix + "choice"][xsPrefix + "element"];
         }
-
-        if (target) target = toArray(target);
 
         for (var i = 0; i < obj[key].length; i++) {
             var attr = clone(obj[key][i]);
@@ -543,6 +548,7 @@ function moveProperties(obj, parent, key) {
 function clean(obj, parent, key) {
     if (key == '@name') delete obj[key];
     if (key == '@type') delete obj[key];
+    if (key == xsPrefix + "attribute") delete obj[key];
     if (obj.properties && (Object.keys(obj.properties).length == 1) && obj.properties["#text"] && obj.properties["#text"]["$ref"]) {
         obj.properties["$ref"] = obj.properties["#text"]["$ref"];
         delete obj.properties["#text"]; // anonymous types
@@ -643,6 +649,15 @@ module.exports = {
     getJsonSchema: function getJsonSchema(src, title, outputAttrPrefix, laxURIs, newXsPrefix) { // TODO convert to options parameter
         reset(outputAttrPrefix, laxURIs, newXsPrefix);
 
+        for (let p in src) {
+            if (p.indexOf(':') >= 0) {
+                let pp = p.split(':')[0];
+                if (src[p]["@xmlns:" + pp] === 'http://www.w3.org/2001/XMLSchema') {
+                    xsPrefix = pp + ':';
+                }
+            }
+        }
+
         recurse(src, {}, function (src, parent, key) {
             moveAttributes(src, parent, key);
         });
@@ -652,15 +667,6 @@ module.exports = {
 
         var obj = {};
         var id = '';
-
-        for (let p in src) {
-            if (p.indexOf(':') >= 0) {
-                let pp = p.split(':')[0];
-                if (src[p]["@xmlns:" + pp] === 'http://www.w3.org/2001/XMLSchema') {
-                    xsPrefix = pp + ':';
-                }
-            }
-        }
 
         if (src[xsPrefix + "schema"]) {
             id = src[xsPrefix + "schema"]["@targetNamespace"];
