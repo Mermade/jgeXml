@@ -1,0 +1,21 @@
+{
+  "title": "test/issue12b.xsd",
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "Address": {
+    },
+    "DateType1Code": {
+      "type": "string",
+      "enum": [
+        "UKWN",
+        "VAL2"
+      ]
+    }
+  },
+  "required": [
+    "Address",
+    "DateType1Code"
+  ],
+  "additionalProperties": false
+}
