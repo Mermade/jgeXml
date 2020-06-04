@@ -419,6 +419,7 @@ function doElement(src, parent, key) {
         if (enumSource) {
             typeData.description = '';
             typeData["enum"] = [];
+            enumSource = toArray(enumSource); // handle 'const' case
             for (var i = 0; i < enumSource.length; i++) {
                 typeData["enum"].push(enumSource[i]["@value"]);
                 if ((enumSource[i][xsPrefix + "annotation"]) && (enumSource[i][xsPrefix + "annotation"][xsPrefix + "documentation"])) {
@@ -429,7 +430,6 @@ function doElement(src, parent, key) {
                 }
             }
             if (!typeData.description) delete typeData.description;
-            delete typeData.type; // assert it was a stringish type?
         }
         else {
             typeData = finaliseType(typeData);
@@ -549,6 +549,7 @@ function clean(obj, parent, key) {
     if (key == '@name') delete obj[key];
     if (key == '@type') delete obj[key];
     if (key == xsPrefix + "attribute") delete obj[key];
+    if (key == xsPrefix + "restriction") delete obj[key];
     if (obj.properties && (Object.keys(obj.properties).length == 1) && obj.properties["#text"] && obj.properties["#text"]["$ref"]) {
         obj.properties["$ref"] = obj.properties["#text"]["$ref"];
         delete obj.properties["#text"]; // anonymous types

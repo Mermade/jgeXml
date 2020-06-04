@@ -1,10 +1,8 @@
 {
-  "title": "test/issue12b.xsd",
+  "title": "test/issue12.xsd",
   "$schema": "http://json-schema.org/schema#",
   "type": "object",
   "properties": {
-    "Address": {
-    },
     "DateType1Code": {
       "type": "string",
       "enum": [

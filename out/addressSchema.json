@@ -24,6 +24,7 @@
           "type": "string"
         },
         "Country": {
+          "type": "string",
           "enum": [
             "IN",
             "DE",

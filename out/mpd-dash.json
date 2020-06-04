@@ -885,6 +885,7 @@
       "additionalProperties": false
     },
     "PresentationType": {
+      "type": "string",
       "enum": [
         "static",
         "dynamic"
@@ -922,6 +923,7 @@
       "maximum": 4294967295
     },
     "VideoScanType": {
+      "type": "string",
       "enum": [
         "progressive",
         "interlaced",
