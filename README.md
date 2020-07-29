@@ -1,6 +1,7 @@
 # jgeXml - The Just-Good-Enough XML Toolkit
 
 [![Build status](https://travis-ci.org/Mermade/jgeXml.svg?branch=master)](https://travis-ci.org/Mermade/jgeXml)
+[![Join the Mermade Slack](https://img.shields.io/badge/Slack-Mermade-brightgreen)](https://join.slack.com/t/mermade/shared_invite/zt-g78g7xir-MLE_CTCcXCdfJfG3CJe9qA)
 
 [![Share on Twitter][twitter-image]][twitter-link]
 [![Follow on Twitter][twitterFollow-image]][twitterFollow-link]
