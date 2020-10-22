@@ -524,6 +524,12 @@ function processChoice(obj, parent, key) {
     }
 }
 
+function removeUnique(obj, parent, key) {
+    if (obj[xsPrefix + "unique"] != null) {
+        delete obj[xsPrefix + "unique"];
+    }
+}
+
 function renameObjects(obj, parent, key) {
     if (key == xsPrefix + 'complexType') {
         var name = obj["@name"];
@@ -664,6 +670,9 @@ module.exports = {
         });
         recurse(src, {}, function (src, parent, key) {
             processChoice(src, parent, key);
+        });
+        recurse(src, {}, function (src, parent, key) {
+            removeUnique(src, parent, key);
         });
 
         var obj = {};

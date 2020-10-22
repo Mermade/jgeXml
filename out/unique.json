@@ -1,0 +1,25 @@
+{
+  "title": "test/unique.xsd",
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "Address": {
+      "$ref": "#/definitions/AddressCType"
+    }
+  },
+  "required": [
+    "Address"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "AddressCType": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
