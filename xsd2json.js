@@ -525,7 +525,7 @@ function processChoice(obj, parent, key) {
 }
 
 function removeUnique(obj, parent, key) {
-    if (obj[xsPrefix + "unique"] != null) {
+    if (typeof obj[xsPrefix + "unique"] !== 'undefined') {
         delete obj[xsPrefix + "unique"];
     }
 }
