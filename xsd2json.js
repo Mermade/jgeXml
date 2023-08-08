@@ -709,13 +709,16 @@ module.exports = {
         if (Array.isArray(rootElement)) {
             rootElement = rootElement[0];
         }
-        var rootElementName = rootElement["@name"];
-
-        obj.type = 'object';
-        obj.properties = clone(rootElement);
-
         obj.required = [];
-        obj.required.push(rootElementName);
+        obj.properties = {};
+        obj.type = 'object';
+        if (rootElement) {
+            var rootElementName = rootElement["@name"];
+
+
+            obj.properties = clone(rootElement);
+            obj.required.push(rootElementName);
+        }
         obj.additionalProperties = false;
 
         recurse(obj, {}, function (obj, parent, key) {
